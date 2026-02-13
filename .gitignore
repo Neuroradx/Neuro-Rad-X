@@ -2,3 +2,6 @@
 # Secret environment variables
 .env.local
 node_modules
+.aider*
+.env
+.env

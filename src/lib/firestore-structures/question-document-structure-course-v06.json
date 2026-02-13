@@ -1,0 +1,230 @@
+{
+  "questions_collection": {
+    "description": "This structure describes a single document within the 'questions' collection.",
+    "documentIdFormat": "questionId (string, custom format, e.g., 'CATEGORY_SUBCAT_DIFF_TIMESTAMP')",
+    "fields": {
+      "id": {
+        "type": "string",
+        "description": "Unique identifier for the question, usually the document ID.",
+        "example": "GENERATED_ID"
+      },
+      "level": {
+        "type": "string",
+        "description": "General level or category of the question.",
+        "example": "Basic"
+      },
+      "difficulty": {
+        "type": "string",
+        "description": "Difficulty level of the question.",
+        "enumValues": ["Easy", "Medium", "Advanced"],
+        "example": "Medium"
+      },
+      "category": {
+        "type": "string",
+        "description": "General category for the question (e.g., 'Neuroscience', 'Anatomy').",
+        "example": "Neuroscience"
+      },
+      "main_localization": {
+        "type": "string",
+        "description": "Primary anatomical category (e.g., 'Head', 'Spine'). Used for main filtering.",
+        "example": "Head"
+      },
+      "sub_main_location": {
+        "type": "string",
+        "optional": true,
+        "description": "Secondary or more specific category (e.g., 'Tumors', 'Vascular'). Used for sub-filtering.",
+        "example": "Vascular"
+      },
+      "anatomical_locations": {
+        "type": "array",
+        "description": "Array of specific anatomical locations relevant to the question.",
+        "itemSchema": {
+          "type": "string"
+        },
+        "example": ["Brain", "Cerebellum"]
+      },
+      "themes": {
+        "type": "array",
+        "description": "Array of main themes associated with the question (e.g., 'Pathology', 'Diagnosis').",
+        "itemSchema": {
+          "type": "string"
+        },
+        "example": ["Stroke", "Aneurysm"]
+      },
+      "sub_themes": {
+        "type": "array",
+        "description": "Array of sub-themes providing more specific detail (e.g., 'Ischemic Stroke', 'Ruptured Aneurysm').",
+        "itemSchema": {
+          "type": "string"
+        },
+        "example": ["Acute Ischemic Stroke", "Subarachnoid Hemorrhage"]
+      },
+      "tags": {
+        "type": "array",
+        "description": "Array of descriptive tags for the question, useful for granular filtering.",
+        "itemSchema": {
+          "type": "string"
+        },
+        "example": ["Imaging", "Treatment", "Prevention"]
+      },
+      "type": {
+        "type": "string",
+        "description": "Type of question, most commonly 'Multiple Choice'.",
+        "example": "Multiple Choice"
+      },
+      "imageUrl": {
+        "type": "string",
+        "optional": true,
+        "description": "URL of an image associated with the question, hosted on Firebase Storage or elsewhere."
+      },
+      "correctAnswerIndex": {
+        "type": "number",
+        "description": "Zero-based index of the correct option within the 'translations.en.options' array. This is considered the canonical index for answer correctness."
+      },
+      "createdAt": {
+        "type": "timestamp",
+        "description": "Firestore server timestamp indicating when the question was created.",
+        "example": "2025-06-01T23:14:53Z"
+      },
+      "updatedAt": {
+        "type": "timestamp",
+        "description": "Firestore server timestamp indicating when the question was last updated.",
+        "example": "2025-06-01T23:14:53Z"
+      },
+      "source": {
+        "type": "object",
+        "description": "Information about the source from which the question was derived.",
+        "fields": {
+          "organization": {
+            "type": "string",
+            "description": "Name of the organization providing the source material.",
+            "example": "European Society of Minimally Invasive Neurological Therapy"
+          },
+          "abreviation": {
+            "type": "string",
+            "description": "Abbreviation of the organization.",
+            "example": "ESMINT"
+          },
+          "course": {
+            "type": "string",
+            "description": "Name of the course from which the question originates.",
+            "example": "European Course in Minimally Invasive Neurological Therapy"
+          },
+          "abbreviationcourse": {
+            "type": "string",
+            "description": "Abbreviation of the course.",
+            "example": "ECMINT"
+          },
+          "module": {
+            "type": "string",
+            "description": "Specific module or section within the course.",
+            "example": "Neurovascular disease of the skull base"
+          },
+          "year": {
+            "type": "number",
+            "description": "Year of the course or source material.",
+            "example": 2025
+          },
+          "city": {
+            "type": "string",
+            "description": "City where the course or event took place.",
+            "example": "Oxford"
+          }
+        }
+      },
+      "scientificArticle": {
+        "type": "object",
+        "description": "Reference details for an associated scientific article.",
+        "fields": {
+          "article_reference": {
+            "type": "string",
+            "description": "AMA style reference of the complete PDF document.",
+            "example": "Author, A. A. (Year). Title of article. *Title of Periodical, volume*(issue), pages."
+          }
+        }
+      },
+      "translations": {
+        "type": "object",
+        "description": "Contains translations for question text, options, and explanation in different languages.",
+        "fields": {
+          "en": {
+            "type": "object",
+            "description": "English language content for the question.",
+            "fields": {
+              "questionText": {
+                "type": "string",
+                "description": "The main text/stem of the question in English."
+              },
+              "options": {
+                "type": "array",
+                "description": "Array of answer options in English.",
+                "itemSchema": {
+                  "type": "object",
+                  "fields": {
+                    "text": {
+                      "type": "string",
+                      "description": "Text of the answer option."
+                    }
+                  }
+                }
+              },
+              "explanation": {
+                "type": "string",
+                "optional": true,
+                "description": "Explanation for the correct answer in English."
+              }
+            }
+          },
+          "de": {
+            "type": "object",
+            "description": "German language content for the question.",
+            "fields": {
+              "questionText": {
+                "type": "string"
+              },
+              "options": {
+                "type": "array",
+                "itemSchema": {
+                  "type": "object",
+                  "fields": {
+                    "text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "explanation": {
+                "type": "string",
+                "optional": true
+              }
+            }
+          },
+          "es": {
+            "type": "object",
+            "description": "Spanish language content for the question.",
+            "fields": {
+              "questionText": {
+                "type": "string"
+              },
+              "options": {
+                "type": "array",
+                "itemSchema": {
+                  "type": "object",
+                  "fields": {
+                    "text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "explanation": {
+                "type": "string",
+                "optional": true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

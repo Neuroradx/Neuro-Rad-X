@@ -1,0 +1,844 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "tutorMode": "Tutor-Modus",
+    "examMode": "Prüfungsmodus",
+    "flashcards": "Flashcards",
+    "myProgress": "Mein Fortschritt",
+    "bookmarks": "Lesezeichen",
+    "myNotes": "Meine Notizen",
+    "infographics": "Infografiken",
+    "shareApp": "App teilen",
+    "aboutUs": "Über uns",
+    "settings": "Einstellungen",
+    "adminDashboard": "Admin-Dashboard",
+    "editQuestion": "Frage bearbeiten",
+    "pendingUsers": "Ausstehende Benutzer",
+    "reportedQuestions": "Gemeldete Fragen",
+    "sendNotification": "Benachrichtigung senden"
+  },
+  "homePage": {
+    "trialBadge": "30 Tage kostenlos testen",
+    "titlePart1": "Meistern Sie die Neuroradiologie mit",
+    "description": "Die ultimative spezialisierte Plattform für medizinisches Fachpersonal. Expertenvalidierte Fragen, KI-gestützte Einblicke und personalisierte Fortschrittskontrolle.",
+    "registerButton": "Kostenlosen Test starten",
+    "signInButton": "Anmelden",
+    "features": {
+      "title": "Warum NeuroRadX wählen?",
+      "bank": {
+        "title": "Umfangreiche Fragenbank",
+        "description": "Über 5.000 Prüfungsfragen zu Kopf, Wirbelsäule, Hals und allgemeiner Neuroradiologie."
+      },
+      "tools": {
+        "title": "Klinische Werkzeuge",
+        "description": "Integrierte Rechner wie der NASCET-Score und detaillierte anatomische Referenzleitfäden."
+      },
+      "progress": {
+        "title": "Intelligentes Tracking",
+        "description": "Visualisieren Sie Ihre Stärken und Schwächen mit unserem intuitiven Analyse-Dashboard."
+      },
+      "ai": {
+        "title": "KI-gestütztes Lernen",
+        "description": "GenAI-gesteuerte Artikelsuche und tiefgehende Erklärungen für jedes Konzept."
+      },
+      "validation": {
+        "title": "Expertenvalidiert",
+        "description": "Inhalte kuratiert und überprüft von führenden Spezialisten der Neuroradiologie."
+      },
+      "multilingual": {
+        "title": "Mehrsprachige Unterstützung",
+        "description": "Lernen Sie auf Englisch, Deutsch oder Spanisch mit professionellen Übersetzungen."
+      }
+    },
+    "copyright": "Alle Rechte vorbehalten.",
+    "lastUpdated": "Zuletzt aktualisiert: {{date}}",
+    "impressumLink": "Impressum"
+  },
+  "dashboard": {
+    "welcomeBack": "Willkommen zurück, {{name}}",
+    "overview": "Hier ist deine Lernübersicht.",
+    "stats": {
+      "totalQuestionsPracticed": "Beantwortete Fragen",
+      "overallAccuracy": "Gesamtgenauigkeit",
+      "studyActivity": "Studientage",
+      "studyStreakTitle": "Aktuelle Serie",
+      "studyStreakValue": "{{days}} Tage",
+      "studyStreakDescriptionNonZero": "Bleib dran!",
+      "studyStreakDescriptionIfZero": "Starte heute eine Sitzung!",
+      "errorFetchingData": "Fehler beim Laden der Statistiken: {{message}}"
+    },
+    "quickStart": {
+      "title": "Schnellstart"
+    },
+    "dailyFact": {
+      "title": "Wussten Sie schon?"
+    }
+  },
+  "progressPage": {
+    "title": "Mein Lernfortschritt",
+    "description": "Verfolgen Sie Ihre Leistung über alle Sitzungen und Themen hinweg.",
+    "performanceOverTime": "Leistung im Zeitverlauf",
+    "monthlyCorrectIncorrect": "Richtig vs. falsch beantwortete Fragen nach Zeitraum.",
+    "errorFetchingOverall": "Fehler beim Abrufen der Sitzungen: {{message}}",
+    "errorFetchingTopicDetails": "Fehler beim Abrufen der Themenleistung: {{message}}",
+    "stats": {
+      "bestDayPerc": { "title": "Bester Tag" },
+      "maxQsDay": { "title": "Max. Fragen/Tag" },
+      "overallAvgPerc": { "title": "Genauigkeit" },
+      "totalSessionsInRange": { "title": "Sitzungen" },
+      "inSelectedRange": "Im gewählten Zeitraum"
+    },
+    "chart": {
+      "correct": "Richtig",
+      "incorrect": "Falsch",
+      "accuracy": "Genauigkeit",
+      "noDataForPeriod": "Keine Daten für den gewählten Zeitraum verfügbar."
+    },
+    "tooltip": {
+      "correct": "Richtig",
+      "incorrect": "Falsch",
+      "accuracy": "Genauigkeit"
+    },
+    "buttons": {
+      "daily": "Täglich",
+      "weekly": "Wöchentlich",
+      "monthly": "Monatlich"
+    },
+    "topicBreakdownTitle": "Themenübersicht",
+    "topicBreakdownDescription": "Analysieren Sie Ihre Stärken und Schwächen nach Kategorie.",
+    "overallCategoryPerformance": "{{percentage}}% Genauigkeit ({{correct}}/{{attempted}})",
+    "noAttemptsCategory": "Noch keine Fragen versucht",
+    "performanceLabel": "{{percentage}}% ({{correct}}/{{attempted}})",
+    "noAttemptsSubtopic": "Keine Versuche",
+    "locations": {
+      "frontal": "Frontallappen",
+      "temporal": "Temporallappen",
+      "cerebellum": "Kleinhirn",
+      "basalGanglia": "Basalganglien",
+      "brainStem": "Hirnstamm",
+      "corpusCallosum": "Corpus Callosum"
+    }
+  },
+  "aboutPage": {
+    "title": "Über NeuroRadX",
+    "developedByLabel": "Entwickelt von",
+    "developedBySection": {
+      "content": "NeuroRadX wurde von Dr. Andres Pinta konzipiert und entwickelt, einem Neuroradiologen mit Leidenschaft für medizinische Ausbildung und Technologie."
+    },
+    "introductionSection": {
+      "slogan": "Neuroradiologische Expertise stärken",
+      "content": "NeuroRadX ist mehr als nur eine Fragenbank; es ist ein umfassendes Ökosystem, das die Lücke zwischen klinischer Praxis und akademischer Exzellenz schließt."
+    },
+    "whatIsNeuroRadXSection": {
+      "title": "Was ist NeuroRadX?",
+      "content": "NeuroRadX bietet eine spezialisierte Lernumgebung für medizinisches Fachpersonal mit Fokus auf Neuroradiologie. Unsere Plattform integriert fortschrittliche Technologie mit medizinischem Expertenwissen."
+    },
+    "keyFeaturesSection": {
+      "title": "Hauptmerkmale",
+      "extensiveQuestionBank": {
+        "title": "Umfangreiche Fragenbank",
+        "item1": "Über 5.000 Prüfungsfragen.",
+        "item2": "Abdeckung von Kopf, Wirbelsäule, Hals und allgemeiner Neuroradiologie."
+      },
+      "personalizedStudyModes": {
+        "title": "Personalisierte Lernmodi",
+        "tutorMode": {
+          "titlePart": "Tutor-Modus",
+          "descriptionPart": "Sofortiges Feedback und detaillierte Erklärungen."
+        },
+        "examMode": {
+          "titlePart": "Prüfungsmodus",
+          "descriptionPart": "Simulierte Testumgebungen mit Timer."
+        },
+        "flashcards": {
+          "titlePart": "Flashcards",
+          "descriptionPart": "Schnelle Wiederholung durch Spaced Repetition."
+        }
+      },
+      "detailedProgressTracking": {
+        "title": "Detaillierte Fortschrittskontrolle",
+        "item1": "Visuelle Analyse der Leistung.",
+        "item2": "Identifizierung von Schwachstellen.",
+        "item3": "Historischer Score-Vergleich."
+      },
+      "organizationalTools": {
+        "title": "Organisatorische Werkzeuge",
+        "bookmarks": {
+          "titlePart": "Lesezeichen",
+          "descriptionPart": "Speichern Sie schwierige Fragen für später."
+        },
+        "myNotes": {
+          "titlePart": "Meine Notizen",
+          "descriptionPart": "Persönliche Anmerkungen zu jeder Frage."
+        }
+      }
+    },
+    "whoIsItForSection": {
+      "title": "Für wen ist es?",
+      "intro": "Entwickelt für jede Phase der medizinischen Ausbildung:",
+      "medicalStudents": {
+        "titlePart": "Medizinstudierende",
+        "descriptionPart": "Essenziell für Neuroanatomie und klinische Grundlagen."
+      },
+      "residents": {
+        "titlePart": "Assistenzärzte & Fellows",
+        "descriptionPart": "Der perfekte Begleiter für die Facharztprüfung."
+      },
+      "radiologistsAndProfessionals": {
+        "titlePart": "Radiologen & Kliniker",
+        "descriptionPart": "Kontinuierliches Lernen und klinische Updates."
+      }
+    },
+    "ourVisionSection": {
+      "title": "Unsere Vision",
+      "content": "Der globale Standard für neuroradiologische Ausbildung durch Innovation, Zugänglichkeit und Expertenvalidierung zu werden."
+    }
+  },
+  "myNotesPage": {
+    "title": "Meine Lernnotizen",
+    "description": "Eine Sammlung Ihrer persönlichen Anmerkungen zu spezifischen Fragen.",
+    "errorLoadingNotesMeta": "Liste Ihrer Notizen konnte nicht geladen werden.",
+    "errorLoadingFullNotes": "Fehler beim Laden der Frage-Details für Ihre Notizen.",
+    "noNotesTitle": "Keine Notizen gefunden",
+    "noNotesDescription": "Sie haben noch keine Notizen hinzugefügt. Starten Sie im Bereich 'Meine Notizen' während einer Sitzung!",
+    "questionDetailMissing": "Frage-Details sind nicht mehr verfügbar.",
+    "correctAnswerLabel": "Richtige Antwort",
+    "noCorrectAnswer": "Richtige Antwort nicht angegeben",
+    "editNotePlaceholder": "Bearbeiten Sie Ihre Notiz hier...",
+    "deleteNoteButton": "Löschen",
+    "deleteNoteButtonAria": "Diese Notiz löschen",
+    "saveNoteButton": "Speichern",
+    "saveNoteButtonAria": "Änderungen speichern",
+    "deleteConfirmDialog": {
+      "title": "Notiz löschen?",
+      "description": "Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmButton": "Dauerhaft löschen"
+    }
+  },
+  "auth": {
+    "loginRequiredTitle": "Anmeldung erforderlich",
+    "loginRequiredMessageBookmarks": "Bitte melden Sie sich an, um Lesezeichen zu verwalten.",
+    "loginRequiredMessageBookmarksAfterLink": "",
+    "loginRequiredMessageNotes": "Bitte melden Sie sich an, um auf Ihre Notizen zuzugreifen.",
+    "loginRequiredMessageNotesAfterLink": "",
+    "loginRequiredMessageProgress": "Bitte melden Sie sich an, um Ihren Fortschritt zu verfolgen.",
+    "loginRequiredMessageProgressAfterLink": "",
+    "pleaseLogInSettings": "Bitte anmelden, um Profileinstellungen zu ändern.",
+    "accountSetupIncompleteTitle": "Einrichtung unvollständig",
+    "accountSetupIncompleteDescription": "Benutzerprofil nicht gefunden. Bitte Support kontaktieren.",
+    "accountStatusError": "Ihr Konto ist nicht aktiv. Bitte Administrator kontaktieren.",
+    "profileFetchErrorDescription": "Profil konnte nicht geladen werden.",
+    "pendingApprovalPage": {
+      "title": "Genehmigung ausstehend",
+      "descriptionLine1": "Vielen Dank für Ihre Registrierung!",
+      "descriptionLine2": "Ihr Konto wird derzeit von unserem medizinischen Beirat geprüft.",
+      "contactSupport": "Bei Fragen kontaktieren Sie bitte support@neuroradx.de",
+      "logoutButton": "Abmelden"
+    }
+  },
+  "loading": {
+    "auth": "Authentifizierung wird geprüft...",
+    "progress": "Fortschritt wird geladen...",
+    "notes": "Notizen werden abgerufen...",
+    "bookmarks": "Lesezeichen werden geladen...",
+    "fetchingQuestions": "Fragen werden geladen..."
+  },
+  "pagination": {
+    "previous": "Zurück",
+    "page": "Seite",
+    "of": "von",
+    "next": "Weiter"
+  },
+  "admin": {
+    "backToAdminDashboard": "Zurück zum Admin-Dashboard",
+    "dashboard": {
+      "title": "Admin-Dashboard",
+      "description": "Benutzer, Inhalte und Systemkommunikation verwalten.",
+      "userManagement": { "title": "Benutzerverwaltung" },
+      "contentAndIssues": { "title": "Inhalte & Probleme" },
+      "tools": { "title": "Werkzeuge" },
+      "communication": { "title": "Kommunikation" },
+      "documentsAndPromotions": { "title": "Dokumente & Aktionen" },
+      "stats": {
+        "totalQuestions": "Fragen gesamt",
+        "pendingReview": "Warten auf Review",
+        "pendingUsers": "Ausstehende Benutzer",
+        "activeIssues": "Aktive Probleme",
+        "reviewedLabel": "{{count}} geprüft"
+      },
+      "links": {
+        "pendingUsers": "Ausstehende Benutzer",
+        "activeUsers": "Aktive Benutzer",
+        "searchUser": "Benutzersuche",
+        "usersBySubscription": "Nach Abo",
+        "reportedQuestions": "Gemeldete Fragen",
+        "reviewQuestions": "Fragen prüfen",
+        "reviewedReport": "Prüfbericht",
+        "enrichQuestions": "KI-Anreicherung",
+        "editQuestion": "Fragen bearbeiten",
+        "nascetScore": "NASCET-Rechner",
+        "seeNotifications": "Benachrichtigungen",
+        "sendNotification": "Nachricht senden",
+        "ecmit": "ECMIT-Materialien",
+        "inviteEvaluators": "Prüfer einladen"
+      }
+    },
+    "searchUser": {
+      "title": "Benutzersuche",
+      "description": "Finden Sie Benutzer nach E-Mail, Name oder ID.",
+      "cardTitle": "Benutzer finden",
+      "formLabel": "Suchanfrage",
+      "placeholder": "Name, E-Mail oder UID eingeben",
+      "searchButton": "Suchen",
+      "noResults": "Keine Benutzer gefunden."
+    },
+    "accessDenied": {
+      "title": "Zugriff verweigert",
+      "description": "Sie haben keine Administratorrechte für diese Seite.",
+      "backToDashboard": "Zurück zum Dashboard"
+    },
+    "userInfoCard": {
+      "userId": "Benutzer-ID",
+      "role": "Rolle",
+      "joined": "Beigetreten",
+      "lastLogin": "Letzter Login",
+      "statsAnswered": "Beantwortet",
+      "statsAccuracy": "Genauigkeit",
+      "subscription": "Abonnement",
+      "expires": "Läuft ab",
+      "notificationsSent": "Benachrichtigungen",
+      "issuesReported": "Meldungen",
+      "statusValues": {
+        "approved": "Genehmigt",
+        "pending": "Ausstehend",
+        "rejected": "Abgelehnt"
+      }
+    },
+    "activeUsers": {
+      "title": "Aktive Benutzer",
+      "description": "Liste aller registrierten Benutzer und Statistiken.",
+      "refreshButton": "Aktualisieren",
+      "loadingStats": "Statistiken laden...",
+      "noUsersTitle": "Keine Benutzer",
+      "noUsersDesc": "Keine aktiven Benutzer gefunden.",
+      "actions": {
+        "notifications": "Nachrichten ({{count}})",
+        "notify": "Benachrichtigen",
+        "subscription": "Plan",
+        "resetStats": "Stats zurücksetzen",
+        "deleteData": "Daten löschen"
+      },
+      "dialogs": {
+        "resetTitle": "Statistiken zurücksetzen?",
+        "resetDescription": "Dies löscht den Fortschritt für {{name}}. Kann nicht rückgängig gemacht werden.",
+        "resetConfirm": "Zurücksetzen",
+        "deleteTitle": "Firestore-Daten löschen?",
+        "deleteDescription": "Dies löscht permanent die Daten von {{name}}.",
+        "deleteConfirm": "Löschen",
+        "subscriptionTitle": "Abo aktualisieren",
+        "subscriptionDescription": "Zugangsebene für {{name}} ändern.",
+        "subscriptionLabel": "Abo-Level",
+        "subscriptionPlaceholder": "Level wählen",
+        "subscriptionConfirm": "Aktualisieren"
+      }
+    },
+    "pendingUsers": {
+      "description": "Prüfen Sie neue Benutzerregistrierungen.",
+      "loadingUsers": "Ausstehende Benutzer laden...",
+      "noPendingTitle": "Keine ausstehenden Benutzer",
+      "noPendingDesc": "Alle Registrierungen wurden bearbeitet.",
+      "approveButton": "Genehmigen",
+      "refreshButton": "Aktualisieren",
+      "approveSuccessTitle": "Benutzer genehmigt",
+      "approveSuccessDesc": "Benutzer {{email}} kann sich jetzt anmelden.",
+      "approveErrorDesc": "Fehler bei Genehmigung.",
+      "dialogs": {
+        "approveTitle": "Benutzer genehmigen?",
+        "approveDescription": "Bestätigen Sie die Genehmigung für {{email}}.",
+        "approveConfirm": "Genehmigen"
+      }
+    },
+    "reportedQuestionsPage": {
+      "description": "Von Benutzern gemeldete Probleme verwalten.",
+      "refreshButton": "Aktualisieren",
+      "loadingIssues": "Meldungen laden...",
+      "noIssuesTitle": "Alles erledigt",
+      "noIssuesDesc": "Keine aktiven Problemmeldungen gefunden.",
+      "anonymousReporter": "Anonymer Benutzer",
+      "userNotFound": "Benutzer nicht gefunden",
+      "statusUpdateSuccessTitle": "Status aktualisiert",
+      "statusUpdateSuccessDesc": "Meldung als {{status}} markiert.",
+      "statusUpdateErrorDesc": "Fehler bei Status-Update.",
+      "viewDetailsButton": "Details",
+      "archiveButton": "Archivieren",
+      "card": {
+        "descriptionSnippet": "Meldung"
+      },
+      "detailsDialog": {
+        "title": "Details der Meldung",
+        "questionIdLabel": "Frage-ID",
+        "questionStemLabel": "Fragentext",
+        "problemTypeLabel": "Problemtyp",
+        "descriptionLabel": "Kommentare",
+        "updateStatusLabel": "Status ändern",
+        "editQuestionButton": "Frage bearbeiten",
+        "notifyReporterButton": "Benutzer informieren",
+        "notifyReporterButtonAria": "{{reporterName}} informieren"
+      },
+      "statusValues": {
+        "new": "Neu",
+        "acknowledged": "Bestätigt",
+        "in-progress": "In Bearbeitung",
+        "resolved": "Gelöst",
+        "wont-fix": "Wird nicht gelöst",
+        "archived": "Archiviert"
+      },
+      "resolveDialog": {
+        "title": "Problem lösen",
+        "description": "Möchten Sie den Benutzer über die Lösung informieren?",
+        "confirmButtonYes": "Lösen & Informieren",
+        "confirmButtonNo": "Nur Lösen"
+      }
+    },
+    "reviewQuestions": {
+      "title": "Fragen prüfen",
+      "description": "Expertenvalidierung der Fragenbank.",
+      "loading": "Nächste Frage laden...",
+      "counter": "Geprüft: {{reviewed}} / Gesamt: {{total}} (Offen: {{pending}})",
+      "approveAndNextButton": "Genehmigen & Weiter",
+      "editAndNextButton": "Bearbeiten & Weiter",
+      "noMoreQuestionsTitle": "Gute Arbeit!",
+      "noMoreQuestionsDescription": "Sie haben alle verfügbaren Fragen geprüft.",
+      "refreshButton": "Aktualisieren",
+      "noSourceFound": "Keine Quellenangabe für diese Frage gefunden.",
+      "noExplanation": "Keine Erklärung für diese Frage verfügbar.",
+      "toast": {
+        "aiFindingSource": "KI sucht nach Quelle...",
+        "aiSearchFailedTitle": "KI-Suche fehlgeschlagen",
+        "aiSearchFailedDescription": "Automatische Quellensuche war erfolglos."
+      }
+    },
+    "reviewedReport": {
+      "title": "Reviewer-Leistung",
+      "description": "Statistiken über geprüfte und bearbeitete Fragen.",
+      "tableTitle": "Reviewer-Rangliste",
+      "tableDescription": "Aktivitätsübersicht aller Administratoren.",
+      "noReviewersTitle": "Keine Daten",
+      "noDataDescription": "Bisher keine Prüfaktivität aufgezeichnet.",
+      "table": {
+        "name": "Prüfer",
+        "subscription": "Level",
+        "reviewed": "Geprüft",
+        "edited": "Bearbeitet"
+      }
+    },
+    "enrichQuestions": {
+      "title": "KI-Inhaltsanreicherung",
+      "description": "Wissenschaftliche Quellen automatisch mit GenAI finden.",
+      "statsTitle": "Fortschritt",
+      "enrichedLabel": "Angereichert",
+      "unrichedLabel": "Offen",
+      "startAutoButton": "Batch-Prozess starten",
+      "stopAutoButton": "Prozess stoppen",
+      "autoRunningStatus": "KI arbeitet...",
+      "noMoreToEnrich": "Alle Fragen haben Quellen!",
+      "sessionUpdatedLabel": "Batch abgeschlossen",
+      "sessionUpdatedCount": "{{count}} Fragen in diesem Durchlauf aktualisiert."
+    },
+    "nascetCalculator": {
+      "title": "NASCET-Score",
+      "context": "Formel des North American Symptomatic Carotid Endarterectomy Trial.",
+      "formTitle": "Berechnung",
+      "narrowestDiameterLabel": "Stenose-Durchmesser (mm)",
+      "normalDiameterLabel": "Distaler normaler Durchmesser (mm)",
+      "calculateButton": "Berechnen %",
+      "resultTitle": "Ergebnis",
+      "stenosisLabel": "Stenosegrad",
+      "example": "Stenose (%) = (1 - [Stenose / Normal]) x 100",
+      "validation": {
+        "numberRequired": "Gültige Zahl eingeben.",
+        "positiveRequired": "Muss größer als 0 sein.",
+        "notZero": "Darf nicht Null sein."
+      }
+    },
+    "sendNotification": {
+      "title": "Direktnachricht",
+      "description": "Individuelle Benachrichtigung an Benutzer senden.",
+      "formTitle": "Nachricht verfassen",
+      "userIdLabel": "Benutzer-ID",
+      "userIdPlaceholder": "UID eingeben",
+      "titleLabel": "Betreff",
+      "titlePlaceholder": "Titel der Nachricht",
+      "messageLabel": "Inhalt",
+      "messagePlaceholder": "Vollständiger Nachrichtentext",
+      "typeLabel": "Kategorie",
+      "typePlaceholder": "Typ wählen",
+      "iconLabel": "Icon",
+      "iconPlaceholder": "Icon wählen",
+      "linkLabel": "Aktions-Link (Optional)",
+      "linkPlaceholder": "https://...",
+      "sendButton": "Nachricht senden",
+      "fetchingEmail": "Benutzer wird verifiziert...",
+      "userNotFound": "Benutzer nicht gefunden.",
+      "userNotFoundSendAttempt": "Zuerst einen gültigen Benutzer wählen.",
+      "searchByNameButton": "Nach Namen suchen",
+      "searchDialog": {
+        "title": "Benutzer nach Namen finden",
+        "description": "Suchen Sie nach Namen oder E-Mail, um die UID zu erhalten.",
+        "inputPlaceholder": "Name oder E-Mail eingeben...",
+        "noResults": "Keine passenden Benutzer gefunden.",
+        "selectButton": "Auswählen"
+      },
+      "notificationTypes": {
+        "adminMessage": "Admin-Nachricht",
+        "newFeature": "Neues Feature",
+        "systemAlert": "Systemalarm",
+        "issueReportUpdate": "Meldungs-Update"
+      },
+      "toast": {
+        "sendSuccessTitle": "Gesendet",
+        "sendSuccessDesc": "Nachricht an {{userId}} zugestellt.",
+        "sendErrorDescGeneric": "Zustellung fehlgeschlagen."
+      }
+    },
+    "sentNotifications": {
+      "title": "Gesendete Nachrichten",
+      "description": "Protokoll aller ausgehenden Systemnachrichten.",
+      "refreshButton": "Aktualisieren",
+      "noNotificationsTitle": "Leeres Protokoll",
+      "noNotificationsDesc": "Es wurden noch keine Nachrichten gesendet.",
+      "archiveButton": "Archivieren",
+      "archiveDialog": {
+        "title": "Nachricht archivieren?",
+        "description": "Entfernt die Nachricht aus dem globalen Protokoll.",
+        "confirmButton": "Archivieren"
+      }
+    },
+    "userNotificationsHistory": {
+      "title": "Benutzerverlauf",
+      "description": "Alle an diesen Benutzer gesendeten Nachrichten.",
+      "backToSentNotifications": "Zurück zum Verlauf",
+      "sendNewButton": "Neue Nachricht",
+      "sentLabel": "Gesendet: ",
+      "noNotifications": "Keine Nachrichten für diesen Benutzer."
+    },
+    "usersBySubscription": {
+      "title": "Abonnement-Gruppen",
+      "description": "Benutzer nach Zugangsebene filtern.",
+      "selectLabel": "Plan",
+      "selectPlaceholder": "Plan wählen",
+      "noUsersTitle": "Keine Treffer",
+      "noUsersDesc": "Keine Benutzer mit Plan gefunden: {{level}}",
+      "actions": {
+        "notify": "Nachricht"
+      }
+    },
+    "ecmit": {
+      "title": "ECMIT-Portal",
+      "description": "Materialien für den European Course in Minimally Invasive Neurological Therapy.",
+      "cardTitle": "Zugang zur Registrierung",
+      "p1": "Teilen Sie dies mit den Kursteilnehmern.",
+      "p2": "Zugangscode: ECMINT25",
+      "p3": "Scannen zum Registrieren:",
+      "p4": "Direktlink:",
+      "p6": "Exklusiver Zugang bereitgestellt von NeuroRadX."
+    },
+    "evaluatorsPage": {
+      "title": "Prüfer-Portal",
+      "description": "Spezialisten zur Validierung von Inhalten einladen.",
+      "cardTitle": "Prüfer-Zugang",
+      "p1": "Registrierungsportal für Experten.",
+      "p2": "Einladungscode: EV25RMK",
+      "p3": "Scannen zum Beitreten:",
+      "p4": "Registrierungslink:",
+      "p6": "Qualitätssicherungsportal."
+    },
+    "editQuestion": {
+      "description": "Frage nach ID suchen, um Inhalt oder Metadaten zu ändern.",
+      "fetchSectionTitle": "Frage finden",
+      "questionIdPlaceholder": "Frage-ID eingeben (z.B. HEAD_VASC_...)",
+      "editingTitle": "Frage bearbeiten: {{id}}",
+      "categoryLabel": "Hauptkategorie",
+      "subcategoryLabel": "Unterkategorie",
+      "imageUrlLabel": "Bild-URL",
+      "imageUrlPlaceholder": "https://...",
+      "questionStemLabel": "Fragentext (EN)",
+      "questionStemPlaceholder": "Text der Frage eingeben...",
+      "optionsLabel": "Optionen",
+      "optionPlaceholder": "Option {{index}}",
+      "correctAnswerDisplay": "Richtig: Option #{{index}}",
+      "explanationLabel": "Erklärung",
+      "explanationPlaceholder": "Warum diese Option richtig ist...",
+      "saveButton": "Änderungen speichern",
+      "deleteButton": "Frage löschen",
+      "scientificArticleTitle": "Zugehöriger wissenschaftlicher Artikel",
+      "articleReference": "AMA-Referenz",
+      "findArticleButton": "Mit KI finden",
+      "toast": {
+        "fetchSuccessTitle": "Frage geladen",
+        "fetchSuccessDesc": "ID: {{id}} ist bereit zur Bearbeitung.",
+        "saveSuccessTitle": "Erfolgreich gespeichert",
+        "saveSuccessDesc": "Frage {{id}} wurde aktualisiert.",
+        "deleteSuccessTitle": "Gelöscht",
+        "deleteSuccessDesc": "Frage wurde entfernt."
+      },
+      "validation": {
+        "categoryRequired": "Kategorie ist erforderlich.",
+        "difficultyRequired": "Schwierigkeitsgrad ist erforderlich.",
+        "questionTextRequired": "Fragentext ist erforderlich.",
+        "optionTextRequired": "Optionstext darf nicht leer sein.",
+        "atLeastOneOption": "Mindestens eine Option erforderlich."
+      }
+    }
+  },
+  "studyMode": {
+    "categoryLabel": "Kategorie",
+    "subcategoryLabel": "Unterkategorie",
+    "difficultyLabel": "Schwierigkeit",
+    "allCategories": "Alle Kategorien",
+    "allSubcategories": "Alle Unterkategorien",
+    "selectCategoryPlaceholder": "Kategorie wählen",
+    "selectSubcategoryPlaceholder": "Unterkategorie wählen",
+    "selectDifficultyPlaceholder": "Schwierigkeit wählen",
+    "numQuestionsLabel": "Anzahl der Fragen",
+    "startSessionButton": "{{mode}}-Sitzung starten",
+    "nextQuestionButton": "Nächste Frage",
+    "previousButton": "Zurück",
+    "finishSessionButton": "Sitzung beenden",
+    "correctTitle": "Richtig!",
+    "incorrectTitle": "Falsch",
+    "explanationTitle": "Erklärung",
+    "correctDefaultExplanation": "Gute Arbeit! Du hast die richtige Antwort gefunden.",
+    "incorrectDefaultExplanation": "Nicht ganz. Schau dir die Erklärung unten an.",
+    "myNotesTitle": "Meine Notizen",
+    "notesPlaceholder": "Persönliche Notizen hinzufügen...",
+    "saveNotesButton": "Notiz speichern",
+    "questionProgress": "Frage {{current}} von {{total}}",
+    "timeLabel": "Zeit",
+    "quitExamButton": "Prüfung verlassen",
+    "showAnswerButton": "Antwort zeigen",
+    "didYouKnowThis": "Wussten Sie das?",
+    "didNotKnowButton": "Noch lernen",
+    "knewItButton": "Ich wusste es!",
+    "nextCardButton": "Nächste Karte",
+    "addBookmarkAria": "Zu Lesezeichen hinzufügen",
+    "removeBookmarkAria": "Aus Lesezeichen entfernen",
+    "addBookmarkTitle": "Diese Frage markieren",
+    "removeBookmarkTitle": "Lesezeichen entfernen",
+    "reportIssueAria": "Problem melden",
+    "reportIssueTitle": "Problem mit dieser Frage melden",
+    "correctAnswerOption": "Richtige Antwort",
+    "backToDashboard": "Zurück zum Dashboard",
+    "reviewMistakes": {
+      "title": "Fehler überprüfen",
+      "description": "Konzentrieren Sie sich auf Fragen, die Sie zuvor falsch beantwortet haben.",
+      "buttonText": "Wiederholung starten",
+      "noMistakesDescription": "Super! Sie haben keine falschen Fragen zum Überprüfen."
+    },
+    "trialMessage": {
+      "title": "Testmodus",
+      "description": "Sie haben noch {{remaining}} Fragen in Ihrer Testphase.",
+      "noQuestionsLeft": "Testlimit erreicht.",
+      "upgradeLink": "Jetzt upgraden für unbegrenzten Zugang.",
+      "noQuestionsLeftLong": "Sie haben das Testlimit von 50 Fragen erreicht."
+    },
+    "sourceFilter": {
+      "ecmintCoursesTitle": "ECMINT-Kursfilter",
+      "description": "Fragen nach spezifischen ECMINT-Kursen filtern.",
+      "chooseCourseLabel": "Kurs wählen",
+      "courseNone": "Kein Kursfilter",
+      "course61": "ECMINT 6.1",
+      "ecmintDayLabel": "Veranstaltungstag wählen",
+      "ecmintDayPlaceholder": "Tag wählen...",
+      "ecmintDayNone": "Alle Tage",
+      "ecmintScientificArticles": "Wissenschaftliche Artikel",
+      "ecmintFirstDay": "Erster Tag",
+      "ecmintSecondDay": "Zweiter Tag",
+      "ecmintThirdDay": "Dritter Tag"
+    },
+    "categoryOther": "Allgemein / Sonstiges"
+  },
+  "registrationForm": {
+    "title": "Konto erstellen",
+    "description": "Starten Sie heute Ihre spezialisierte neuroradiologische Reise.",
+    "firstNameLabel": "Vorname",
+    "firstNamePlaceholder": "Max",
+    "lastNameLabel": "Nachname",
+    "lastNamePlaceholder": "Mustermann",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "max.mustermann@beispiel.de",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Wählen Sie ein starkes Passwort",
+    "confirmPasswordLabel": "Passwort bestätigen",
+    "confirmPasswordPlaceholder": "Passwort wiederholen",
+    "submitButton": "Registrieren",
+    "loginLink": "Bereits ein Konto? Anmelden",
+    "agreeTo": "Mit der Registrierung akzeptieren Sie unsere",
+    "termsOfUse": "Nutzungsbedingungen",
+    "andPrivacyPolicy": "und",
+    "privacyPolicy": "Datenschutzerklärung",
+    "trialInfoTitle": "Testzugang",
+    "trialInfoDescription": "Neue Konten starten mit einer 30-tägigen Testphase inkl. 50 Fragen.",
+    "errorTitle": "Registrierung fehlgeschlagen",
+    "errorEmailInUse": "Diese E-Mail ist bereits registriert.",
+    "errorWeakPassword": "Das Passwort ist zu schwach.",
+    "errorTooManyRequests": "Zu viele Versuche. Bitte später versuchen.",
+    "errorGenericWithMessage": "Registrierungsfehler: {{message}}",
+    "couponLabel": "Gutscheincode (Optional)",
+    "couponPlaceholder": "Code eingeben"
+  },
+  "loginForm": {
+    "title": "Willkommen zurück",
+    "description": "Melden Sie sich an, um fortzufahren.",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "max.mustermann@beispiel.de",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Geben Sie Ihr Passwort ein",
+    "submitButton": "Anmelden",
+    "registerLink": "Kein Konto? Kostenlos registrieren",
+    "forgotPasswordLink": "Passwort vergessen?",
+    "errorTitle": "Anmeldung fehlgeschlagen",
+    "errorInvalidCredentials": "Ungültige E-Mail oder Passwort.",
+    "errorUnexpected": "Unerwarteter Fehler. Bitte erneut versuchen."
+  },
+  "validation": {
+    "emailInvalid": "Ungültige E-Mail-Adresse.",
+    "passwordRequired": "Passwort ist erforderlich.",
+    "passwordMinLength": "Passwort muss mind. 6 Zeichen lang sein.",
+    "firstNameRequired": "Vorname ist erforderlich.",
+    "firstNameMinLength": "Vorname muss mind. 2 Zeichen lang sein.",
+    "lastNameRequired": "Nachname ist erforderlich.",
+    "lastNameMinLength": "Nachname muss mind. 2 Zeichen lang sein.",
+    "passwordsDontMatch": "Passwörter stimmen nicht überein."
+  },
+  "toast": {
+    "errorTitle": "Fehler",
+    "saveFailedTitle": "Speichern fehlgeschlagen",
+    "saveFailedDesc": "Änderungen konnten nicht gespeichert werden.",
+    "loginSuccessTitle": "Willkommen!",
+    "loginSuccessDescription": "Anmeldung erfolgreich.",
+    "newNotificationsTitle": "Neue Benachrichtigungen",
+    "newNotificationsDescription": "Du hast ungelesene Nachrichten.",
+    "newNotificationsAction": "Ansehen",
+    "bookmarkRemovedTitle": "Lesezeichen entfernt",
+    "bookmarkRemovedDescription": "Frage aus Lesezeichen entfernt.",
+    "bookmarkError": "Lesezeichen konnte nicht aktualisiert werden.",
+    "loginRequiredTitle": "Anmeldung erforderlich",
+    "loginRequiredBookmarks": "Anmelden, um Lesezeichen zu setzen.",
+    "loginRequiredNotes": "Anmelden, um Notizen zu speichern.",
+    "notesSavedTitle": "Notizen gespeichert",
+    "notesSavedDescription": "Deine Notizen wurden aktualisiert.",
+    "notesError": "Notizen konnten nicht gespeichert werden.",
+    "noteDeletedTitle": "Notiz gelöscht",
+    "noteDeletedDescription": "Deine Notiz wurde entfernt.",
+    "profileSavedSuccessTitle": "Profil aktualisiert",
+    "profileSavedSuccessDescription": "Deine Daten wurden gespeichert.",
+    "accountDeletedSuccessTitle": "Konto gelöscht",
+    "accountDeletedSuccessDescription": "Dein Konto und deine Daten wurden entfernt.",
+    "accountDeleteErrorTitle": "Löschen fehlgeschlagen",
+    "accountDeleteErrorDescription": "Fehler: {{error}}",
+    "reauthNeededTitle": "Erneute Authentifizierung erforderlich",
+    "reauthNeededDescriptionDelete": "Passwort bestätigen, um Konto zu löschen.",
+    "invalidConfirmationTextDescriptionDelete": "Ungültiger Bestätigungstext.",
+    "statsResetSuccessTitle": "Statistiken zurückgesetzt",
+    "statsResetSuccessDesc": "Dein Fortschritt wurde gelöscht.",
+    "statsResetErrorTitle": "Zurücksetzen fehlgeschlagen",
+    "statsResetErrorDesc": "Fehler: {{error}}",
+    "statsResetErrorUserNotAuth": "Anmeldung erforderlich für diese Aktion.",
+    "statsResetInvalidConfirmationDesc": "Ungültiger Bestätigungstext.",
+    "registrationAlmostCompleteTitle": "E-Mail prüfen",
+    "registrationAlmostCompleteDescription": "Verifizierungslink gesendet. Bitte E-Mail vor dem Login bestätigen."
+  },
+  "shareDialog": {
+    "title": "NeuroRadX teilen",
+    "description": "Sagen Sie es weiter! Teilen Sie NeuroRadX mit Kollegen und Freunden.",
+    "copyButtonText": "Link kopieren",
+    "copiedSuccessTitle": "Link kopiert!",
+    "copiedSuccessDescription": "Der Link wurde in die Zwischenablage kopiert.",
+    "copiedErrorTitle": "Kopieren fehlgeschlagen",
+    "copiedErrorDescription": "Konnte Link nicht kopieren. Bitte manuell versuchen.",
+    "qrCodeLabel": "Oder diesen Code scannen:"
+  },
+  "common": {
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "difficulty": "Schwierigkeit",
+    "difficultyLabelWithColon": "Schwierigkeit: {{difficulty}}",
+    "imageFor": "Diagnostisches Bild für {{topic}}",
+    "notAvailable": "n.v.",
+    "sourceLabel": "Quelle",
+    "searchOnWeb": "Im Web suchen",
+    "explanationTitle": "Erklärung",
+    "close": "Schließen",
+    "note": "Hinweis",
+    "approxQuestionsForFilterCombination": "~{{count}} Fragen verfügbar für {{path}}"
+  },
+  "userNav": {
+    "logIn": "Anmelden",
+    "register": "Registrieren",
+    "logOut": "Abmelden",
+    "settings": "Einstellungen",
+    "guestUser": "Gastbenutzer"
+  },
+  "difficulty": {
+    "all": "Alle Schwierigkeiten",
+    "easy": "Einfach",
+    "medium": "Mittel",
+    "advanced": "Fortgeschritten"
+  },
+  "topics": {
+    "head": "Kopf",
+    "spine": "Wirbelsäule",
+    "neck": "Hals",
+    "general": "Allgemein",
+    "other": "Sonstiges"
+  },
+  "subtopics": {
+    "anatomy": "Anatomie",
+    "cranialnerves": "Hirnnerven",
+    "geneticdevmetabolic": "Genetisch, Entwicklungsbedingt & Metabolisch",
+    "infectionandinflammation": "Infektion & Entzündung",
+    "neurodegendementiademyelinating": "Neurodegenerativ, Demenz & Demyelinisierend",
+    "neuroimaging": "Neuroimaging",
+    "orbitandeye": "Orbita & Auge",
+    "other": "Sonstiges",
+    "trauma": "Trauma",
+    "tumors": "Tumore",
+    "vascular": "Vaskulär",
+    "treatmentmanagement": "Behandlung & Management",
+    "anatomyregions": "Anatomie & Regionen",
+    "imagingmodalitiesfeatures": "Bildgebungsmodalitäten",
+    "pathologiesconditions": "Pathologien",
+    "neoplasmstranslated": "Neoplasien & Tumore",
+    "clinicalpresentationsymptoms": "Klinische Präsentation",
+    "clinicalassessment": "Klinische Beurteilung",
+    "interventionalprocedures": "Interventionelle Verfahren",
+    "pathophysiology": "Pathophysiologie",
+    "pharmacology": "Pharmakologie",
+    "oraloropharynx": "Mundhöhle & Oropharynx",
+    "nasalsinus": "Nase & Nebenhöhlen",
+    "senseheadneckreg": "Sinne & Kopf/Hals-Regionen",
+    "glandlymphatic": "Drüsen & Lymphsystem",
+    "genmuscstruct": "Allgemeiner Bewegungsapparat",
+    "headneckcns": "Kopf, Hals & ZNS",
+    "trunkandviscera": "Rumpf & Eingeweide"
+  },
+  "nascetDetails": {
+    "lowGrade": { "title": "Milde Stenose (<50%)" },
+    "moderateGrade": { "title": "Moderate Stenose (50-69%)" },
+    "highGrade": { "title": "Schwere Stenose (70-99%)" },
+    "totalOcclusion": { "title": "Totalverschluss (100%)" },
+    "common": {
+      "definitionTitle": "Definition",
+      "imagingTitle": "Bildgebungsbefunde",
+      "implicationSymptomaticTitle": "Klinische Implikation (Symptomatisch)",
+      "implicationAsymptomaticTitle": "Klinische Implikation (Asymptomatisch)",
+      "implicationTitle": "Klinische Implikation"
+    }
+  },
+  "languageSwitcher": {
+    "selectLanguageAriaLabel": "Sprache auswählen"
+  }
+}

@@ -1,0 +1,61 @@
+
+{
+  "categories": {
+    "field": "main_localization",
+    "values": {
+      "Head": {
+        "subcategories": {
+          "field": "sub_main_location",
+          "values": [
+            "Tumors",
+            "NeurodegenDementiaDemyelinating",
+            "Other",
+            "Trauma",
+            "GeneticDevMetabolic",
+            "Anatomy",
+            "InfectionandInflammation",
+            "Vascular",
+            "CranialNerves",
+            "Neuroimaging",
+            "OrbitandEye"
+          ]
+        }
+      },
+      "Spine": {
+        "subcategories": {
+          "field": "sub_main_location",
+          "values": [
+            "AnatomyRegions",
+            "TreatmentManagement",
+            "ImagingModalitiesFeatures",
+            "PathologiesConditions",
+            "NeoplasmsTumors",
+            "ClinicalPresentationSymptoms"
+          ]
+        }
+      },
+      "Neck": {
+        "subcategories": {
+          "field": "sub_main_location",
+          "values": [
+            "OralOropharynx",
+            "NasalSinus",
+            "SenseHeadNeckReg",
+            "GlandLymphatic",
+            "Other"
+          ]
+        }
+      },
+      "General": {
+        "subcategories": {
+          "field": "sub_main_location",
+          "values": [
+            "GenMuscStruct",
+            "HeadNeckCNS",
+            "TrunkAndViscera"
+          ]
+        }
+      }
+    }
+  }
+}

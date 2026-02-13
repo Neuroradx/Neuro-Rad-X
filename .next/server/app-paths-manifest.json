@@ -1,0 +1,10 @@
+{
+  "/api/bundles/[category]/route": "app/api/bundles/[category]/route.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/study/[mode]/page": "app/study/[mode]/page.js",
+  "/progress/page": "app/progress/page.js",
+  "/bookmarks/page": "app/bookmarks/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/my-notes/page": "app/my-notes/page.js",
+  "/admin/edit-question/page": "app/admin/edit-question/page.js"
+}

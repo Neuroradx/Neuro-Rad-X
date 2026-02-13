@@ -1,0 +1,138 @@
+
+{
+  "questions_collection": {
+    "description": "This structure describes a single document within the 'questions' collection.",
+    "documentIdFormat": "questionId (string, custom format, e.g., 'CATEGORY_SUBCAT_DIFF_TIMESTAMP')",
+    "fields": {
+      "main_localization": {
+        "type": "string",
+        "description": "Primary anatomical category (e.g., 'Head', 'Spine'). Used for main filtering.",
+        "example": "Head"
+      },
+      "sub_main_location": {
+        "type": "string",
+        "optional": true,
+        "description": "Secondary or more specific category (e.g., 'Tumors', 'Vascular'). Used for sub-filtering.",
+        "example": "Vascular"
+      },
+      "difficulty": {
+        "type": "string",
+        "description": "Difficulty level of the question.",
+        "enumValues": ["Easy", "Medium", "Advanced"],
+        "example": "Medium"
+      },
+      "type": {
+        "type": "string",
+        "description": "Type of question, most commonly 'Multiple Choice'.",
+        "example": "Multiple Choice"
+      },
+      "imageUrl": {
+        "type": "string",
+        "optional": true,
+        "description": "URL of an image associated with the question, hosted on Firebase Storage or elsewhere."
+      },
+      "correctAnswerIndex": {
+        "type": "number",
+        "description": "Zero-based index of the correct option within the 'translations.en.options' array. This is considered the canonical index for answer correctness."
+      },
+       "scientificArticle": {
+        "type": "object",
+        "description": "Reference details for an associated scientific article.",
+        "fields": {
+          "article_reference": {
+            "type": "string",
+            "description": "AMA style reference of the complete PDF document.",
+            "example": "Author, A. A. (Year). Title of article. *Title of Periodical, volume*(issue), pages."
+          }
+        }
+      },
+      "translations": {
+        "type": "object",
+        "description": "Contains translations for question text, options, and explanation in different languages.",
+        "fields": {
+          "en": {
+            "type": "object",
+            "description": "English language content for the question.",
+            "fields": {
+              "questionText": {
+                "type": "string",
+                "description": "The main text/stem of the question in English."
+              },
+              "options": {
+                "type": "array",
+                "description": "Array of answer options in English.",
+                "itemSchema": {
+                  "type": "object",
+                  "fields": {
+                    "text": {
+                      "type": "string",
+                      "description": "Text of the answer option."
+                    }
+                  }
+                }
+              },
+              "explanation": {
+                "type": "string",
+                "optional": true,
+                "description": "Explanation for the correct answer in English."
+              }
+            }
+          },
+          "de": {
+            "type": "object",
+            "description": "German language content for the question.",
+            "fields": {
+              "questionText": {
+                "type": "string"
+              },
+              "options": {
+                "type": "array",
+                "itemSchema": {
+                  "type": "object",
+                  "fields": {
+                    "text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "explanation": {
+                "type": "string",
+                "optional": true
+              }
+            }
+          },
+          "es": {
+            "type": "object",
+            "description": "Spanish language content for the question.",
+            "fields": {
+              "questionText": {
+                "type": "string"
+              },
+              "options": {
+                "type": "array",
+                "itemSchema": {
+                  "type": "object",
+                  "fields": {
+                    "text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "explanation": {
+                "type": "string",
+                "optional": true
+              }
+            }
+          }
+        }
+      },
+      "lastUpdatedAt": {
+        "type": "timestamp",
+        "optional": true,
+        "description": "Firestore server timestamp indicating when the question was last updated by an admin."
+      }
+    }
+  }
+}

@@ -1,0 +1,473 @@
+
+{
+  "users": {
+    "description": "Top-level collection storing user profile information and linking to user-specific subcollections.",
+    "documentIdFormat": "userId (string, typically Firebase Auth UID)",
+    "fields": {
+      "uid": {
+        "type": "string",
+        "description": "User's Firebase Authentication UID. Same as the document ID.",
+        "example": "gr2M7aa1muUiFx8uwFPhLQqKprO2"
+      },
+      "firstName": {
+        "type": "string",
+        "description": "User's first name.",
+        "example": "John"
+      },
+      "lastName": {
+        "type": "string",
+        "description": "User's last name.",
+        "example": "Doe"
+      },
+      "displayName": {
+        "type": "string",
+        "description": "User's full name, typically concatenation of firstName and lastName.",
+        "example": "John Doe"
+      },
+      "email": {
+        "type": "string",
+        "description": "User's email address (must be verified for login).",
+        "example": "john.doe@example.com"
+      },
+      "status": {
+        "type": "string",
+        "description": "Account status for approval workflow.",
+        "enumValues": ["pending", "approved", "rejected"],
+        "example": "approved"
+      },
+      "role": {
+        "type": "string",
+        "description": "User's role within the application.",
+        "enumValues": ["user", "admin", "tester"],
+        "example": "user"
+      },
+      "createdAt": {
+        "type": "timestamp",
+        "description": "Firestore server timestamp indicating when the user document was created."
+      },
+      "country": {
+        "type": "string",
+        "optional": true,
+        "description": "User's selected country.",
+        "example": "Germany"
+      },
+      "institution": {
+        "type": "string",
+        "optional": true,
+        "description": "User's affiliated institution.",
+        "example": "University Hospital"
+      },
+      "avatarUrl": {
+        "type": "string",
+        "optional": true,
+        "description": "URL to the user's avatar image.",
+        "example": "https://firebasestorage.googleapis.com/..."
+      },
+      "userDeclaredSpecialization": {
+        "type": "string",
+        "optional": true,
+        "description": "User's self-declared specialization level (e.g., student, resident, specialist).",
+        "example": "resident"
+      },
+      "profession": {
+        "type": "string",
+        "optional": true,
+        "description": "User's profession (e.g., radiologist, neurologist).",
+        "example": "neuroradiologist"
+      },
+      "totalQuestionsAnsweredAllTime": {
+        "type": "number",
+        "optional": true,
+        "description": "Denormalized count of total questions answered by the user across all sessions.",
+        "example": 150
+      },
+      "totalCorrectAnswersAllTime": {
+        "type": "number",
+        "optional": true,
+        "description": "Denormalized count of total correct answers by the user across all sessions.",
+        "example": 120
+      },
+      "subscriptionLevel": {
+        "type": "string",
+        "description": "User's subscription level (placeholder, not fully implemented).",
+        "enumValues": ["free", "basic", "premium"],
+        "example": "free"
+      }
+    },
+    "subcollections": {
+      "quiz_sessions": {
+        "description": "Stores records of each quiz/study session taken by the user.",
+        "documentIdFormat": "sessionId (auto-generated string)",
+        "fields": {
+          "userId": {
+            "type": "string",
+            "description": "UID of the user who took the quiz. Matches parent document ID."
+          },
+          "quizDate": {
+            "type": "timestamp",
+            "description": "Date and time the quiz session was completed/saved."
+          },
+          "quizConfig": {
+            "type": "object",
+            "description": "Configuration settings for the quiz session.",
+            "fields": {
+              "difficulty": {"type": "string", "example": "Easy"},
+              "mainLocalization": {"type": "string", "example": "Head"},
+              "subMainLocalization": {"type": "string", "example": "Tumors"},
+              "numberOfQuestions": {"type": "number", "example": 10},
+              "mode": {"type": "string", "enumValues": ["tutor", "exam", "flashcards"], "example": "exam"}
+            }
+          },
+          "score": {
+            "type": "number",
+            "description": "Percentage score (0-100).",
+            "example": 80
+          },
+          "correctAnswers": {
+            "type": "number",
+            "description": "Number of correctly answered questions.",
+            "example": 8
+          },
+          "incorrectAnswers": {
+            "type": "number",
+            "optional": true,
+            "description": "Number of incorrectly answered questions.",
+            "example": 2
+          },
+          "actualNumberOfQuestions": {
+            "type": "number",
+            "description": "Number of questions actually presented in the session.",
+            "example": 10
+          },
+          "questionsAttempted": {
+            "type": "array",
+            "description": "Array of objects detailing each question attempted in the session.",
+            "itemSchema": {
+              "type": "object",
+              "fields": {
+                "questionId": {"type": "string"},
+                "answeredCorrectly": {"type": "boolean"},
+                "selectedOptionIndex": {"type": "number", "optional": true}
+              }
+            }
+          }
+        }
+      },
+      "userQuestions": {
+        "description": "Tracks user interaction and state with individual questions.",
+        "documentIdFormat": "questionId (string, ID of a question from the 'questions' collection)",
+        "fields": {
+          "questionId": {
+            "type": "string",
+            "description": "ID of the question. Same as the document ID."
+          },
+          "seenCount": {
+            "type": "number",
+            "description": "How many times the user has seen this question."
+          },
+          "lastSeen": {
+            "type": "timestamp",
+            "description": "Timestamp of when the user last saw this question."
+          },
+          "correctCount": {
+            "type": "number",
+            "optional": true,
+            "description": "How many times the user answered this question correctly."
+          },
+          "incorrectCount": {
+            "type": "number",
+            "optional": true,
+            "description": "How many times the user answered this question incorrectly."
+          },
+          "isMastered": {
+            "type": "boolean",
+            "optional": true,
+            "description": "Flag indicating if the user has 'mastered' this question (app-defined logic)."
+          }
+        }
+      },
+      "seenFacts": {
+        "description": "Tracks which daily facts the user has seen to avoid repetition.",
+        "documentIdFormat": "factId (string, ID of a fact from the 'dailyFacts' collection)",
+        "fields": {
+          "seenAt": {
+            "type": "timestamp",
+            "description": "Timestamp of when the user first saw this fact."
+          }
+        }
+      },
+      "bookmarkedQuestions": {
+        "description": "Stores questions bookmarked by the user.",
+        "documentIdFormat": "questionId (string, ID of a question from the 'questions' collection)",
+        "fields": {
+          "bookmarkedAt": {
+            "type": "timestamp",
+            "description": "Timestamp of when the question was bookmarked."
+          }
+        }
+      },
+      "questionNotes": {
+        "description": "Stores user's personal notes for specific questions.",
+        "documentIdFormat": "questionId (string, ID of a question from the 'questions' collection)",
+        "fields": {
+          "notes": {
+            "type": "string",
+            "description": "The user's notes for the question."
+          },
+          "updatedAt": {
+            "type": "timestamp",
+            "description": "Timestamp of when the notes were last updated."
+          }
+        }
+      }
+    }
+  },
+  "notifications": {
+    "description": "Top-level collection storing notifications for users. Notifications are targeted to specific users via the 'userId' field.",
+    "documentIdFormat": "notificationId (auto-generated string by Firestore)",
+    "fields": {
+        "userId": {
+            "type": "string",
+            "description": "UID of the user this notification is for. Allows querying notifications per user.",
+            "example": "gr2M7aa1muUiFx8uwFPhLQqKprO2"
+        },
+        "type": {
+            "type": "string",
+            "description": "Type of notification, influencing its display or action.",
+            "enumValues": ["issueReportUpdate", "adminMessage", "newFeature", "systemAlert"],
+            "example": "adminMessage"
+        },
+        "titleKey": {
+            "type": "string",
+            "description": "Translation key for the notification title (e.g., 'notifications.newFeatureTitle').",
+            "example": "notifications.adminWelcome"
+        },
+        "messageKey": {
+            "type": "string",
+            "description": "Translation key for the notification message body (e.g., 'notifications.newFeatureBody').",
+            "example": "notifications.adminWelcomeBody"
+        },
+        "messageParams": {
+            "type": "object",
+            "optional": true,
+            "description": "Key-value pairs for dynamic interpolation into the message or title string (e.g., {'featureName': 'Dark Mode'}).",
+            "example": {"userName": "John"}
+        },
+        "relatedIssueId": {
+            "type": "string",
+            "optional": true,
+            "description": "ID of a document in the 'issueReports' collection, if this notification relates to an issue report."
+        },
+        "relatedQuestionId": {
+            "type": "string",
+            "optional": true,
+            "description": "ID of a document in the 'questions' collection, if this notification relates to a specific question."
+        },
+        "status": {
+            "type": "string",
+            "description": "Read status of the notification.",
+            "enumValues": ["unread", "read"],
+            "example": "unread"
+        },
+        "createdAt": {
+            "type": "timestamp",
+            "description": "Firestore server timestamp indicating when the notification was created."
+        },
+        "link": {
+            "type": "string",
+            "optional": true,
+            "description": "An optional URL or in-app path to navigate to when the notification is clicked.",
+            "example": "/settings"
+        },
+        "icon": {
+            "type": "string",
+            "optional": true,
+            "description": "Name of a Lucide icon (e.g., 'AlertCircle', 'Info') to display with the notification.",
+            "example": "Bell"
+        }
+    },
+    "subcollections": {}
+  },
+  "dailyFacts": {
+    "description": "Collection storing daily facts for the 'Did you know?' feature on the dashboard.",
+    "documentIdFormat": "factId (string, can be custom or auto-generated)",
+    "fields": {
+        "id": {
+            "type": "string",
+            "description": "Unique identifier for the fact, usually mirroring the document ID."
+        },
+        "category": {
+            "type": "string",
+            "description": "Category of the fact (e.g., 'General', 'Head', 'Neuroimaging').",
+            "example": "Neuroimaging"
+        },
+        "fact": {
+            "type": "object",
+            "description": "Object containing translations of the fact text.",
+            "fields": {
+                "en": {"type": "string", "description": "Fact text in English."},
+                "es": {"type": "string", "description": "Fact text in Spanish."},
+                "de": {"type": "string", "description": "Fact text in German."}
+            }
+        }
+    },
+    "subcollections": {}
+  },
+  "issueReports": {
+    "description": "Top-level collection storing reports of issues with questions or the app, submitted by users.",
+    "documentIdFormat": "reportId (auto-generated string by Firestore)",
+    "fields": {
+        "questionId": {
+            "type": "string",
+            "description": "ID of the question being reported. Links to the 'questions' collection.",
+            "example": "ANAT_NEUR_10_300525223100"
+        },
+        "questionStem": {
+            "type": "string",
+            "description": "The stem (text) of the question being reported, for context.",
+            "example": "Which cranial nerve is responsible for..."
+        },
+        "problemType": {
+            "type": "string",
+            "description": "Category of the problem reported by the user (e.g., 'Typo/Grammar', 'Incorrect Answer').",
+            "example": "Typo/Grammar"
+        },
+        "description": {
+            "type": "string",
+            "description": "Detailed description of the issue provided by the user."
+        },
+        "userProvidedEmail": {
+            "type": "string",
+            "optional": true,
+            "description": "Email address voluntarily provided by the user in the report form (can differ from authenticated email or be present if user is anonymous)."
+        },
+        "userId": {
+            "type": "string",
+            "description": "UID of the user who submitted the report. Can be 'anonymous' if reported by an unauthenticated user.",
+            "example": "gr2M7aa1muUiFx8uwFPhLQqKprO2"
+        },
+        "userEmailFromAuth": {
+            "type": "string",
+            "optional": true,
+            "description": "Email of the authenticated user at the time of reporting. Can be 'anonymous' or null."
+        },
+        "reporterDisplayName": {
+            "type": "string",
+            "optional": true,
+            "description": "Display name of the authenticated user at the time of reporting."
+        },
+        "timestamp": {
+            "type": "timestamp",
+            "description": "Firestore server timestamp indicating when the report was submitted."
+        },
+        "appVersion": {
+            "type": "string",
+            "optional": true,
+            "description": "Version of the application from which the report was submitted."
+        },
+        "userAgent": {
+            "type": "string",
+            "optional": true,
+            "description": "User agent string of the reporter's browser or device, for debugging."
+        },
+        "status": {
+            "type": "string",
+            "description": "Current administrative status of the reported issue.",
+            "enumValues": ["new", "acknowledged", "in-progress", "resolved", "wont-fix", "archived"],
+            "example": "new"
+        }
+    },
+    "subcollections": {}
+  },
+  "questions": {
+    "description": "Main collection storing all the neuroradiology questions, with translations and metadata.",
+    "documentIdFormat": "questionId (string, custom format, e.g., 'CATEGORY_SUBCAT_DIFF_TIMESTAMP')",
+    "fields": {
+        "main_localization": {
+            "type": "string",
+            "description": "Primary anatomical category (e.g., 'Head', 'Spine'). Used for main filtering.",
+            "example": "Head"
+        },
+        "sub_main_location": {
+            "type": "string",
+            "optional": true,
+            "description": "Secondary or more specific category (e.g., 'Tumors', 'Vascular'). Used for sub-filtering.",
+            "example": "Vascular"
+        },
+        "difficulty": {
+            "type": "string",
+            "description": "Difficulty level of the question.",
+            "enumValues": ["Easy", "Medium", "Advanced"],
+            "example": "Medium"
+        },
+        "type": {
+            "type": "string",
+            "description": "Type of question, most commonly 'Multiple Choice'.",
+            "example": "Multiple Choice" 
+        },
+        "imageUrl": {
+            "type": "string",
+            "optional": true,
+            "description": "URL of an image associated with the question, hosted on Firebase Storage or elsewhere."
+        },
+        "correctAnswerIndex": {
+            "type": "number",
+            "description": "Zero-based index of the correct option within the 'translations.en.options' array. This is considered the canonical index for answer correctness."
+        },
+        "translations": {
+            "type": "object",
+            "description": "Contains translations for question text, options, and explanation in different languages.",
+            "fields": {
+                "en": {
+                    "type": "object",
+                    "description": "English language content for the question.",
+                    "fields": {
+                        "questionText": {"type": "string", "description": "The main text/stem of the question in English."},
+                        "options": {
+                            "type": "array",
+                            "description": "Array of answer options in English.",
+                            "itemSchema": {
+                                "type": "object",
+                                "fields": {"text": {"type": "string", "description": "Text of the answer option."}}
+                            }
+                        },
+                        "explanation": {"type": "string", "optional": true, "description": "Explanation for the correct answer in English."}
+                    }
+                },
+                "de": {
+                  "type": "object",
+                  "description": "German language content for the question.",
+                  "fields": {
+                      "questionText": {"type": "string"},
+                      "options": {
+                          "type": "array",
+                          "itemSchema": {"type": "object", "fields": {"text": {"type": "string"}}}
+                      },
+                      "explanation": {"type": "string", "optional": true}
+                  }
+                },
+                "es": {
+                  "type": "object",
+                  "description": "Spanish language content for the question.",
+                  "fields": {
+                      "questionText": {"type": "string"},
+                      "options": {
+                          "type": "array",
+                          "itemSchema": {"type": "object", "fields": {"text": {"type": "string"}}}
+                      },
+                      "explanation": {"type": "string", "optional": true}
+                  }
+                }
+            }
+        },
+        "lastUpdatedAt": {
+            "type": "timestamp",
+            "optional": true,
+            "description": "Firestore server timestamp indicating when the question was last updated by an admin."
+        }
+    },
+    "subcollections": {}
+  }
+}
+
+    

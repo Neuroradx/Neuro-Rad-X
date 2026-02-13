@@ -1,0 +1,9 @@
+{
+  "welcomeHero": {
+    "src": "https://picsum.photos/seed/neuroradx-hero/1200/600",
+    "width": 1200,
+    "height": 600,
+    "alt": "A welcoming image for the NeuroRadX application, possibly showing a modern medical or technological environment.",
+    "dataAiHint": "medical technology"
+  }
+}

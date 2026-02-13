@@ -1,0 +1,5 @@
+{
+  "error": "Error al listar modelos.",
+  "message": "genAI.listModels is not a function",
+  "details": "Asegúrese de que la \"Generative Language API\" esté habilitada en su proyecto de GCP y que la clave API sea válida."
+}

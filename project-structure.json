@@ -1,0 +1,190 @@
+
+{
+  "name": "neuro-rad-x",
+  "children": [
+    {
+      "name": ".vscode",
+      "children": [
+        { "name": "extensions.json" },
+        { "name": "settings.json" }
+      ]
+    },
+    {
+      "name": "public",
+      "children": [
+        {
+          "name": "images",
+          "children": [
+            {
+              "name": "Background",
+              "children": [
+                { "name": "neural-network-bg.jpg" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "src",
+      "children": [
+        {
+          "name": "app",
+          "children": [
+            {
+              "name": "admin",
+              "children": [
+                { "name": "active-users", "children": [{ "name": "page.tsx" }] },
+                { "name": "dashboard", "children": [{ "name": "page.tsx" }] },
+                { "name": "documents", "children": [{ "name": "page.tsx" }] },
+                { "name": "ecmit", "children": [{ "name": "page.tsx" }] },
+                { "name": "edit-question", "children": [{ "name": "page.tsx" }] },
+                { "name": "enrich-questions", "children": [{ "name": "page.tsx" }] },
+                { "name": "evaluators", "children": [{ "name": "page.tsx" }] },
+                { "name": "hemorrhage-trainer", "children": [{ "name": "page.tsx" }] },
+                { "name": "infographics", "children": [{ "name": "page.tsx" }] },
+                { "name": "nascet-score", "children": [{ "name": "page.tsx" }] },
+                { "name": "pending-users", "children": [{ "name": "page.tsx" }] },
+                { "name": "reported-questions", "children": [{ "name": "page.tsx" }] },
+                { "name": "review-questions", "children": [{ "name": "page.tsx" }] },
+                { "name": "reviewed-report", "children": [{ "name": "page.tsx" }] },
+                { "name": "search-user", "children": [{ "name": "page.tsx" }] },
+                {
+                  "name": "send-notification",
+                  "children": [
+                    { "name": "[userId]", "children": [{ "name": "client-page.tsx" }, { "name": "page.tsx" }] },
+                    { "name": "page.tsx" }
+                  ]
+                },
+                { "name": "sent-notifications", "children": [{ "name": "[userId]", "children": [{ "name": "client-page.tsx" }, { "name": "page.tsx" }] }, { "name": "page.tsx" }] },
+                { "name": "users-by-subscription", "children": [{ "name": "page.tsx" }] }
+              ]
+            },
+            {
+              "name": "auth",
+              "children": [
+                { "name": "forgot-password", "children": [{ "name": "page.tsx" }] },
+                { "name": "layout.tsx" },
+                { "name": "login", "children": [{ "name": "page.tsx" }] },
+                { "name": "pending-approval", "children": [{ "name": "page.tsx" }] },
+                { "name": "register", "children": [{ "name": "page.tsx" }] },
+                { "name": "verify-email", "children": [{ "name": "page.tsx" }] }
+              ]
+            },
+            { "name": "bookmarks", "children": [{ "name": "page.tsx" }] },
+            { "name": "dashboard", "children": [{ "name": "page.tsx" }] },
+            { "name": "infographics", "children": [{ "name": "[id]", "children": [{ "name": "client-page.tsx" }, { "name": "page.tsx" }] }, { "name": "page.tsx" }] },
+            { "name": "my-notes", "children": [{ "name": "page.tsx" }] },
+            { "name": "progress", "children": [{ "name": "page.tsx" }] },
+            { "name": "questions", "children": [{ "name": "[id]", "children": [{ "name": "client-page.tsx" }, { "name": "page.tsx" }] }, { "name": "page.tsx" }] },
+            { "name": "settings", "children": [{ "name": "page.tsx" }] },
+            { "name": "study", "children": [{ "name": "[mode]", "children": [{ "name": "page.tsx" }] }] },
+            { "name": "tutor-test", "children": [{ "name": "page.tsx" }] },
+            { "name": "about", "children": [{ "name": "page.tsx" }] },
+            { "name": "globals.css" },
+            { "name": "icon.tsx" },
+            { "name": "impressum", "children": [{ "name": "page.tsx" }] },
+            { "name": "layout.tsx" },
+            { "name": "not-found.tsx" },
+            { "name": "page.tsx" },
+            { "name": "privacy-policy", "children": [{ "name": "page.tsx" }] },
+            { "name": "robots.ts" },
+            { "name": "sitemap.ts" },
+            { "name": "terms-of-use", "children": [{ "name": "page.tsx" }] },
+            { "name": "view-infographics", "children": [{ "name": "[id]", "children": [{ "name": "page.tsx" }] }] }
+          ]
+        },
+        {
+          "name": "actions",
+          "children": [
+            { "name": "email-actions.ts" },
+            { "name": "enrichment-actions.ts" },
+            { "name": "infographic-actions.ts" },
+            { "name": "notification-actions.ts" },
+            { "name": "user-data-actions.ts" }
+          ]
+        },
+        {
+          "name": "ai",
+          "children": [
+            {
+              "name": "flows",
+              "children": [
+                { "name": "find-doi-flow.ts" },
+                { "name": "find-scientific-article-flow.ts" }
+              ]
+            },
+            { "name": "available-models.json" },
+            { "name": "dev.ts" },
+            { "name": "genkit.ts" }
+          ]
+        },
+        {
+          "name": "components",
+          "children": [
+            { "name": "admin", "children": [{ "name": "UserInfoCard.tsx" }] },
+            { "name": "auth", "children": [{ "name": "login-form.tsx" }, { "name": "registration-form.tsx" }] },
+            { "name": "charts", "children": [{ "name": "LocationsBarChart.tsx" }] },
+            { "name": "common", "children": [{ "name": "NascetResultDetails.tsx" }, { "name": "about-content.tsx" }, { "name": "apply-text-size.tsx" }, { "name": "language-switcher.tsx" }, { "name": "logo.tsx" }, { "name": "share-dialog.tsx" }, { "name": "theme-toggle.tsx" }] },
+            { "name": "dashboard", "children": [{ "name": "stat-card.tsx" }] },
+            { "name": "infographics", "children": [{ "name": "AcuteIschemicStrokeInfographic.tsx" }, { "name": "BrainLesionInfographic.tsx" }, { "name": "BrainTumorsComprehensiveInfographic.tsx" }, { "name": "CerebralAmyloidAngiopathyInfographic.tsx" }, { "name": "CerebralCavernousMalformationInfographic.tsx" }, { "name": "CerebralMicrobleedsInfographic.tsx" }, { "name": "CerebralVenousSinusThrombosisInfographic.tsx" }, { "name": "IntracranialHemorrhageInfographic.tsx" }, { "name": "LimbicEncephalitisInfographic.tsx" }, { "name": "NeurocysticercosisInfographic.tsx" }, { "name": "NeuroimagingInfographic.tsx" }, { "name": "OligodendrogliomaInfographic.tsx" }, { "name": "PcnslInfographic.tsx" }, { "name": "PinealTumorsInfographic.tsx" }, { "name": "PmlInfographic.tsx" }, { "name": "PresInfographic.tsx" }, { "name": "QuantitativeAlcoholCnsInfographic.tsx" }, { "name": "SammpisTrialInfographic.tsx" }, { "name": "StrokeSubtypesInfographic.tsx" }] },
+            { "name": "layout", "children": [{ "name": "app-shell.tsx" }, { "name": "main-nav.tsx" }, { "name": "user-nav.tsx" }] },
+            { "name": "questions", "children": [{ "name": "image-display.tsx" }, { "name": "question-card.tsx" }, { "name": "question-filters.tsx" }, { "name": "report-issue-dialog.tsx" }] },
+            { "name": "settings", "children": [{ "name": "delete-account-dialog.tsx" }, { "name": "reset-statistics-dialog.tsx" }] },
+            { "name": "study", "children": [{ "name": "ExamResultsDisplay.tsx" }, { "name": "FlashcardDisplay.tsx" }, { "name": "MCQDisplay.tsx" }, { "name": "StudyModeConfigurationScreen.tsx" }] },
+            { "name": "tutor-mode", "children": [{ "name": "TutorModeSession.tsx" }] },
+            { "name": "ui", "children": [{ "name": "accordion.tsx" }, { "name": "alert-dialog.tsx" }, { "name": "alert.tsx" }, { "name": "avatar.tsx" }, { "name": "badge.tsx" }, { "name": "button.tsx" }, { "name": "calendar.tsx" }, { "name": "card.tsx" }, { "name": "chart.tsx" }, { "name": "checkbox.tsx" }, { "name": "date-picker-with-range.tsx" }, { "name": "date-picker.tsx" }, { "name": "dialog.tsx" }, { "name": "dropdown-menu.tsx" }, { "name": "form.tsx" }, { "name": "input.tsx" }, { "name": "label.tsx" }, { "name": "menubar.tsx" }, { "name": "popover.tsx" }, { "name": "progress.tsx" }, { "name": "radio-group.tsx" }, { "name": "scroll-area.tsx" }, { "name": "select.tsx" }, { "name": "separator.tsx" }, { "name": "sheet.tsx" }, { "name": "sidebar.tsx" }, { "name": "skeleton.tsx" }, { "name": "slider.tsx" }, { "name": "switch.tsx" }, { "name": "table.tsx" }, { "name": "tabs.tsx" }, { "name": "textarea.tsx" }, { "name": "toast.tsx" }, { "name": "toaster.tsx" }, { "name": "tooltip.tsx" }] }
+          ]
+        },
+        {
+          "name": "hooks",
+          "children": [
+            { "name": "use-mobile.tsx" },
+            { "name": "use-toast.ts" },
+            { "name": "use-translation.ts" }
+          ]
+        },
+        {
+          "name": "lib",
+          "children": [
+            { "name": "Courses", "children": [{ "name": "ECMINT61", "children": [{ "name": "questions.json" }] }] },
+            { "name": "firestore-structures", "children": [{ "name": "question-category-structure.json" }, { "name": "question-document-structure-course-v06.json" }, { "name": "question-document-structure.json" }, { "name": "questions_2506.json" }, { "name": "user-collection-structure.json" }] },
+            { "name": "admin-emails.json" },
+            { "name": "constants.ts" },
+            { "name": "countries.ts" },
+            { "name": "course-module-questions.json" },
+            { "name": "firebase-admin.ts" },
+            { "name": "firebase.ts" },
+            { "name": "infographic-registry.ts" },
+            { "name": "new-questions.json" },
+            { "name": "question-counts.ts" },
+            { "name": "question_ids_by_localization.json" },
+            { "name": "tester-emails.json" },
+            { "name": "trial-question-ids.json" },
+            { "name": "utils.ts" }
+          ]
+        },
+        {
+          "name": "locales",
+          "children": [
+            { "name": "de.json" },
+            { "name": "en.json" },
+            { "name": "es.json" }
+          ]
+        },
+        { "name": "providers", "children": [{ "name": "language-provider.tsx" }, { "name": "providers.tsx" }] },
+        { "name": "types", "children": [{ "name": "index.ts" }] }
+      ]
+    },
+    { "name": "Errors", "children": [{ "name": "Error_preview.txt" }] },
+    { "name": "docs", "children": [{ "name": "agent-directives.md" }, { "name": "internationalization-logic.md" }, { "name": "technical-notes.md" }] },
+    { "name": "scripts", "children": [{ "name": "verify-genkit-versions.js" }] },
+    { "name": "usr", "children": [{ "name": "src", "children": [{ "name": "app", "children": [{ "name": "src", "children": [{ "name": "lib", "children": [{ "name": "course-module-questions.json" }] }] }] }] }] },
+    { "name": ".env" },
+    { "name": "next.config.js" },
+    { "name": "package.json" },
+    { "name": "PROJECT_STRUCTURE.md" },
+    { "name": "tailwind.config.ts" },
+    { "name": "tsconfig.json" }
+  ]
+}

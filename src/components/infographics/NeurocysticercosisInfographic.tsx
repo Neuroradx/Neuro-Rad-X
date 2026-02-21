@@ -23,10 +23,10 @@ const SectionIcon = ({ path }: { path: string }) => (
 // --- Chart Data & Config ---
 
 const intraventricularLocationData = [
-  { name: 'Fourth Ventricle', frequency: 56.5, key: 'loc1'},
-  { name: 'Lateral Ventricles', frequency: 25, key: 'loc2'},
-  { name: 'Third Ventricle', frequency: 10, key: 'loc3'},
-  { name: 'Aqueduct', frequency: 8.5, key: 'loc4'},
+    { name: 'Fourth Ventricle', frequency: 56.5, key: 'loc1' },
+    { name: 'Lateral Ventricles', frequency: 25, key: 'loc2' },
+    { name: 'Third Ventricle', frequency: 10, key: 'loc3' },
+    { name: 'Aqueduct', frequency: 8.5, key: 'loc4' },
 ];
 
 const intraventricularLocationConfig = {
@@ -43,7 +43,7 @@ const NeurocysticercosisInfographic = () => {
     // Get current date for footer
     const currentDate = "October 9, 2025";
     const infoTheme = "Neurocysticercosis (NCC)";
-    
+
     // --- Extracted Sources for Mandatory Sources Card ---
     const sources = [
         { title: 'Neurocysticercosis: Unwinding the radiological conundrum', source: 'Bhattacharjee, S., & Shameem, M. (2024)', url: 'https://doi.org/10.5114/pjr.2024.136868' },
@@ -144,8 +144,8 @@ const NeurocysticercosisInfographic = () => {
                                     </TableRow>
                                 </TableBody>
                             </Table>
-                         </div>
-                         <p className="text-xs text-muted-foreground mt-2">*Note: Coexistence of lesions in different stages is highly suggestive of NCC.*</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">*Note: Coexistence of lesions in different stages is highly suggestive of NCC.*</p>
                     </CardContent>
                 </Card>
 
@@ -164,14 +164,14 @@ const NeurocysticercosisInfographic = () => {
                             <CardContent className="text-sm space-y-1">
                                 <p><strong>Risk:</strong> Obstructive hydrocephalus, ependymitis.</p>
                                 <p><strong>Imaging Challenge:</strong> Cysts often isointense to CSF (invisible). Look for indirect signs (hydrocephalus) or use 3D CISS/FIESTA sequences.</p>
-                                 <ChartContainer config={intraventricularLocationConfig} className="min-h-[150px] w-full mt-2">
+                                <ChartContainer config={intraventricularLocationConfig} className="min-h-[150px] w-full mt-2">
                                     <ResponsiveContainer width="100%" height={150}>
                                         <BarChart data={intraventricularLocationData} layout="vertical" margin={{ left: 80, right: 10 }}>
                                             <CartesianGrid horizontal={false} />
                                             <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} width={80} tick={{ fontSize: 9 }} />
                                             <XAxis dataKey="frequency" type="number" unit="%" />
                                             <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="frequency" name="Frequency" radius={4}>
+                                            <Bar dataKey="frequency" name="Frequency" radius={[0, 4, 4, 0]} barSize={30}>
                                                 {intraventricularLocationData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -195,7 +195,7 @@ const NeurocysticercosisInfographic = () => {
                         </Card>
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-base" style={{color: 'hsl(var(--chart-5))'}}>Spinal (1-5%, Rare)</CardTitle>
+                                <CardTitle className="text-base" style={{ color: 'hsl(var(--chart-5))' }}>Spinal (1-5%, Rare)</CardTitle>
                             </CardHeader>
                             <CardContent className="text-sm space-y-1">
                                 <p><strong>Types:</strong> Extramedullary-intradural (most common, often from CSF migration), Intramedullary (hematogenous).</p>
@@ -250,15 +250,15 @@ const NeurocysticercosisInfographic = () => {
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           Sources
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground columns-1 md:columns-2">
-                           {sources.map((source, index) => (
+                            {sources.map((source, index) => (
                                 <li key={index} className="break-inside-avoid">
-                                    <span className="font-semibold">{source.title}</span> - {source.source}. 
+                                    <span className="font-semibold">{source.title}</span> - {source.source}.
                                     <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-1">
                                         [Access Link]
                                     </a>
@@ -277,7 +277,7 @@ const NeurocysticercosisInfographic = () => {
                 </p>
             </footer>
 
-            </div>
+        </div>
     );
 };
 

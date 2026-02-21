@@ -21,22 +21,22 @@ const SectionIcon = ({ path }: { path: string }) => (
 // --- Chart Data & Config ---
 
 const malignancyAssociationData = [
-  { name: 'Anti-NMDAR', association: 40, key: "antiNmdar" },
-  { name: 'Anti-GABABR', association: 60, key: "antiGababr" },
-  { name: 'Anti-AMPAR', association: 60, key: "antiAmpar" },
-  { name: 'Anti-Hu (ANNA-1)', association: 90, key: "antiHu" },
-  { name: 'Anti-Ma2 (Ta)', association: 90, key: "antiMa2" },
+    { name: 'Anti-NMDAR', association: 40, key: "antiNmdar" },
+    { name: 'Anti-GABABR', association: 60, key: "antiGababr" },
+    { name: 'Anti-AMPAR', association: 60, key: "antiAmpar" },
+    { name: 'Anti-Hu (ANNA-1)', association: 90, key: "antiHu" },
+    { name: 'Anti-Ma2 (Ta)', association: 90, key: "antiMa2" },
 ];
 
 const malignancyAssociationConfig = {
-  association: {
-    label: 'Malignancy Association (%)',
-  },
-  antiNmdar: { label: 'Anti-NMDAR', color: 'hsl(var(--chart-1))' },
-  antiGababr: { label: 'Anti-GABABR', color: 'hsl(var(--chart-2))' },
-  antiAmpar: { label: 'Anti-AMPAR', color: 'hsl(var(--chart-3))' },
-  antiHu: { label: 'Anti-Hu', color: 'hsl(var(--chart-4))' },
-  antiMa2: { label: 'Anti-Ma2', color: 'hsl(var(--chart-5))' },
+    association: {
+        label: 'Malignancy Association (%)',
+    },
+    antiNmdar: { label: 'Anti-NMDAR', color: 'hsl(var(--chart-1))' },
+    antiGababr: { label: 'Anti-GABABR', color: 'hsl(var(--chart-2))' },
+    antiAmpar: { label: 'Anti-AMPAR', color: 'hsl(var(--chart-3))' },
+    antiHu: { label: 'Anti-Hu', color: 'hsl(var(--chart-4))' },
+    antiMa2: { label: 'Anti-Ma2', color: 'hsl(var(--chart-5))' },
 };
 
 
@@ -79,7 +79,7 @@ const LimbicEncephalitisInfographic = () => {
                                 <p className="text-sm text-muted-foreground mt-1">Alternative causes must be reasonably ruled out.</p>
                             </div>
                         </div>
-                         <p className="text-xs text-muted-foreground mt-4">A definitive diagnosis requires the identification of a specific neural autoantibody.</p>
+                        <p className="text-xs text-muted-foreground mt-4">A definitive diagnosis requires the identification of a specific neural autoantibody.</p>
                     </CardContent>
                 </Card>
 
@@ -105,7 +105,7 @@ const LimbicEncephalitisInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Recommended MRI Protocol</CardTitle>
                                 <CardDescription>For optimal visualization of limbic structures.</CardDescription>
@@ -152,20 +152,20 @@ const LimbicEncephalitisInfographic = () => {
                                 <li><strong>Anti-GAD65:</strong> Tumor association is variable (~25%).</li>
                             </ul>
                         </div>
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Malignancy Association of Key Antibodies</CardTitle>
                                 <CardDescription>Approximate percentage of cases associated with tumors.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                 <ChartContainer config={malignancyAssociationConfig} className="min-h-[250px] w-full">
+                                <ChartContainer config={malignancyAssociationConfig} className="min-h-[250px] w-full">
                                     <ResponsiveContainer width="100%" height={250}>
                                         <BarChart accessibilityLayer data={malignancyAssociationData} layout="vertical">
                                             <CartesianGrid horizontal={false} />
                                             <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={100} />
                                             <XAxis dataKey="association" type="number" unit="%" />
                                             <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="association" radius={4}>
+                                            <Bar dataKey="association" radius={[0, 4, 4, 0]} barSize={30}>
                                                 {malignancyAssociationData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -182,22 +182,22 @@ const LimbicEncephalitisInfographic = () => {
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           Sources
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-sm text-muted-foreground columns-1 md:columns-2">
-                           <li className="break-inside-avoid">Graus, F., et al. (2025). *J Neurol Neurosurg Psychiatry*. <a href="https://doi.org/10.1136/jnnp-2024-330514" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1136/jnnp-2024-330514</a></li>
-                           <li className="break-inside-avoid">Graus, F., et al. (2016). *Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(15)00401-9" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(15)00401-9</a></li>
-                           <li className="break-inside-avoid">Bien, C. G., & Bien, B. A. (2025). *Curr Treat Options Neurol*. <a href="https://doi.org/10.1007/s11940-025-00858-6" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11940-025-00858-6</a></li>
-                           <li className="break-inside-avoid">Kelley, B. P., & Mammen, A. L. (2019). *Curr Med Sci*. <a href="https://doi.org/10.1007/s11596-019-2092-7" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11596-019-2092-7</a></li>
-                           <li className="break-inside-avoid">Patel, H., & Irani, S. R. (2024). *Neurol Clin Pract*. <a href="https://doi.org/10.1212/CPJ.0000000000200000" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1212/CPJ.0000000000200000</a></li>
-                           <li className="break-inside-avoid">Dubey, D., & Toledano, M. (2025). *NeuroImage: Clinical*. <a href="https://doi.org/10.1016/j.nicl.2025.103987" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/j.nicl.2025.103987</a></li>
-                           <li className="break-inside-avoid">Hoang-Phoung, P., & Dalmau, J. (2022). *Continuum*. <a href="https://doi.org/10.1212/CON.0000000000001090" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1212/CON.0000000000001090</a></li>
-                           <li className="break-inside-avoid">Abboud, H., & Probasco, J. C. (2019). *Cleve Clin J Med*. <a href="https://doi.org/10.3949/ccjm.86a.18129" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.3949/ccjm.86a.18129</a></li>
-                           <li className="break-inside-avoid">Varley, J., & Hacohen, Y. (2024). *Dev Med Child Neurol*. <a href="https://doi.org/10.1111/dmcn.15682" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1111/dmcn.15682</a></li>
-                           <li className="break-inside-avoid">Lee, R. Y., & Prüss, H. (2025). *Trends in Neurosciences*. <a href="https://doi.org/10.1016/j.tins.2025.04.001" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/j.tins.2025.04.001</a></li>
+                            <li className="break-inside-avoid">Graus, F., et al. (2025). *J Neurol Neurosurg Psychiatry*. <a href="https://doi.org/10.1136/jnnp-2024-330514" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1136/jnnp-2024-330514</a></li>
+                            <li className="break-inside-avoid">Graus, F., et al. (2016). *Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(15)00401-9" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(15)00401-9</a></li>
+                            <li className="break-inside-avoid">Bien, C. G., & Bien, B. A. (2025). *Curr Treat Options Neurol*. <a href="https://doi.org/10.1007/s11940-025-00858-6" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11940-025-00858-6</a></li>
+                            <li className="break-inside-avoid">Kelley, B. P., & Mammen, A. L. (2019). *Curr Med Sci*. <a href="https://doi.org/10.1007/s11596-019-2092-7" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11596-019-2092-7</a></li>
+                            <li className="break-inside-avoid">Patel, H., & Irani, S. R. (2024). *Neurol Clin Pract*. <a href="https://doi.org/10.1212/CPJ.0000000000200000" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1212/CPJ.0000000000200000</a></li>
+                            <li className="break-inside-avoid">Dubey, D., & Toledano, M. (2025). *NeuroImage: Clinical*. <a href="https://doi.org/10.1016/j.nicl.2025.103987" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/j.nicl.2025.103987</a></li>
+                            <li className="break-inside-avoid">Hoang-Phoung, P., & Dalmau, J. (2022). *Continuum*. <a href="https://doi.org/10.1212/CON.0000000000001090" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1212/CON.0000000000001090</a></li>
+                            <li className="break-inside-avoid">Abboud, H., & Probasco, J. C. (2019). *Cleve Clin J Med*. <a href="https://doi.org/10.3949/ccjm.86a.18129" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.3949/ccjm.86a.18129</a></li>
+                            <li className="break-inside-avoid">Varley, J., & Hacohen, Y. (2024). *Dev Med Child Neurol*. <a href="https://doi.org/10.1111/dmcn.15682" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1111/dmcn.15682</a></li>
+                            <li className="break-inside-avoid">Lee, R. Y., & Prüss, H. (2025). *Trends in Neurosciences*. <a href="https://doi.org/10.1016/j.tins.2025.04.001" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/j.tins.2025.04.001</a></li>
                         </ul>
                     </CardContent>
                 </Card>

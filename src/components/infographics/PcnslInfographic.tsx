@@ -27,16 +27,16 @@ const pcnslIncidenceData: {
     rate: number;
     key: 'gp' | 'immuno' | 'elderly';
 }[] = [
-    { group: 'General Population', rate: 0.46, key: 'gp' },
-    { group: 'HIV+ (Post-HAART)', rate: 1, key: 'immuno' },
-    { group: 'Elderly (65+)', rate: 2, key: 'elderly' },
-];
+        { group: 'General Population', rate: 0.46, key: 'gp' },
+        { group: 'HIV+ (Post-HAART)', rate: 1, key: 'immuno' },
+        { group: 'Elderly (65+)', rate: 2, key: 'elderly' },
+    ];
 
 const pcnslIncidenceConfig = {
-  rate: { label: "Rate per 100k/year" },
-  gp: { label: 'General Population', color: 'hsl(var(--chart-1))' },
-  immuno: { label: 'HIV+ (Post-HAART)', color: 'hsl(var(--chart-3))' },
-  elderly: { label: 'Elderly (65+)', color: 'hsl(var(--chart-2))' },
+    rate: { label: "Rate per 100k/year" },
+    gp: { label: 'General Population', color: 'hsl(var(--chart-1))' },
+    immuno: { label: 'HIV+ (Post-HAART)', color: 'hsl(var(--chart-3))' },
+    elderly: { label: 'Elderly (65+)', color: 'hsl(var(--chart-2))' },
 };
 
 const survivalData: {
@@ -44,14 +44,14 @@ const survivalData: {
     survival: number;
     key: 'immunoComp' | 'hiv';
 }[] = [
-  { group: 'Immunocompetent', survival: 30.1, key: 'immunoComp' },
-  { group: 'HIV+', survival: 9.0, key: 'hiv' },
-];
+        { group: 'Immunocompetent', survival: 30.1, key: 'immunoComp' },
+        { group: 'HIV+', survival: 9.0, key: 'hiv' },
+    ];
 
 const survivalConfig = {
-  survival: { label: "5-Year Survival (%)" },
-  immunoComp: { label: 'Immunocompetent', color: 'hsl(var(--chart-2))' },
-  hiv: { label: 'HIV+', color: 'hsl(var(--chart-5))' },
+    survival: { label: "5-Year Survival (%)" },
+    immunoComp: { label: 'Immunocompetent', color: 'hsl(var(--chart-2))' },
+    hiv: { label: 'HIV+', color: 'hsl(var(--chart-5))' },
 };
 
 
@@ -104,9 +104,9 @@ const PcnslInfographic = () => {
                                                 <XAxis dataKey="group" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }} angle={-30} textAnchor="end" height={50} interval={0} />
                                                 <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                                 <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
-                                                <Bar dataKey="rate" name="Incidence Rate" radius={4}>
+                                                <Bar dataKey="rate" name="Incidence Rate" radius={[4, 4, 0, 0]} barSize={40}>
                                                     {pcnslIncidenceData.map((entry) => (
-                                                        <Cell key={`cell-${entry.key}`} fill={pcnslIncidenceConfig[entry.key].color}/>
+                                                        <Cell key={`cell-${entry.key}`} fill={pcnslIncidenceConfig[entry.key].color} />
                                                     ))}
                                                 </Bar>
                                             </BarChart>
@@ -119,13 +119,13 @@ const PcnslInfographic = () => {
                 </Card>
 
                 <Card className="md:col-span-2">
-                     <CardHeader>
-                         <div className="flex items-center">
+                    <CardHeader>
+                        <div className="flex items-center">
                             <SectionIcon icon={ScanEye} />
                             <CardTitle>2. Conventional Neuroimaging Features</CardTitle>
                         </div>
-                     </CardHeader>
-                     <CardContent>
+                    </CardHeader>
+                    <CardContent>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="text-sm space-y-2 text-muted-foreground">
                                 <h3 className="font-semibold text-foreground mb-1">Morphology & Location:</h3>
@@ -137,25 +137,25 @@ const PcnslInfographic = () => {
                                 </ul>
                             </div>
                             <div className="text-sm space-y-2 text-muted-foreground">
-                                 <h3 className="font-semibold text-foreground mb-1">Contrast Enhancement (Immune Status Dependent):</h3>
-                                 <ul className="list-disc list-inside space-y-1">
+                                <h3 className="font-semibold text-foreground mb-1">Contrast Enhancement (Immune Status Dependent):</h3>
+                                <ul className="list-disc list-inside space-y-1">
                                     <li><strong>Immunocompetent (Classic):</strong> <strong className="text-primary">Intense, homogeneous</strong> enhancement is characteristic (&gt;90%). Minimal necrosis.</li>
                                     <li><strong>Immunocompromised (Atypical):</strong> Peripheral <strong className="text-destructive">ring enhancement</strong> or heterogeneous patterns common (10-15% overall). Central necrosis frequent, mimics toxoplasmosis.</li>
-                                 </ul>
+                                </ul>
                             </div>
                         </div>
-                     </CardContent>
+                    </CardContent>
                 </Card>
 
                 <Card className="md:col-span-2">
-                     <CardHeader>
+                    <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={Microscope} />
                             <CardTitle>3. Advanced Diagnostic Neuroimaging: Quantitative Biomarkers</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent>
-                         <div className="overflow-x-auto">
+                        <div className="overflow-x-auto">
                             <Table className="text-xs">
                                 <TableHeader>
                                     <TableRow>
@@ -192,8 +192,8 @@ const PcnslInfographic = () => {
                                     </TableRow>
                                 </TableBody>
                             </Table>
-                         </div>
-                          <p className="text-xs text-muted-foreground mt-2">The combination of <strong className="text-destructive">Low ADC</strong> and <strong className="text-primary">Low rCBV</strong> is a powerful radiological signature for PCNSL.</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">The combination of <strong className="text-destructive">Low ADC</strong> and <strong className="text-primary">Low rCBV</strong> is a powerful radiological signature for PCNSL.</p>
                     </CardContent>
                 </Card>
 
@@ -202,10 +202,10 @@ const PcnslInfographic = () => {
                         <div className="flex items-center">
                             <SectionIcon icon={GitCompareArrows} />
                             <CardTitle>4. DDx: PCNSL vs. Glioblastoma (GBM)</CardTitle>
-                         </div>
+                        </div>
                     </CardHeader>
                     <CardContent>
-                         <div className="overflow-x-auto">
+                        <div className="overflow-x-auto">
                             <Table className="text-xs">
                                 <TableHeader>
                                     <TableRow>
@@ -215,7 +215,7 @@ const PcnslInfographic = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Enhancement</TableCell>
                                         <TableCell><strong className="text-primary">Intense, Solid, Homogeneous</strong></TableCell>
                                         <TableCell>Irregular, Thick Ring</TableCell>
@@ -230,7 +230,7 @@ const PcnslInfographic = () => {
                                         <TableCell><strong className="text-destructive">Low (Restricted)</strong></TableCell>
                                         <TableCell>Higher (Facilitated)</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Tumor rCBV</TableCell>
                                         <TableCell><strong className="text-primary">Low/Modest</strong></TableCell>
                                         <TableCell><strong className="text-destructive">High</strong> (Neo-angiogenesis)</TableCell>
@@ -242,7 +242,7 @@ const PcnslInfographic = () => {
                                     </TableRow>
                                 </TableBody>
                             </Table>
-                         </div>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -251,7 +251,7 @@ const PcnslInfographic = () => {
                         <div className="flex items-center">
                             <SectionIcon icon={GitCompareArrows} />
                             <CardTitle>5. DDx: PCNSL vs. Toxoplasmosis</CardTitle>
-                         </div>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
@@ -264,12 +264,12 @@ const PcnslInfographic = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Multiplicity</TableCell>
                                         <TableCell>Solitary or Multiple (~50/50)</TableCell>
                                         <TableCell>Multiple (most common)</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Location</TableCell>
                                         <TableCell>Periventricular WM, CC, BG</TableCell>
                                         <TableCell>BG, Thalamus, Corticomedullary Junction</TableCell>
@@ -291,14 +291,14 @@ const PcnslInfographic = () => {
                                     </TableRow>
                                 </TableBody>
                             </Table>
-                         </div>
+                        </div>
                     </CardContent>
                 </Card>
-                
+
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
-                           <SectionIcon icon={Activity} />
+                            <SectionIcon icon={Activity} />
                             <CardTitle>6. Prognosis & Therapeutic Implications</CardTitle>
                         </div>
                     </CardHeader>
@@ -320,11 +320,11 @@ const PcnslInfographic = () => {
                                             <BarChart accessibilityLayer data={survivalData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                                                 <CartesianGrid vertical={false} />
                                                 <XAxis dataKey="group" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
-                                                <YAxis unit="%" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}/>
+                                                <YAxis unit="%" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                                 <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
-                                                <Bar dataKey="survival" name="5-Yr Survival" radius={4}>
+                                                <Bar dataKey="survival" name="5-Yr Survival" radius={[4, 4, 0, 0]} barSize={40}>
                                                     {survivalData.map((entry) => (
-                                                        <Cell key={`cell-${entry.key}`} fill={survivalConfig[entry.key].color}/>
+                                                        <Cell key={`cell-${entry.key}`} fill={survivalConfig[entry.key].color} />
                                                     ))}
                                                 </Bar>
                                             </BarChart>
@@ -334,30 +334,30 @@ const PcnslInfographic = () => {
                             </Card>
                         </div>
                     </CardContent>
-                     <CardFooter>
-                         <p className="text-xs text-muted-foreground mt-4">Untreated PCNSL is often fatal within 2-6 months. Prognosis is poor if immune reconstitution is not possible (e.g., certain malignancies).</p>
-                      </CardFooter>
+                    <CardFooter>
+                        <p className="text-xs text-muted-foreground mt-4">Untreated PCNSL is often fatal within 2-6 months. Prognosis is poor if immune reconstitution is not possible (e.g., certain malignancies).</p>
+                    </CardFooter>
                 </Card>
 
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
-                           <SectionIcon icon={ScrollText} />
+                            <SectionIcon icon={ScrollText} />
                             <CardTitle>Sources</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground columns-1 md:columns-2">
-                           <li className="break-inside-avoid">Villano, J. L., et al. (2011). Age, gender, and racial differences in incidence and survival in primary CNS lymphoma. *British Journal of Cancer*, *105*(9), 1414–1818. <a href="https://doi.org/10.1038/bjc.2011.357" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
-                           <li className="break-inside-avoid">Al Tawalbeh, S., & Tadi, P. (2023). Central Nervous System Lymphoma. In *StatPearls*. StatPearls Publishing. Retrieved from <a href="https://www.ncbi.nlm.nih.gov/books/NBK545145/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NCBI Bookshelf</a></li>
-                           <li className="break-inside-avoid">Lauria, F., et al. (2022). Primary CNS lymphoma in HIV positive and negative patients: comparison of clinical characteristics, outcome and prognostic factors. *Journal of Neuro-Oncology*, *160*(1), 129-141. <a href="https://doi.org/10.1007/s11060-022-04149-x" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
-                           <li className="break-inside-avoid">Kwon, M., et al. (2010). MRI Findings of Primary CNS Lymphoma in 26 Immunocompetent Patients. *Korean Journal of Radiology*, *11*(3), 275-283. <a href="https://doi.org/10.3348/kjr.2010.11.3.275" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
-                           <li className="break-inside-avoid">Shiels, M. S., et al. (2016). Trends in Primary Central Nervous System Lymphoma Incidence and Survival in the U.S. *British Journal of Haematology*, *174*(3), 417-424. <a href="https://doi.org/10.1111/bjh.14073" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
-                           <li className="break-inside-avoid">Radiopaedia.org. (n.d.). *Lymphomas of the central nervous system*. Retrieved {currentDate}, from <a href="https://radiopaedia.org/articles/lymphomas-of-the-central-nervous-system" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Radiopaedia.org</a></li>
-                           <li className="break-inside-avoid">Bühring, U., et al. (2001). MRI features of primary central nervous system lymphomas at presentation. *Neurology*, *57*(3), 393-396. (Implied source for ResearchGate 7815994)</li>
-                           <li className="break-inside-avoid">Sailer, M., et al. (2021). MRI imaging features of HIV-related central nervous system diseases: diagnosis by pattern recognition in daily practice. *Clinical Neuroradiology*, *31*(4), 1145–1162. <a href="https://doi.org/10.1007/s00062-021-01053-9" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
-                           <li className="break-inside-avoid">Wang, S., et al. (2022). Differentiation Between Primary Central Nervous System Lymphoma and Atypical Glioblastoma Based on MRI. *Frontiers in Oncology*, *12*, 811197. <a href="https://doi.org/10.3389/fonc.2022.811197" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
-                           <li className="break-inside-avoid">Hu, L. S., et al. (2022). Differentiation of glioblastoma and primary central nervous system lymphomas using multiparametric diffusion and perfusion MRI. *Frontiers in Oncology*, *12*, 995804. <a href="https://doi.org/10.3389/fonc.2022.995804" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
+                            <li className="break-inside-avoid">Villano, J. L., et al. (2011). Age, gender, and racial differences in incidence and survival in primary CNS lymphoma. *British Journal of Cancer*, *105*(9), 1414–1818. <a href="https://doi.org/10.1038/bjc.2011.357" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
+                            <li className="break-inside-avoid">Al Tawalbeh, S., & Tadi, P. (2023). Central Nervous System Lymphoma. In *StatPearls*. StatPearls Publishing. Retrieved from <a href="https://www.ncbi.nlm.nih.gov/books/NBK545145/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NCBI Bookshelf</a></li>
+                            <li className="break-inside-avoid">Lauria, F., et al. (2022). Primary CNS lymphoma in HIV positive and negative patients: comparison of clinical characteristics, outcome and prognostic factors. *Journal of Neuro-Oncology*, *160*(1), 129-141. <a href="https://doi.org/10.1007/s11060-022-04149-x" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
+                            <li className="break-inside-avoid">Kwon, M., et al. (2010). MRI Findings of Primary CNS Lymphoma in 26 Immunocompetent Patients. *Korean Journal of Radiology*, *11*(3), 275-283. <a href="https://doi.org/10.3348/kjr.2010.11.3.275" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
+                            <li className="break-inside-avoid">Shiels, M. S., et al. (2016). Trends in Primary Central Nervous System Lymphoma Incidence and Survival in the U.S. *British Journal of Haematology*, *174*(3), 417-424. <a href="https://doi.org/10.1111/bjh.14073" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
+                            <li className="break-inside-avoid">Radiopaedia.org. (n.d.). *Lymphomas of the central nervous system*. Retrieved {currentDate}, from <a href="https://radiopaedia.org/articles/lymphomas-of-the-central-nervous-system" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Radiopaedia.org</a></li>
+                            <li className="break-inside-avoid">Bühring, U., et al. (2001). MRI features of primary central nervous system lymphomas at presentation. *Neurology*, *57*(3), 393-396. (Implied source for ResearchGate 7815994)</li>
+                            <li className="break-inside-avoid">Sailer, M., et al. (2021). MRI imaging features of HIV-related central nervous system diseases: diagnosis by pattern recognition in daily practice. *Clinical Neuroradiology*, *31*(4), 1145–1162. <a href="https://doi.org/10.1007/s00062-021-01053-9" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
+                            <li className="break-inside-avoid">Wang, S., et al. (2022). Differentiation Between Primary Central Nervous System Lymphoma and Atypical Glioblastoma Based on MRI. *Frontiers in Oncology*, *12*, 811197. <a href="https://doi.org/10.3389/fonc.2022.811197" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
+                            <li className="break-inside-avoid">Hu, L. S., et al. (2022). Differentiation of glioblastoma and primary central nervous system lymphomas using multiparametric diffusion and perfusion MRI. *Frontiers in Oncology*, *12*, 995804. <a href="https://doi.org/10.3389/fonc.2022.995804" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI</a></li>
                         </ul>
                     </CardContent>
                 </Card>

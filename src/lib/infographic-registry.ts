@@ -39,89 +39,106 @@ type InfographicInfo = Omit<Infographic, 'createdAt' | 'htmlContent'>;
 
 // 3. Define the list of all component-based infographics
 export const COMPONENT_INFOGRAPHICS: InfographicInfo[] = [
-  { 
-    id: 'pres_infographic_component', 
+  {
+    id: 'pres_infographic_component',
     title: 'PRES (Posterior Reversible Encephalopathy Syndrome)',
+    categoryId: 'vascular',
     isComponent: true,
   },
-  { 
-    id: 'brain_lesion_infographic_component', 
+  {
+    id: 'brain_lesion_infographic_component',
     title: 'Differentiating Brain Lesions',
+    categoryId: 'general_technique',
     isComponent: true,
   },
-  { 
-    id: 'neuroimaging_infographic_component', 
+  {
+    id: 'neuroimaging_infographic_component',
     title: 'Neuroimaging Modalities and ICH',
+    categoryId: 'general_technique',
     isComponent: true,
   },
-  { 
-    id: 'acute_ischemic_stroke_infographic_component', 
+  {
+    id: 'acute_ischemic_stroke_infographic_component',
     title: 'Acute Ischemic Stroke: Perfusion Imaging',
+    categoryId: 'vascular',
     isComponent: true,
   },
-  { 
-    id: 'stroke_subtypes_infographic_component', 
+  {
+    id: 'stroke_subtypes_infographic_component',
     title: 'Ischemic vs. Hemorrhagic Stroke',
+    categoryId: 'vascular',
     isComponent: true,
   },
-  { 
-    id: 'cerebral_amyloid_angiopathy_infographic_component', 
+  {
+    id: 'cerebral_amyloid_angiopathy_infographic_component',
     title: 'Cerebral Amyloid Angiopathy (CAA)',
+    categoryId: 'microangiopathy',
     isComponent: true,
   },
-  { 
-    id: 'limbic_encephalitis_infographic_component', 
+  {
+    id: 'limbic_encephalitis_infographic_component',
     title: 'Limbic Encephalitis: Diagnostic Criteria',
+    categoryId: 'inflammatory_infectious_toxic',
     isComponent: true,
   },
   {
     id: 'cvst_infographic_component',
     title: 'Cerebral Venous Sinus Thrombosis (CVST)',
+    categoryId: 'vascular',
     isComponent: true,
   },
-  { 
-    id: 'sammpis_trial_infographic_component', 
+  {
+    id: 'sammpis_trial_infographic_component',
     title: 'A Critical Analysis of the SAMMPRIS Trial',
+    categoryId: 'vascular',
     isComponent: true,
   },
   {
     id: 'cerebral_microbleeds_infographic_component',
     title: 'Cerebral Microbleeds: What Are They Telling Us?',
+    categoryId: 'microangiopathy',
     isComponent: true,
   },
   {
     id: 'cerebral_cavernous_malformation_infographic',
     title: 'Cerebral Cavernous Malformation (CCM)',
+    categoryId: 'vascular',
     isComponent: true,
   },
   {
     id: 'intracranial_hemorrhage_infographic',
     title: 'Intracranial Hemorrhage: A Breakdown by Etiology',
+    categoryId: 'vascular',
     isComponent: true,
   },
   {
     id: 'quantitative_alcohol_cns_infographic',
     title: "Quantitative Analysis: Alcohol's Effects on the CNS",
+    categoryId: 'inflammatory_infectious_toxic',
     isComponent: true,
   },
   {
     id: 'neurocysticercosis_infographic_component',
     title: 'Neurocysticercosis (NCC): Radiological Aspects',
+    categoryId: 'inflammatory_infectious_toxic',
     isComponent: true,
   },
   {
     id: 'oligodendroglioma_infographic_component',
     title: 'IDH-Mutated, 1p/19q Codeleted Oligodendroglioma',
+    categoryId: 'oncology',
     isComponent: true,
   },
   {
     id: 'pineal_tumors_infographic_component',
     title: 'Pineal Region Tumors: Radiological Aspects',
+    categoryId: 'oncology',
     isComponent: true,
   },
   {
     id: 'pcnsl_infographic_component',
     title: 'Primary CNS Lymphoma (PCNSL)',
+    categoryId: 'oncology',
     isComponent: true,
   },
 ];

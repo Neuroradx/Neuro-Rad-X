@@ -21,15 +21,15 @@ const SectionIcon = ({ path }: { path: string }) => (
 // --- Chart Data & Config ---
 
 const strokePrevalenceData = [
-  { name: 'Ischemic Stroke (IS)', value: 65.3, key: 'ischemic' },
-  { name: 'Intracerebral Hemorrhage (ICH)', value: 28.8, key: 'ich' },
-  { name: 'Subarachnoid Hemorrhage (SAH)', value: 5.8, key: 'sah' },
+    { name: 'Ischemic Stroke (IS)', value: 65.3, key: 'ischemic' },
+    { name: 'Intracerebral Hemorrhage (ICH)', value: 28.8, key: 'ich' },
+    { name: 'Subarachnoid Hemorrhage (SAH)', value: 5.8, key: 'sah' },
 ];
 
 const strokePrevalenceConfig = {
-  ischemic: { label: 'Ischemic Stroke (IS)', color: 'hsl(var(--chart-1))' },
-  ich: { label: 'Intracerebral Hemorrhage (ICH)', color: 'hsl(var(--chart-2))' },
-  sah: { label: 'Subarachnoid Hemorrhage (SAH)', color: 'hsl(var(--chart-3))' },
+    ischemic: { label: 'Ischemic Stroke (IS)', color: 'hsl(var(--chart-1))' },
+    ich: { label: 'Intracerebral Hemorrhage (ICH)', color: 'hsl(var(--chart-2))' },
+    sah: { label: 'Subarachnoid Hemorrhage (SAH)', color: 'hsl(var(--chart-3))' },
 };
 
 const riskFactorData = [
@@ -118,7 +118,7 @@ const StrokeSubtypesInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Global Stroke Prevalence (2021)</CardTitle>
                                 <CardDescription>Approximate percentage of all incident strokes.</CardDescription>
@@ -160,14 +160,14 @@ const StrokeSubtypesInfographic = () => {
                                 <CardDescription>Percentage of Disability-Adjusted Life Years.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                 <ChartContainer config={riskFactorConfig} className="min-h-[250px] w-full">
+                                <ChartContainer config={riskFactorConfig} className="min-h-[250px] w-full">
                                     <ResponsiveContainer width="100%" height={250}>
                                         <BarChart data={riskFactorData} layout="vertical" margin={{ left: 10, right: 10 }}>
                                             <CartesianGrid horizontal={false} />
                                             <XAxis type="number" dataKey="value" unit="%" />
                                             <YAxis type="category" dataKey="name" width={80} tick={{ fontSize: 12 }} />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="value" radius={5}>
+                                            <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={30}>
                                                 {riskFactorData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -232,12 +232,12 @@ const StrokeSubtypesInfographic = () => {
                         </div>
                     </CardContent>
                 </Card>
-                
+
                 {/* Diagnostic Imaging */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                            <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                             4. Diagnostic Imaging Considerations
                         </CardTitle>
                     </CardHeader>
@@ -250,7 +250,7 @@ const StrokeSubtypesInfographic = () => {
                                 <li>**Ischemic Stroke:** May be normal initially, becoming **hypodense (darker)** within 24-48 hours.</li>
                             </ul>
                         </div>
-                         <div>
+                        <div>
                             <h3 className="font-semibold text-foreground">Magnetic Resonance Imaging (MRI)</h3>
                             <p className="text-base text-muted-foreground mt-1">Provides more detail and detects acute ischemic changes earlier than CT.</p>
                             <ul className="list-disc list-inside text-base text-muted-foreground mt-2 space-y-1">
@@ -260,26 +260,26 @@ const StrokeSubtypesInfographic = () => {
                         </div>
                     </CardContent>
                 </Card>
-                 {/* Sources */}
+                {/* Sources */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                             Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-sm text-muted-foreground columns-1 md:columns-2">
-                           <li className="break-inside-avoid">GBD 2021 Stroke Collaborators. (2024). *The Lancet Neurology*. <a href="https://www.healthdata.org/research-analysis/library/global-regional-and-national-burden-stroke-and-its-risk-factors-1990-2021" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">healthdata.org</a></li>
-                           <li className="break-inside-avoid">Feigin, V. L., et al. (2020). *The Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(20)30500-0" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(20)30500-0</a></li>
-                           <li className="break-inside-avoid">Tsao, C. W., et al. (2025). *Circulation*. <a href="https://www.heart.org/en/-/media/PHD-Files-2/Science-News/2/2025-Heart-and-Stroke-Stat-Update/2025-Statistics-At-A-Glance.pdf" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">heart.org</a></li>
-                           <li className="break-inside-avoid">Yang, Z., et al. (2025). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.122.040073" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.122.040073</a></li>
-                           <li className="break-inside-avoid">Sun, J., et al. (2024). *Journal of the American Heart Association*. <a href="https://doi.org/10.1161/JAHA.124.039387" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/JAHA.124.039387</a></li>
-                           <li className="break-inside-avoid">Kleindorfer, D. O., et al. (2021). *The Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(21)00022-6" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(21)00022-6</a></li>
-                           <li className="break-inside-avoid">Diringer, M. N., & Hemphill, J. C., III. (2023). *StatPearls*. <a href="https://www.ncbi.nlm.nih.gov/books/NBK559173/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ncbi.nlm.nih.gov</a></li>
-                           <li className="break-inside-avoid">Fonseca, A. C., & Ferro, J. M. (2015). *J Neurol Sci*. <a href="https://doi.org/10.1016/j.jns.2014.07.039" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/j.jns.2014.07.039</a></li>
-                           <li className="break-inside-avoid">Spiotta, A. M., et al. (2024). *Br J Radiol*. <a href="https://doi.org/10.1259/bjr.20230571" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1259/bjr.20230571</a></li>
-                           <li className="break-inside-avoid">Li, M., et al. (2024). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.123.045154" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.123.045154</a></li>
+                            <li className="break-inside-avoid">GBD 2021 Stroke Collaborators. (2024). *The Lancet Neurology*. <a href="https://www.healthdata.org/research-analysis/library/global-regional-and-national-burden-stroke-and-its-risk-factors-1990-2021" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">healthdata.org</a></li>
+                            <li className="break-inside-avoid">Feigin, V. L., et al. (2020). *The Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(20)30500-0" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(20)30500-0</a></li>
+                            <li className="break-inside-avoid">Tsao, C. W., et al. (2025). *Circulation*. <a href="https://www.heart.org/en/-/media/PHD-Files-2/Science-News/2/2025-Heart-and-Stroke-Stat-Update/2025-Statistics-At-A-Glance.pdf" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">heart.org</a></li>
+                            <li className="break-inside-avoid">Yang, Z., et al. (2025). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.122.040073" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.122.040073</a></li>
+                            <li className="break-inside-avoid">Sun, J., et al. (2024). *Journal of the American Heart Association*. <a href="https://doi.org/10.1161/JAHA.124.039387" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/JAHA.124.039387</a></li>
+                            <li className="break-inside-avoid">Kleindorfer, D. O., et al. (2021). *The Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(21)00022-6" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(21)00022-6</a></li>
+                            <li className="break-inside-avoid">Diringer, M. N., & Hemphill, J. C., III. (2023). *StatPearls*. <a href="https://www.ncbi.nlm.nih.gov/books/NBK559173/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ncbi.nlm.nih.gov</a></li>
+                            <li className="break-inside-avoid">Fonseca, A. C., & Ferro, J. M. (2015). *J Neurol Sci*. <a href="https://doi.org/10.1016/j.jns.2014.07.039" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/j.jns.2014.07.039</a></li>
+                            <li className="break-inside-avoid">Spiotta, A. M., et al. (2024). *Br J Radiol*. <a href="https://doi.org/10.1259/bjr.20230571" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1259/bjr.20230571</a></li>
+                            <li className="break-inside-avoid">Li, M., et al. (2024). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.123.045154" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.123.045154</a></li>
                         </ul>
                     </CardContent>
                 </Card>

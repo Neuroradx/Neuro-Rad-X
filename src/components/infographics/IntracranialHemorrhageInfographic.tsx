@@ -29,12 +29,12 @@ const spontaneousIchData = [
 ];
 
 const ichEtiologyConfig = {
-  value: { label: 'Prevalence' },
-  etio1: { label: 'Hypertensive Arteriopathy', color: 'hsl(var(--chart-1))' },
-  etio2: { label: 'Coagulopathy', color: 'hsl(var(--chart-2))' },
-  etio3: { label: 'CAA', color: 'hsl(var(--chart-3))' },
-  etio4: { label: 'Vascular Malformations', color: 'hsl(var(--chart-4))' },
-  etio5: { label: 'Brain Tumors', color: 'hsl(var(--chart-5))' },
+    value: { label: 'Prevalence' },
+    etio1: { label: 'Hypertensive Arteriopathy', color: 'hsl(var(--chart-1))' },
+    etio2: { label: 'Coagulopathy', color: 'hsl(var(--chart-2))' },
+    etio3: { label: 'CAA', color: 'hsl(var(--chart-3))' },
+    etio4: { label: 'Vascular Malformations', color: 'hsl(var(--chart-4))' },
+    etio5: { label: 'Brain Tumors', color: 'hsl(var(--chart-5))' },
 };
 
 
@@ -68,7 +68,7 @@ const IntracranialHemorrhageInfographic = () => {
     // Current date for the mandatory footer
     const currentDate = "October 9, 2025";
     const infoTheme = "Intracranial Hemorrhage Etiology and Classification";
-    
+
     // --- Extracted Sources for Mandatory Sources Card ---
     const sources = [
         { title: 'Intracranial Hemorrhage: A Breakdown by Etiology, Types, Causes, and Outcomes', source: 'Codman Surgical', url: 'https://codmansurgical.integralife.com/intracranial-hemorrhage-types-causes-and-outcomes/' },
@@ -110,9 +110,9 @@ const IntracranialHemorrhageInfographic = () => {
                                 <h3 className="font-semibold text-foreground mb-2">Key Etiologies:</h3>
                                 <ul className="list-disc list-inside text-sm text-muted-foreground space-y-2">
                                     <li className="font-semibold text-primary">Hypertensive Arteriopathy: <span className="font-normal text-muted-foreground">Most common cause. Weakens deep-penetrating arteries due to chronic hypertension.</span></li>
-                                    <li className="font-semibold" style={{color: 'hsl(var(--chart-2))'}}>Coagulopathy / Antithrombotic Use: <span className="font-normal text-muted-foreground">Increasingly common due to widespread use of anticoagulants (e.g., warfarin) and antiplatelet drugs.</span></li>
-                                    <li className="font-semibold" style={{color: 'hsl(var(--chart-3))'}}>Cerebral Amyloid Angiopathy (CAA): <span className="font-normal text-muted-foreground">Protein deposits weakening cortical vessels. Leading cause of lobar (superficial) ICH in the elderly.</span></li>
-                                    <li className="font-semibold" style={{color: 'hsl(var(--chart-4))'}}>Vascular Malformations: <span className="font-normal text-muted-foreground">AVMs are the leading cause of ICH in adults younger than 35.</span></li>
+                                    <li className="font-semibold" style={{ color: 'hsl(var(--chart-2))' }}>Coagulopathy / Antithrombotic Use: <span className="font-normal text-muted-foreground">Increasingly common due to widespread use of anticoagulants (e.g., warfarin) and antiplatelet drugs.</span></li>
+                                    <li className="font-semibold" style={{ color: 'hsl(var(--chart-3))' }}>Cerebral Amyloid Angiopathy (CAA): <span className="font-normal text-muted-foreground">Protein deposits weakening cortical vessels. Leading cause of lobar (superficial) ICH in the elderly.</span></li>
+                                    <li className="font-semibold" style={{ color: 'hsl(var(--chart-4))' }}>Vascular Malformations: <span className="font-normal text-muted-foreground">AVMs are the leading cause of ICH in adults younger than 35.</span></li>
                                     <li><span className="font-normal text-muted-foreground">Undetermined / Other: Accounts for 5% to 18% of cases after initial investigation.</span></li>
                                 </ul>
                             </div>
@@ -152,20 +152,20 @@ const IntracranialHemorrhageInfographic = () => {
                         <CardDescription>Bleeding into the subarachnoid space. Trauma is the most common cause overall, but spontaneous SAH is dominated by aneurysms.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={sahEtiologyConfig} className="min-h-[150px] w-full">
-                            <ResponsiveContainer width="100%" height={150}>
+                        <ChartContainer config={sahEtiologyConfig} className="min-h-[250px] w-full">
+                            <ResponsiveContainer width="100%" height={250}>
                                 <PieChart>
                                     <Tooltip cursor={{ fill: 'transparent' }} content={<ChartTooltipContent />} />
                                     <Legend iconType="circle" />
-                                    <Pie data={spontaneousSahData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={2}>
+                                    <Pie data={spontaneousSahData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={2}>
                                         {spontaneousSahData.map((entry) => (
-                                            <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
+                                            <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} stroke="hsl(var(--background))" strokeWidth={2} />
                                         ))}
                                     </Pie>
                                 </PieChart>
                             </ResponsiveContainer>
                         </ChartContainer>
-                        <p className="text-xs text-center mt-2 text-muted-foreground">85% of spontaneous cases are due to ruptured aneurysms.</p>
+                        <p className="text-sm text-center mt-2 text-muted-foreground">85% of spontaneous cases are due to ruptured aneurysms.</p>
                     </CardContent>
                 </Card>
 
@@ -177,46 +177,48 @@ const IntracranialHemorrhageInfographic = () => {
                         </CardTitle>
                         <CardDescription>Key rates for aneurysms and an overview of traumatic bleeds.</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <ChartContainer config={riskRateConfig} className="min-h-[150px] w-full">
-                            <ResponsiveContainer width="100%" height={150}>
-                                <BarChart data={sahRiskRateData} layout="vertical">
-                                    <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                                    <XAxis type="number" unit="%" tickLine={false} tickMargin={10} axisLine={false} />
-                                    <YAxis dataKey="name" type="category" tickLine={false} width={150} tick={{ fontSize: 10 }} />
-                                    <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
-                                    <Bar dataKey="rate" radius={[4, 4, 0, 0]} barSize={15}>
-                                        {sahRiskRateData.map((entry) => (
-                                            <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
-                                        ))}
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </ChartContainer>
-                        <div className="grid grid-cols-1 gap-4 mt-4">
-                            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                                <h4 className="font-bold text-destructive">Subdural Hematoma (SDH)</h4>
-                                <p className="text-xs text-muted-foreground mt-1">Overwhelmingly **Traumatic**. Caused by tearing of **bridging veins**. Occurs in **11% to 25%** of significant head injuries.</p>
+                    <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="flex items-center justify-center">
+                            <ChartContainer config={riskRateConfig} className="min-h-[250px] w-full">
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <BarChart data={sahRiskRateData} layout="vertical">
+                                        <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+                                        <XAxis type="number" unit="%" tickLine={false} tickMargin={10} axisLine={false} />
+                                        <YAxis dataKey="name" type="category" tickLine={false} width={150} tick={{ fontSize: 12 }} />
+                                        <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
+                                        <Bar dataKey="rate" radius={[4, 4, 0, 0]} barSize={25}>
+                                            {sahRiskRateData.map((entry) => (
+                                                <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </ChartContainer>
+                        </div>
+                        <div className="flex flex-col justify-center space-y-4">
+                            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                                <h4 className="font-bold text-destructive text-lg">Subdural Hematoma (SDH)</h4>
+                                <p className="text-sm text-muted-foreground mt-2">Overwhelmingly **Traumatic**. Caused by tearing of **bridging veins**. Occurs in **11% to 25%** of significant head injuries.</p>
                             </div>
-                            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                                <h4 className="font-bold text-destructive">Epidural Hematoma (EDH)</h4>
-                                <p className="text-xs text-muted-foreground mt-1">Almost exclusively **Traumatic**. Usually involves a skull fracture tearing the **middle meningeal artery**. Occurs in **2% to 10%** of head injuries.</p>
+                            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                                <h4 className="font-bold text-destructive text-lg">Epidural Hematoma (EDH)</h4>
+                                <p className="text-sm text-muted-foreground mt-2">Almost exclusively **Traumatic**. Usually involves a skull fracture tearing the **middle meningeal artery**. Occurs in **2% to 10%** of head injuries.</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                 {/* MANDATORY SOURCES CARD */}
+                {/* MANDATORY SOURCES CARD */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           Sources
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground columns-1 md:columns-2">
-                           {sources.map((source, index) => (
+                            {sources.map((source, index) => (
                                 <li key={index} className="break-inside-avoid">
                                     <span className="font-semibold">{source.title}</span> - {source.source}.
                                     {source.url && source.url !== '#' && (

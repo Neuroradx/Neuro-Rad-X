@@ -21,8 +21,8 @@ const SectionIcon = ({ path, className = "text-primary" }: { path: string, class
 // --- Chart Data & Config ---
 
 const wePrevalenceData = [
-  { name: 'Chronic Alcohol Users', value: 13, key: 'riskHigh' },
-  { name: 'General Population', value: 1.5, key: 'riskLow' },
+    { name: 'Chronic Alcohol Users', value: 13, key: 'riskHigh' },
+    { name: 'General Population', value: 1.5, key: 'riskLow' },
 ];
 const wePrevalenceConfig = {
     riskHigh: { label: 'Chronic Alcohol Users', color: 'hsl(var(--chart-5))' },
@@ -31,8 +31,8 @@ const wePrevalenceConfig = {
 
 
 const weDetectionData = [
-  { name: 'Classic Triad Present', value: 24.5, key: 'classic' },
-  { name: 'Atypical/Subclinical', value: 75.5, key: 'atypical' },
+    { name: 'Classic Triad Present', value: 24.5, key: 'classic' },
+    { name: 'Atypical/Subclinical', value: 75.5, key: 'atypical' },
 ];
 const weDetectionConfig = {
     classic: { label: 'Classic Triad', color: 'hsl(var(--chart-2))' },
@@ -50,10 +50,10 @@ const mriSensitivityConfig = {
 
 
 const mriWeLocationData = [
-    { name: 'Medial Thalamus / 3rd Ventricle', frequency: 82.5, key: 'loc1'},
-    { name: 'Periaqueductal Area', frequency: 62, key: 'loc2'},
-    { name: 'Mammillary Bodies', frequency: 41.5, key: 'loc3'},
-    { name: 'Midbrain Tectum', frequency: 37, key: 'loc4'},
+    { name: 'Medial Thalamus / 3rd Ventricle', frequency: 82.5, key: 'loc1' },
+    { name: 'Periaqueductal Area', frequency: 62, key: 'loc2' },
+    { name: 'Mammillary Bodies', frequency: 41.5, key: 'loc3' },
+    { name: 'Midbrain Tectum', frequency: 37, key: 'loc4' },
 ];
 const mriLocationConfig = {
     loc1: { label: 'Medial Thalamus', color: 'hsl(var(--chart-1))' },
@@ -76,8 +76,8 @@ const corpusCallosumConfig = {
 
 
 const odsAudAssociationData = [
-  { name: 'Associated with AUD', value: 50.5, key: 'aud' },
-  { name: 'Other Causes', value: 49.5, key: 'other' },
+    { name: 'Associated with AUD', value: 50.5, key: 'aud' },
+    { name: 'Other Causes', value: 49.5, key: 'other' },
 ];
 const odsConfig = {
     aud: { label: 'AUD-Associated', color: 'hsl(var(--chart-5))' },
@@ -91,7 +91,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
     // Current date for the mandatory footer
     const currentDate = "October 9, 2025";
     const infoTheme = "Quantitative Analysis: Alcohol's Effects on the Central Nervous System";
-    
+
     // --- Extracted Sources for Mandatory Sources Card ---
     const sources = [
         { title: 'Wet Brain from Alcohol: Wernicke-Korsakoff Syndrome (WKS)', source: 'American Addiction Centers', url: 'https://americanaddictioncenters.org/alcohol/risks-effects-dangers/wernicke-korsakoff-syndrome' },
@@ -150,33 +150,33 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="value" name="Prevalence" radius={4}>
+                                        <Bar dataKey="value" name="Prevalence" radius={[4, 4, 0, 0]} barSize={40}>
                                             {wePrevalenceData.map((entry) => (
-                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
+                                                <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
                             </>
                         </ChartContainer>
-                        
+
                         <ChartContainer config={weDetectionConfig} className="min-h-[150px] w-full">
-                             <>
+                            <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">Clinical Presentation of Acute WE</CardTitle>
                                 </CardHeader>
-                                 <ResponsiveContainer width="100%" height={150}>
+                                <ResponsiveContainer width="100%" height={150}>
                                     <PieChart>
                                         <Tooltip content={<ChartTooltipContent hideLabel />} />
                                         <Pie data={weDetectionData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={50} >
-                                             {weDetectionData.map((entry) => (
+                                            {weDetectionData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
                                         </Pie>
                                         <Legend layout="vertical" align="right" verticalAlign="middle" />
                                     </PieChart>
                                 </ResponsiveContainer>
-                             </>
+                            </>
                         </ChartContainer>
                         <p className="text-xs text-muted-foreground mt-2">The high prevalence combined with low classic symptom frequency highlights a crisis of underdiagnosis. Empirical thiamine treatment is crucial.</p>
                     </CardContent>
@@ -185,12 +185,12 @@ const QuantitativeAlcoholCnsInfographic = () => {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
+                            <SectionIcon path="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
                             3. Imaging WE: MRI vs. CT
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                         <ChartContainer config={mriSensitivityConfig} className="min-h-[150px] w-full">
+                        <ChartContainer config={mriSensitivityConfig} className="min-h-[150px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">MRI Diagnostic Accuracy for Acute WE</CardTitle>
@@ -201,7 +201,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="value" name="Percentage" radius={4}>
+                                        <Bar dataKey="value" name="Percentage" radius={[4, 4, 0, 0]} barSize={40}>
                                             {mriWeSensitivityData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -210,20 +210,20 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                 </ResponsiveContainer>
                             </>
                         </ChartContainer>
-                        
+
                         <ChartContainer config={mriLocationConfig} className="min-h-[200px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">Frequency of MRI Regional Findings</CardTitle>
                                 </CardHeader>
-                                 <ResponsiveContainer width="100%" height={200}>
+                                <ResponsiveContainer width="100%" height={200}>
                                     <BarChart accessibilityLayer data={mriWeLocationData} layout="vertical" margin={{ left: 150, right: 20 }}>
                                         <CartesianGrid horizontal={false} />
                                         <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={150} tick={{ fontSize: 10 }} />
                                         <XAxis dataKey="frequency" type="number" unit="%" />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="frequency" name="Frequency" radius={4}>
-                                             {mriWeLocationData.map((entry) => (
+                                        <Bar dataKey="frequency" name="Frequency" radius={[0, 4, 4, 0]} barSize={30}>
+                                            {mriWeLocationData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
                                         </Bar>
@@ -239,18 +239,18 @@ const QuantitativeAlcoholCnsInfographic = () => {
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
-                           4. MBD & ODS Quantification
+                            4. MBD & ODS Quantification
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div>
-                          <h3 className="font-semibold text-foreground">Marchiafava-Bignami Disease (MBD)</h3>
-                          <p className="text-sm text-muted-foreground mt-1">Extremely rare degeneration of the corpus callosum linked to chronic alcohol use and B vitamin deficiencies. Prevalence is underestimated ({'<'}300 reported cases pre-2001). MRI is essential for diagnosis, showing symmetrical corpus callosum lesions.</p>
-                      </div>
-                      <div>
-                          <h3 className="font-semibold text-foreground">Osmotic Demyelination Syndrome (ODS)</h3>
-                          <p className="text-sm text-muted-foreground mt-1">Caused by rapid correction of chronic hyponatremia. AUD is a major risk factor (ORa: 15.27).</p>
-                           <ChartContainer config={odsConfig} className="min-h-[150px] w-full">
+                        <div>
+                            <h3 className="font-semibold text-foreground">Marchiafava-Bignami Disease (MBD)</h3>
+                            <p className="text-sm text-muted-foreground mt-1">Extremely rare degeneration of the corpus callosum linked to chronic alcohol use and B vitamin deficiencies. Prevalence is underestimated ({'<'}300 reported cases pre-2001). MRI is essential for diagnosis, showing symmetrical corpus callosum lesions.</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-foreground">Osmotic Demyelination Syndrome (ODS)</h3>
+                            <p className="text-sm text-muted-foreground mt-1">Caused by rapid correction of chronic hyponatremia. AUD is a major risk factor (ORa: 15.27).</p>
+                            <ChartContainer config={odsConfig} className="min-h-[150px] w-full">
                                 <>
                                     <CardHeader className="p-0 mt-2 mb-2">
                                         <CardTitle className="text-base">Association of ODS with AUD</CardTitle>
@@ -259,7 +259,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <PieChart>
                                             <Tooltip content={<ChartTooltipContent hideLabel />} />
                                             <Pie data={odsAudAssociationData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={50} >
-                                                 {odsAudAssociationData.map((entry) => (
+                                                {odsAudAssociationData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
                                             </Pie>
@@ -268,20 +268,20 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                     </ResponsiveContainer>
                                 </>
                             </ChartContainer>
-                      </div>
+                        </div>
                     </CardContent>
                 </Card>
-                
+
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                           5. Chronic Effects: Cerebral Atrophy
+                            5. Chronic Effects: Cerebral Atrophy
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                         <p className="text-sm text-muted-foreground mb-4">Chronic alcohol use leads to structural brain damage, primarily cerebral atrophy and white matter deficits. White matter damage is considered a defining characteristic.</p>
-                         <ChartContainer config={corpusCallosumConfig} className="min-h-[200px] w-full">
+                        <p className="text-sm text-muted-foreground mb-4">Chronic alcohol use leads to structural brain damage, primarily cerebral atrophy and white matter deficits. White matter damage is considered a defining characteristic.</p>
+                        <ChartContainer config={corpusCallosumConfig} className="min-h-[200px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">Corpus Callosum Atrophy in AUD</CardTitle>
@@ -290,9 +290,9 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                     <BarChart accessibilityLayer data={corpusCallosumAtrophyData}>
                                         <CartesianGrid vertical={false} />
                                         <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
-                                        <YAxis unit="%" domain={[0, 20]}/>
+                                        <YAxis unit="%" domain={[0, 20]} />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="reduction" name="Reduction (%)" radius={4}>
+                                        <Bar dataKey="reduction" name="Reduction (%)" radius={[4, 4, 0, 0]} barSize={40}>
                                             {corpusCallosumAtrophyData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -301,7 +301,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                 </ResponsiveContainer>
                             </>
                         </ChartContainer>
-                         <p className="text-xs text-muted-foreground mt-2">Corpus callosum atrophy directly correlates with lifetime alcohol consumption, serving as a biomarker of chronic toxicity.</p>
+                        <p className="text-xs text-muted-foreground mt-2">Corpus callosum atrophy directly correlates with lifetime alcohol consumption, serving as a biomarker of chronic toxicity.</p>
                     </CardContent>
                 </Card>
 
@@ -309,15 +309,15 @@ const QuantitativeAlcoholCnsInfographic = () => {
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           Sources
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground columns-1 md:columns-2">
-                           {sources.map((source, index) => (
+                            {sources.map((source, index) => (
                                 <li key={index} className="break-inside-avoid">
-                                    <span className="font-semibold">{source.title}</span> - {source.source}. 
+                                    <span className="font-semibold">{source.title}</span> - {source.source}.
                                     <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-1">
                                         [Access Link]
                                     </a>

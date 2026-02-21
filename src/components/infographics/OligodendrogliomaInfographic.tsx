@@ -45,12 +45,12 @@ const survivalData: {
     survival: number;
     key: 'grade2' | 'grade3';
 }[] = [
-  { grade: 'WHO Grade 2', survival: 95, key: 'grade2' },
-  { grade: 'WHO Grade 3', survival: 75, key: 'grade3' },
-];
+        { grade: 'WHO Grade 2', survival: 95, key: 'grade2' },
+        { grade: 'WHO Grade 3', survival: 75, key: 'grade3' },
+    ];
 
 const survivalConfig = {
-    survival: { label: '5-Year Survival'},
+    survival: { label: '5-Year Survival' },
     grade2: { color: 'hsl(var(--chart-2))' },
     grade3: { color: 'hsl(var(--chart-5))' },
 }
@@ -61,7 +61,7 @@ const OligodendrogliomaInfographic = () => {
     const { t } = useTranslation();
     const currentDate = "October 9, 2025";
     const infoTheme = "IDH-Mutated, 1p/19q Codeleted Oligodendroglioma";
-    
+
     const sources = [
         { title: 'The 2021 WHO Classification of Tumors of the Central Nervous System: a summary', source: 'Louis, D. N., et al. (2021). Neuro-oncology', url: 'https://doi.org/10.1093/neuonc/noab106' },
         { title: 'Oligodendroglioma and Other IDH-Mutated Tumors: Diagnosis and Treatment', source: 'National Cancer Institute', url: 'https://www.cancer.gov/rare-brain-spine-tumor/tumors/oligodendroglioma' },
@@ -110,25 +110,25 @@ const OligodendrogliomaInfographic = () => {
                     </CardHeader>
                     <CardContent>
                         <ul className="list-disc list-inside text-base text-muted-foreground mt-1 space-y-2">
-                           <li><strong>Incidence:</strong> ~0.3 per 100,000 population/year (5-25% of all gliomas).</li>
-                           <li><strong>Peak Age:</strong> Adults, commonly 20-60 years. Rare in children.</li>
-                           <li><strong>Sex:</strong> Slight male predominance.</li>
-                           <li><strong>Location:</strong> Typically <strong className="text-primary">supratentorial</strong>, with predilection for <strong className="text-primary">frontal or temporal lobes</strong>.</li>
-                           <li><strong>Growth Pattern:</strong> Infiltrative, involving both cortex and subcortical white matter.</li>
-                           <li><strong>Common Symptom:</strong> <strong className="text-amber-600 dark:text-amber-400">Seizures</strong> due to cortical involvement.</li>
+                            <li><strong>Incidence:</strong> ~0.3 per 100,000 population/year (5-25% of all gliomas).</li>
+                            <li><strong>Peak Age:</strong> Adults, commonly 20-60 years. Rare in children.</li>
+                            <li><strong>Sex:</strong> Slight male predominance.</li>
+                            <li><strong>Location:</strong> Typically <strong className="text-primary">supratentorial</strong>, with predilection for <strong className="text-primary">frontal or temporal lobes</strong>.</li>
+                            <li><strong>Growth Pattern:</strong> Infiltrative, involving both cortex and subcortical white matter.</li>
+                            <li><strong>Common Symptom:</strong> <strong className="text-amber-600 dark:text-amber-400">Seizures</strong> due to cortical involvement.</li>
                         </ul>
                     </CardContent>
                 </Card>
-                
+
                 <Card>
-                     <CardHeader>
+                    <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                             3. Conventional Imaging Findings
                         </CardTitle>
                     </CardHeader>
-                     <CardContent>
-                         <div className="overflow-x-auto">
+                    <CardContent>
+                        <div className="overflow-x-auto">
                             <Table className="text-sm">
                                 <TableHeader>
                                     <TableRow>
@@ -165,7 +165,7 @@ const OligodendrogliomaInfographic = () => {
                                     </TableRow>
                                 </TableBody>
                             </Table>
-                         </div>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -178,7 +178,7 @@ const OligodendrogliomaInfographic = () => {
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
-                             <Table className="text-sm">
+                            <Table className="text-sm">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Technique</TableHead>
@@ -209,18 +209,18 @@ const OligodendrogliomaInfographic = () => {
                                 </TableBody>
                             </Table>
                         </div>
-                         <p className="text-xs text-muted-foreground mt-2">Unlike astrocytomas, malignancy (Grade III) in ODG often lacks markedly elevated rCBV, relying more on MRS findings and growth.</p>
+                        <p className="text-xs text-muted-foreground mt-2">Unlike astrocytomas, malignancy (Grade III) in ODG often lacks markedly elevated rCBV, relying more on MRS findings and growth.</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader>
-                       <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M16.023 9.348h4.992v-.001a.75.75 0 01.75.75c0 .414-.336.75-.75.75h-4.992a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 0112 4.5v-2.25c0-.414.336-.75.75-.75s.75.336.75.75V4.5a.75.75 0 00.75.75h3.037a.75.75 0 010 1.5H13.5a.75.75 0 00-.75.75V9a2.25 2.25 0 012.273-2.25zM5.25 6.75c0-.414.336-.75.75-.75H9a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 00-.75.75v1.5c0 .414-.336-.75-.75.75s-.75-.336-.75-.75v-1.5A2.25 2.25 0 015.25 9V6.75z" />
-                           5. Radiogenomics & Prognosis
+                        <CardTitle className="flex items-center text-xl">
+                            <SectionIcon path="M16.023 9.348h4.992v-.001a.75.75 0 01.75.75c0 .414-.336.75-.75.75h-4.992a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 0112 4.5v-2.25c0-.414.336-.75.75-.75s.75.336.75.75V4.5a.75.75 0 00.75.75h3.037a.75.75 0 010 1.5H13.5a.75.75 0 00-.75.75V9a2.25 2.25 0 012.273-2.25zM5.25 6.75c0-.414.336-.75.75-.75H9a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 00-.75.75v1.5c0 .414-.336-.75-.75.75s-.75-.336-.75-.75v-1.5A2.25 2.25 0 015.25 9V6.75z" />
+                            5. Radiogenomics & Prognosis
                         </CardTitle>
                     </CardHeader>
-                     <CardContent>
+                    <CardContent>
                         <h3 className="font-semibold text-foreground mb-1">Predicting 1p/19q Codeletion:</h3>
                         <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 mb-4">
                             <li><strong className="text-amber-600 dark:text-amber-400">Calcification:</strong> Strongest morphological predictor.</li>
@@ -230,8 +230,8 @@ const OligodendrogliomaInfographic = () => {
                         {/* ----- INICIO DE LA SECCIÓN CORREGIDA ----- */}
                         <Card className="mt-4">
                             <CardHeader className="p-2">
-                               <CardTitle className="text-base">5-Year Survival by WHO Grade</CardTitle>
-                               <CardDescription className="text-xs">Illustrates the significant prognostic impact of grade.</CardDescription>
+                                <CardTitle className="text-base">5-Year Survival by WHO Grade</CardTitle>
+                                <CardDescription className="text-xs">Illustrates the significant prognostic impact of grade.</CardDescription>
                             </CardHeader>
                             <CardContent className="p-0">
                                 <ChartContainer config={survivalConfig} className="min-h-[150px] w-full">
@@ -239,9 +239,9 @@ const OligodendrogliomaInfographic = () => {
                                         <BarChart accessibilityLayer data={survivalData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                                             <CartesianGrid vertical={false} />
                                             <XAxis dataKey="grade" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
-                                            <YAxis unit="%" domain={[0, 100]}/>
+                                            <YAxis unit="%" domain={[0, 100]} />
                                             <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="survival" name="5-Year Survival" radius={4}>
+                                            <Bar dataKey="survival" name="5-Year Survival" radius={[4, 4, 0, 0]} barSize={40}>
                                                 {survivalData.map((entry) => (
                                                     <Cell key={`cell-${entry.grade}`} fill={survivalConfig[entry.key].color} />
                                                 ))}
@@ -258,32 +258,32 @@ const OligodendrogliomaInfographic = () => {
 
                 <Card>
                     <CardHeader>
-                       <CardTitle className="flex items-center text-xl">
+                        <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                             6. Follow-up & Clinical Implications
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="list-disc list-inside text-sm text-muted-foreground mt-1 space-y-2">
-                           <li><strong>Monitoring:</strong> Regular MRI (at least annually) is crucial due to slow growth and risk of anaplastic transformation.</li>
-                           <li><strong>Signs of Progression:</strong> Increased volume, new/progressive enhancement, or rising Cho/NAA ratio on MRS may indicate transformation to Grade 3.</li>
-                           <li><strong>Therapeutic Guidance:</strong> MRI guides maximal safe resection. Radiogenomic profile (suggested by imaging) determines chemo/radiotherapy decisions.</li>
+                            <li><strong>Monitoring:</strong> Regular MRI (at least annually) is crucial due to slow growth and risk of anaplastic transformation.</li>
+                            <li><strong>Signs of Progression:</strong> Increased volume, new/progressive enhancement, or rising Cho/NAA ratio on MRS may indicate transformation to Grade 3.</li>
+                            <li><strong>Therapeutic Guidance:</strong> MRI guides maximal safe resection. Radiogenomic profile (suggested by imaging) determines chemo/radiotherapy decisions.</li>
                         </ul>
                     </CardContent>
                 </Card>
-                
+
                 <Card className="md:col-span-2">
                     <CardHeader>
-                       <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           Sources
+                        <CardTitle className="flex items-center text-xl">
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground columns-1 md:columns-2">
-                           {sources.map((source, index) => (
+                            {sources.map((source, index) => (
                                 <li key={index} className="break-inside-avoid">
-                                    <span className="font-semibold">{source.title}</span> - {source.source}. 
+                                    <span className="font-semibold">{source.title}</span> - {source.source}.
                                     <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-1">
                                         [Access Link]
                                     </a>

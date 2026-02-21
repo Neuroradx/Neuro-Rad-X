@@ -21,16 +21,16 @@ const SectionIcon = ({ path }: { path: string }) => (
 // --- Chart Data & Config ---
 
 const trialCriteriaData = [
-  { name: 'DEFUSE 3 Core', value: 70, unit: '≤ mL' },
-  { name: 'DEFUSE 3 Mismatch Ratio', value: 1.8, unit: '≥' },
-  { name: 'DAWN Core (NIHSS≥10)', value: 30, unit: '< mL' },
+    { name: 'DEFUSE 3 Core', value: 70, unit: '≤ mL' },
+    { name: 'DEFUSE 3 Mismatch Ratio', value: 1.8, unit: '≥' },
+    { name: 'DAWN Core (NIHSS≥10)', value: 30, unit: '< mL' },
 ];
 
 const trialCriteriaConfig = {
-  value: {
-    label: 'Value',
-    color: 'hsl(var(--chart-1))',
-  },
+    value: {
+        label: 'Value',
+        color: 'hsl(var(--chart-1))',
+    },
 };
 
 
@@ -88,7 +88,7 @@ const AcuteIschemicStrokeInfographic = () => {
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M12 9.75v6.75m0 0l-3-3m3 3l3-3m-8.25 6a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                            <SectionIcon path="M12 9.75v6.75m0 0l-3-3m3 3l3-3m-8.25 6a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                             2. Imaging Techniques to Assess Perfusion
                         </CardTitle>
                     </CardHeader>
@@ -98,7 +98,7 @@ const AcuteIschemicStrokeInfographic = () => {
                             <p className="text-base text-muted-foreground">Involves acquiring multiple brain scans over time after an IV contrast injection. It results in a higher radiation dose than multiphase CTA.</p>
                             <div>
                                 <h4 className="font-semibold text-secondary">Key CTP Parameters:</h4>
-                                 <ul className="list-disc list-inside text-base text-muted-foreground mt-1 space-y-2">
+                                <ul className="list-disc list-inside text-base text-muted-foreground mt-1 space-y-2">
                                     <li><strong>CBV (Cerebral Blood Volume):</strong> Total blood volume in a brain region. A decrease suggests infarcted tissue (core).</li>
                                     <li><strong>CBF (Cerebral Blood Flow):</strong> Blood volume flow per minute. A relative CBF of {'<'}30% of normal is a validated marker for the ischemic core.</li>
                                     <li><strong>MTT (Mean Transit Time):</strong> Average time for contrast to pass through capillaries. Prolonged MTT can be protective.</li>
@@ -106,28 +106,28 @@ const AcuteIschemicStrokeInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                         <div className="space-y-4">
+                        <div className="space-y-4">
                             <h3 className="font-semibold text-primary text-lg">MR Perfusion (MRP)</h3>
-                             <div>
+                            <div>
                                 <h4 className="font-semibold text-secondary">Dynamic Susceptibility Contrast (DSC-MRI):</h4>
                                 <p className="text-base text-muted-foreground mt-1">Measures T2* signal drop during contrast passage. Does not provide reliable absolute quantification of CBF and CBV.</p>
                             </div>
-                             <div>
+                            <div>
                                 <h4 className="font-semibold text-secondary">Arterial Spin Labeling (ASL):</h4>
                                 <p className="text-base text-muted-foreground mt-1">Provides quantitative information without exogenous contrast. Allows for repeated measurements but has a lower signal-to-noise ratio.</p>
                             </div>
-                             <div>
+                            <div>
                                 <h4 className="font-semibold text-secondary">DWI-PWI Mismatch:</h4>
                                 <p className="text-base text-muted-foreground mt-1">The mismatch between the DWI lesion (core) and the larger perfusion defect on PWI approximates the penumbra. A large mismatch suggests a favorable response to reperfusion.</p>
                             </div>
-                             <div>
+                            <div>
                                 <h4 className="font-semibold text-secondary">DWI-FLAIR Mismatch:</h4>
                                 <p className="text-base text-muted-foreground mt-1">For wake-up strokes, a visible DWI lesion without a corresponding FLAIR signal suggests the stroke occurred within a treatable window (approx. 4.5 hours).</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
-                
+
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
@@ -154,7 +154,7 @@ const AcuteIschemicStrokeInfographic = () => {
                     </CardHeader>
                     <CardContent>
                         <p className="text-base text-muted-foreground mb-4">Recent clinical trials like DAWN and DEFUSE 3 have established the benefit of mechanical thrombectomy in extended time windows (up to 24 hours) for patients selected based on perfusion mismatch criteria. These trials have shifted stroke care from a "time-based" to a "tissue-based" approach.</p>
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Patient Selection Criteria (DAWN & DEFUSE 3)</CardTitle>
                                 <CardDescription>Key volumetric and ratio thresholds for thrombectomy.</CardDescription>
@@ -167,7 +167,7 @@ const AcuteIschemicStrokeInfographic = () => {
                                             <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} />
                                             <YAxis />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="value" fill="var(--color-value)" radius={4} />
+                                            <Bar dataKey="value" fill="var(--color-value)" radius={[4, 4, 0, 0]} barSize={40} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </ChartContainer>
@@ -175,7 +175,7 @@ const AcuteIschemicStrokeInfographic = () => {
                         </Card>
                     </CardContent>
                 </Card>
-                
+
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
@@ -184,21 +184,21 @@ const AcuteIschemicStrokeInfographic = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ul className="space-y-3 text-sm text-muted-foreground columns-1 md:columns-2">
-                           <li className="break-inside-avoid">1. Astrup, J., et al. (1981). *Stroke*. <a href="https://doi.org/10.1161/01.str.12.6.723" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/01.str.12.6.723</a></li>
-                           <li className="break-inside-avoid">2. Campbell, B. C., et al. (2012). *J Cereb Blood Flow Metab*. <a href="https://doi.org/10.1038/jcbfm.2011.102" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1038/jcbfm.2011.102</a></li>
-                           <li className="break-inside-avoid">3. Olivot, J. M., et al. (2014). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.113.003857" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.113.003857</a></li>
-                           <li className="break-inside-avoid">4. d’Esterre, C. D., et al. (2015). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.115.009250" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.115.009250</a></li>
-                           <li className="break-inside-avoid">5. Campbell, B. C. V., et al. (2019). *Lancet Neurology*. <a href="https://doi.org/10.1016/s1474-4422(18)30314-4" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/s1474-4422(18)30314-4</a></li>
-                           <li className="break-inside-avoid">6. Demeestere, J., et al. (2020). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.119.032924" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.119.032924</a></li>
-                           <li className="break-inside-avoid">7. Saver, J. L., et al. (2020). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.120.030332" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.120.030332</a></li>
-                           <li className="break-inside-avoid">8. Turc, G., et al. (2023). *J NeuroInterventional Surg*. <a href="https://doi.org/10.1136/neurintsurg-2018-014569" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1136/neurintsurg-2018-014569</a></li>
-                           <li className="break-inside-avoid">9. Bivard, A., et al. (2013). *Radiology*. <a href="https://doi.org/10.1148/radiol.12120971" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1148/radiol.12120971</a></li>
-                           <li className="break-inside-avoid">10. Powers, W. J., et al. (2019). *Stroke*. <a href="https://doi.org/10.1161/STR.0000000000000211" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STR.0000000000000211</a></li>
+                        <ul className="space-y-3 text-sm text-muted-foreground columns-1 md:columns-2">
+                            <li className="break-inside-avoid">1. Astrup, J., et al. (1981). *Stroke*. <a href="https://doi.org/10.1161/01.str.12.6.723" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/01.str.12.6.723</a></li>
+                            <li className="break-inside-avoid">2. Campbell, B. C., et al. (2012). *J Cereb Blood Flow Metab*. <a href="https://doi.org/10.1038/jcbfm.2011.102" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1038/jcbfm.2011.102</a></li>
+                            <li className="break-inside-avoid">3. Olivot, J. M., et al. (2014). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.113.003857" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.113.003857</a></li>
+                            <li className="break-inside-avoid">4. d’Esterre, C. D., et al. (2015). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.115.009250" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.115.009250</a></li>
+                            <li className="break-inside-avoid">5. Campbell, B. C. V., et al. (2019). *Lancet Neurology*. <a href="https://doi.org/10.1016/s1474-4422(18)30314-4" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/s1474-4422(18)30314-4</a></li>
+                            <li className="break-inside-avoid">6. Demeestere, J., et al. (2020). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.119.032924" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.119.032924</a></li>
+                            <li className="break-inside-avoid">7. Saver, J. L., et al. (2020). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.120.030332" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.120.030332</a></li>
+                            <li className="break-inside-avoid">8. Turc, G., et al. (2023). *J NeuroInterventional Surg*. <a href="https://doi.org/10.1136/neurintsurg-2018-014569" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1136/neurintsurg-2018-014569</a></li>
+                            <li className="break-inside-avoid">9. Bivard, A., et al. (2013). *Radiology*. <a href="https://doi.org/10.1148/radiol.12120971" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1148/radiol.12120971</a></li>
+                            <li className="break-inside-avoid">10. Powers, W. J., et al. (2019). *Stroke*. <a href="https://doi.org/10.1161/STR.0000000000000211" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STR.0000000000000211</a></li>
                         </ul>
                     </CardContent>
                 </Card>
-                
+
             </main>
 
             <footer className="text-center mt-10 text-xs text-muted-foreground">

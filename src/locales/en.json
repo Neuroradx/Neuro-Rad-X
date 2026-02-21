@@ -1,4 +1,11 @@
 {
+  "infographicCategories": {
+    "vascular": "Vascular",
+    "microangiopathy": "Microangiopathy",
+    "oncology": "Oncology",
+    "inflammatory_infectious_toxic": "Inflammatory / Infectious / Toxic",
+    "general_technique": "General / Technique"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "tutorMode": "Tutor Mode",

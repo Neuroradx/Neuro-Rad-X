@@ -14,19 +14,26 @@ import { autoCreateOrUpdateInfographics } from '@/actions/infographic-actions';
 import { format } from 'date-fns';
 import { Separator } from '@/components/ui/separator';
 
-const ITEMS_PER_PAGE = 10;
+const CATEGORY_ORDER = [
+    'vascular',
+    'microangiopathy',
+    'oncology',
+    'inflammatory_infectious_toxic',
+    'general_technique',
+    'other'
+];
 
 const formatTimestamp = (timestamp: any): string => {
-  if (!timestamp || typeof timestamp.toDate !== 'function') {
-    return 'Date not available';
-  }
-  try {
-    const date = (timestamp as Timestamp).toDate();
-    return format(date, "MMMM d, yyyy");
-  } catch (e) {
-    console.error("Error formatting timestamp:", e);
-    return 'Invalid Date';
-  }
+    if (!timestamp || typeof timestamp.toDate !== 'function') {
+        return 'Date not available';
+    }
+    try {
+        const date = (timestamp as Timestamp).toDate();
+        return format(date, "MMMM d, yyyy");
+    } catch (e) {
+        console.error("Error formatting timestamp:", e);
+        return 'Invalid Date';
+    }
 };
 
 export default function InfographicsPage() {
@@ -36,7 +43,6 @@ export default function InfographicsPage() {
     const [error, setError] = useState<string | null>(null);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
 
     const fetchInfographics = useCallback(async () => {
         setIsLoading(true);
@@ -52,7 +58,7 @@ export default function InfographicsPage() {
                 id: doc.id,
                 ...doc.data(),
             })) as Infographic[];
-            
+
             setInfographics(fetchedInfographics);
         } catch (err: any) {
             console.error("Failed to fetch infographics:", err);
@@ -72,20 +78,15 @@ export default function InfographicsPage() {
         );
     }, [infographics, searchTerm]);
 
-    const totalPages = Math.ceil(filteredInfographics.length / ITEMS_PER_PAGE);
-
-    const paginatedInfographics = useMemo(() => {
-        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
-        return filteredInfographics.slice(startIndex, endIndex);
-    }, [filteredInfographics, currentPage]);
-    
-    // Reset to page 1 if current page becomes invalid after filtering
-    useEffect(() => {
-      if (currentPage > totalPages && totalPages > 0) {
-        setCurrentPage(1);
-      }
-    }, [currentPage, totalPages]);
+    const groupedInfographics = useMemo(() => {
+        const groups: Record<string, Infographic[]> = {};
+        filteredInfographics.forEach(info => {
+            const cat = info.categoryId || 'other';
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push(info);
+        });
+        return groups;
+    }, [filteredInfographics]);
 
 
     return (
@@ -95,8 +96,8 @@ export default function InfographicsPage() {
                 <h1 className="text-3xl font-bold">{t('nav.infographics')}</h1>
             </div>
             <p className="text-muted-foreground mb-8">
-                {t('infographics.pageDescription', { 
-                    defaultValue: 'Explore our collection of detailed infographics covering key neuroradiology topics.' 
+                {t('infographics.pageDescription', {
+                    defaultValue: 'Explore our collection of detailed infographics covering key neuroradiology topics.'
                 })}
             </p>
 
@@ -108,7 +109,6 @@ export default function InfographicsPage() {
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value);
-                        setCurrentPage(1);
                     }}
                     className="pl-10 w-full max-w-sm"
                 />
@@ -124,7 +124,7 @@ export default function InfographicsPage() {
                     <AlertTitle>{t('error.title', { defaultValue: 'Error' })}</AlertTitle>
                     <AlertDescription>{error}</AlertDescription>
                 </Alert>
-            ) : paginatedInfographics.length === 0 ? (
+            ) : filteredInfographics.length === 0 ? (
                 <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>{t('infographics.noInfographicsTitle', { defaultValue: 'No Infographics Found' })}</AlertTitle>
@@ -133,57 +133,83 @@ export default function InfographicsPage() {
                     </AlertDescription>
                 </Alert>
             ) : (
-                <>
-                <div className="w-full max-w-3xl mx-auto border-t">
-                    {paginatedInfographics.map((infographic) => (
-                       <div key={infographic.id} className="border-b p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
-                            <div>
-                                <Link href={`/infographics/${infographic.id}`} className="group">
-                                    <h3 className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
-                                        {infographic.title}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground mt-1">
-                                      Created: {formatTimestamp(infographic.createdAt)}
-                                    </p>
-                                </Link>
+                <div className="w-full max-w-3xl mx-auto">
+                    {CATEGORY_ORDER.map(cat => {
+                        const items = groupedInfographics[cat] || [];
+                        if (items.length === 0) return null;
+
+                        return (
+                            <div key={cat} className="mb-8">
+                                <h2 className="text-xl font-semibold mb-4 text-primary border-b pb-2">
+                                    {t(`infographicCategories.${cat}`, { defaultValue: cat })}
+                                </h2>
+                                <div className="flex flex-col">
+                                    {items.map((infographic) => (
+                                        <div key={infographic.id} className="border-b last:border-0 py-4 flex justify-between items-center transition-colors">
+                                            <div>
+                                                <Link href={`/infographics/${infographic.id}`} className="group">
+                                                    <h3 className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
+                                                        {infographic.title}
+                                                    </h3>
+                                                    <p className="text-sm text-muted-foreground mt-1">
+                                                        Created: {formatTimestamp(infographic.createdAt)}
+                                                    </p>
+                                                </Link>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <a href={`/view-infographics/${infographic.id}`} target="_blank" rel="noopener noreferrer" title="Open in new tab">
+                                                    <Button variant="ghost" size="icon" aria-label={`Open ${infographic.title} in new tab`}>
+                                                        <ExternalLink className="h-5 w-5 text-muted-foreground hover:text-primary" />
+                                                    </Button>
+                                                </a>
+                                                <Link href={`/infographics/${infographic.id}`} passHref title="View infographic">
+                                                    <Button variant="outline" size="icon" aria-label={`View ${infographic.title}`}>
+                                                        <ChevronRight className="h-5 w-5" />
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="flex items-center gap-1">
-                                <a href={`/view-infographics/${infographic.id}`} target="_blank" rel="noopener noreferrer" title="Open in new tab">
-                                    <Button variant="ghost" size="icon" aria-label={`Open ${infographic.title} in new tab`}>
-                                        <ExternalLink className="h-5 w-5 text-muted-foreground hover:text-primary" />
-                                    </Button>
-                                </a>
-                                <Link href={`/infographics/${infographic.id}`} passHref title="View infographic">
-                                    <Button variant="outline" size="icon" aria-label={`View ${infographic.title}`}>
-                                        <ChevronRight className="h-5 w-5" />
-                                    </Button>
-                                </Link>
+                        );
+                    })}
+                    {Object.keys(groupedInfographics).filter(cat => !CATEGORY_ORDER.includes(cat)).map(cat => (
+                        <div key={cat} className="mb-8">
+                            <h2 className="text-xl font-semibold mb-4 text-primary border-b pb-2">
+                                {t(`infographicCategories.${cat}`, { defaultValue: cat })}
+                            </h2>
+                            <div className="flex flex-col">
+                                {groupedInfographics[cat].map((infographic) => (
+                                    <div key={infographic.id} className="border-b last:border-0 py-4 flex justify-between items-center transition-colors">
+                                        <div>
+                                            <Link href={`/infographics/${infographic.id}`} className="group">
+                                                <h3 className="text-lg font-medium text-foreground group-hover:text-primary transition-colors">
+                                                    {infographic.title}
+                                                </h3>
+                                                <p className="text-sm text-muted-foreground mt-1">
+                                                    Created: {formatTimestamp(infographic.createdAt)}
+                                                </p>
+                                            </Link>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <a href={`/view-infographics/${infographic.id}`} target="_blank" rel="noopener noreferrer" title="Open in new tab">
+                                                <Button variant="ghost" size="icon" aria-label={`Open ${infographic.title} in new tab`}>
+                                                    <ExternalLink className="h-5 w-5 text-muted-foreground hover:text-primary" />
+                                                </Button>
+                                            </a>
+                                            <Link href={`/infographics/${infographic.id}`} passHref title="View infographic">
+                                                <Button variant="outline" size="icon" aria-label={`View ${infographic.title}`}>
+                                                    <ChevronRight className="h-5 w-5" />
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     ))}
                 </div>
-                {totalPages > 1 && (
-                    <div className="mt-8 flex justify-center items-center gap-4">
-                        <Button
-                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                            disabled={currentPage === 1}
-                            variant="outline"
-                        >
-                            <ChevronLeft className="mr-2 h-4 w-4" /> {t('pagination.previous', { defaultValue: 'Previous' })}
-                        </Button>
-                        <span className="text-sm text-muted-foreground">
-                            {t('pagination.page', { defaultValue: 'Page' })} {currentPage} {t('pagination.of', { defaultValue: 'of' })} {totalPages}
-                        </span>
-                        <Button
-                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                            disabled={currentPage === totalPages}
-                            variant="outline"
-                        >
-                            {t('pagination.next', { defaultValue: 'Next' })} <ChevronRight className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )}
-                </>
             )}
         </div>
     );

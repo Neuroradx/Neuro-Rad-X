@@ -19,7 +19,7 @@ export async function autoCreateOrUpdateInfographics() {
     const deleteBatch = adminDb.batch();
     const snapshot = await infographicsRef.get();
     let deletedCount = 0;
-    
+
     snapshot.forEach(doc => {
       // Only consider deleting documents that were marked as components,
       // to avoid deleting manually added HTML infographics in the future.
@@ -29,7 +29,7 @@ export async function autoCreateOrUpdateInfographics() {
         console.log(`[Auto-Sync] Scheduling deletion for obsolete infographic: ${doc.id}`);
       }
     });
-    
+
     if (deletedCount > 0) {
       await deleteBatch.commit();
       console.log(`[Auto-Sync] Successfully deleted ${deletedCount} obsolete infographics.`);
@@ -42,10 +42,11 @@ export async function autoCreateOrUpdateInfographics() {
       const docSnap = await docRef.get();
 
       const infographicData = {
-          id: info.id,
-          title: info.title,
-          isComponent: true,
-          createdAt: FieldValue.serverTimestamp(),
+        id: info.id,
+        title: info.title,
+        categoryId: info.categoryId || null,
+        isComponent: true,
+        createdAt: FieldValue.serverTimestamp(),
       };
 
       if (!docSnap.exists) {
@@ -53,14 +54,15 @@ export async function autoCreateOrUpdateInfographics() {
         console.log(`[Auto-Sync] Scheduling creation for infographic: ${info.id}`);
       } else {
         const existingData = docSnap.data();
-        const updates: {[key: string]: any} = {};
+        const updates: { [key: string]: any } = {};
         if (existingData?.isComponent !== true) updates.isComponent = true;
         if (existingData?.title !== info.title) updates.title = info.title;
+        if (existingData?.categoryId !== info.categoryId) updates.categoryId = info.categoryId || null;
         if (!existingData?.createdAt) updates.createdAt = FieldValue.serverTimestamp();
-        
+
         if (Object.keys(updates).length > 0) {
-           upsertBatch.update(docRef, updates);
-           console.log(`[Auto-Sync] Scheduling update for infographic: ${info.id} with updates:`, Object.keys(updates));
+          upsertBatch.update(docRef, updates);
+          console.log(`[Auto-Sync] Scheduling update for infographic: ${info.id} with updates:`, Object.keys(updates));
         }
       }
     }

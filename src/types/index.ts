@@ -94,3 +94,12 @@ export interface UserQuestionState {
   lastSeen: any;
 }
 
+export interface Infographic {
+  id: string;
+  title: string;
+  categoryId?: string;
+  isComponent?: boolean;
+  createdAt?: any;
+  htmlContent?: string;
+}
+

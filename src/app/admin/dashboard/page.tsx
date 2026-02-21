@@ -13,6 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, ShieldAlert, Users, UserCheck, UserSearch, CreditCard, FileWarning, FileEdit, Bell, Mail, FileText, Award, LayoutGrid, Calculator, FileCheck, ClipboardCheck, Sparkles, Database, CheckCircle, AlertCircle } from 'lucide-react';
 import { getAdminSummaryStats } from '@/actions/user-data-actions';
 import { StatCard } from '@/components/dashboard/stat-card';
+import { AlgoliaSearchBar } from '@/components/questions/AlgoliaSearchBar';
 
 const AdminDashboardPage = () => {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ const AdminDashboardPage = () => {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           const userIsAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
           setIsAdmin(userIsAdmin);
-          
+
           if (userIsAdmin) {
             setIsLoadingStats(true);
             const statsResult = await getAdminSummaryStats(user.uid);
@@ -107,7 +108,7 @@ const AdminDashboardPage = () => {
         { href: "/admin/send-notification", labelKey: "admin.dashboard.links.sendNotification", icon: Mail },
       ],
     },
-     {
+    {
       titleKey: "admin.dashboard.documentsAndPromotions.title",
       icon: FileText,
       links: [
@@ -119,37 +120,41 @@ const AdminDashboardPage = () => {
 
   return (
     <div className="container mx-auto py-8">
-       <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-4">
         <LayoutGrid className="h-8 w-8 text-primary" />
         <h1 className="text-3xl font-bold">{t('admin.dashboard.title')}</h1>
       </div>
       <p className="text-muted-foreground mb-8">{t('admin.dashboard.description')}</p>
 
+      <div className="mb-10">
+        <AlgoliaSearchBar />
+      </div>
+
       {/* Summary Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <StatCard 
-          title={t('admin.dashboard.stats.totalQuestions')} 
-          value={isLoadingStats ? "..." : (summaryStats?.totalQuestions || 0)} 
-          icon={Database} 
+        <StatCard
+          title={t('admin.dashboard.stats.totalQuestions')}
+          value={isLoadingStats ? "..." : (summaryStats?.totalQuestions || 0)}
+          icon={Database}
           className="shadow-sm border-primary/10"
         />
-        <StatCard 
-          title={t('admin.dashboard.stats.pendingReview')} 
-          value={isLoadingStats ? "..." : (summaryStats?.pendingQuestions || 0)} 
-          icon={FileCheck} 
+        <StatCard
+          title={t('admin.dashboard.stats.pendingReview')}
+          value={isLoadingStats ? "..." : (summaryStats?.pendingQuestions || 0)}
+          icon={FileCheck}
           className="shadow-sm border-orange-200 bg-orange-50/30 dark:bg-orange-950/10"
           description={t('admin.dashboard.stats.reviewedLabel', { count: (summaryStats?.reviewedQuestions || 0).toString() })}
         />
-        <StatCard 
-          title={t('admin.dashboard.stats.pendingUsers')} 
-          value={isLoadingStats ? "..." : (summaryStats?.pendingUsers || 0)} 
-          icon={UserCheck} 
+        <StatCard
+          title={t('admin.dashboard.stats.pendingUsers')}
+          value={isLoadingStats ? "..." : (summaryStats?.pendingUsers || 0)}
+          icon={UserCheck}
           className="shadow-sm border-blue-200 bg-blue-50/30 dark:bg-blue-950/10"
         />
-        <StatCard 
-          title={t('admin.dashboard.stats.activeIssues')} 
-          value={isLoadingStats ? "..." : (summaryStats?.activeReports || 0)} 
-          icon={AlertCircle} 
+        <StatCard
+          title={t('admin.dashboard.stats.activeIssues')}
+          value={isLoadingStats ? "..." : (summaryStats?.activeReports || 0)}
+          icon={AlertCircle}
           className="shadow-sm border-red-200 bg-red-50/30 dark:bg-red-950/10"
         />
       </div>

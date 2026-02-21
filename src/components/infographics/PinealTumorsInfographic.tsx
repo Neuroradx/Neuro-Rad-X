@@ -25,21 +25,21 @@ const SectionIcon = ({ path, className = "text-primary" }: { path: string, class
 // --- Chart Data & Config ---
 
 const survivalData = [
-  { grade: 'WHO Grade 2', survival: 78, key: 'grade2' },
-  { grade: 'WHO Grade 3', survival: 30, key: 'grade3' },
+    { grade: 'WHO Grade 2', survival: 78, key: 'grade2' },
+    { grade: 'WHO Grade 3', survival: 30, key: 'grade3' },
 ];
 
 const survivalConfig = {
-    survival: { label: '5-Year Survival'},
+    survival: { label: '5-Year Survival' },
     grade2: { color: 'hsl(var(--chart-1))' },
     grade3: { color: 'hsl(var(--chart-5))' },
 }
 
 const ageDistributionData = [
-  { name: 'Pineoblastoma', ageGroup: 'Pediatric (<20 yrs)', key: 'pineoblastoma' },
-  { name: 'Germinoma', ageGroup: 'Pediatric/Young Adult', key: 'germinoma' },
-  { name: 'Pineocytoma', ageGroup: 'Adult (20-60 yrs)', key: 'pineocytoma' },
-  { name: 'PPTID', ageGroup: 'Adult (20-70 yrs)', key: 'pptid' },
+    { name: 'Pineoblastoma', ageGroup: 'Pediatric (<20 yrs)', key: 'pineoblastoma' },
+    { name: 'Germinoma', ageGroup: 'Pediatric/Young Adult', key: 'germinoma' },
+    { name: 'Pineocytoma', ageGroup: 'Adult (20-60 yrs)', key: 'pineocytoma' },
+    { name: 'PPTID', ageGroup: 'Adult (20-70 yrs)', key: 'pptid' },
 ];
 const ageDistributionConfig = {
     pineoblastoma: { color: 'hsl(var(--chart-5))' },
@@ -55,7 +55,7 @@ const PinealTumorsInfographic = () => {
     const { t } = useTranslation();
     const currentDate = "October 9, 2025";
     const infoTheme = "Pineal Region Tumors";
-    
+
     const sources = [
         { title: 'Pineal gland tumors: Experience from the SEER database', source: 'Konovalov, A. N., et al. (2010). Surgical Neurology International', url: 'https://doi.org/10.4103/2152-7806.74157' },
         { title: 'Radiation therapy for pineal parenchymal tumor of intermediate differentiation: A case series and literature review', source: 'Khan, R. B., et al. (2023). Clinical Case Reports', url: 'https://doi.org/10.1002/ccr3.7021' },
@@ -108,7 +108,7 @@ const PinealTumorsInfographic = () => {
                             2. Epidemiology & Age Dichotomy
                         </CardTitle>
                     </CardHeader>
-                     <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
                             <p className="text-sm text-muted-foreground mb-2">Patient age is crucial for differential diagnosis.</p>
                             <h3 className="font-semibold text-destructive">Pediatric Predominance:</h3>
@@ -116,8 +116,8 @@ const PinealTumorsInfographic = () => {
                                 <li><strong>Pineoblastoma (PB):</strong> WHO Gr IV, highly aggressive, peak &lt; 20 yrs. ~45% of PPTs. High CSF spread risk.</li>
                                 <li><strong>Germinoma (GCT):</strong> Frequent in children/young adults. Malignant but highly radiosensitive/chemosensitive. Marked male predominance (up to 11.8:1).</li>
                             </ul>
-                            <h3 className="font-semibold" style={{color: 'hsl(var(--chart-1))'}}>Adult Predominance:</h3>
-                             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                            <h3 className="font-semibold" style={{ color: 'hsl(var(--chart-1))' }}>Adult Predominance:</h3>
+                            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                                 <li><strong>Pineocytoma (PC):</strong> WHO Gr I/II, most common PPT in adults (20-60 yrs). More common in females.</li>
                                 <li><strong>PPTID:</strong> WHO Gr II/III, peak 20-70 yrs.</li>
                             </ul>
@@ -144,7 +144,7 @@ const PinealTumorsInfographic = () => {
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                             3. Conventional Imaging & Calcification Pattern
                         </CardTitle>
                         <CardDescription>MRI with contrast is standard. CT assesses calcifications and hydrocephalus.</CardDescription>
@@ -160,7 +160,7 @@ const PinealTumorsInfographic = () => {
                                 <p className="text-xs text-muted-foreground">GCTs grow *around* the pineal gland, incorporating calcifications centrally.</p>
                             </div>
                         </div>
-                         <div className="overflow-x-auto">
+                        <div className="overflow-x-auto">
                             <Table className="text-xs">
                                 <TableHeader>
                                     <TableRow>
@@ -193,7 +193,7 @@ const PinealTumorsInfographic = () => {
                                         <TableCell>Intermediate/High</TableCell>
                                         <TableCell>Prominent, Nodular/Peripheral (if cystic)</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Teratoma (GCT)</TableCell>
                                         <TableCell>Mixed (Fat/Calc.)</TableCell>
                                         <TableCell>Mixed (High Fat)</TableCell>
@@ -202,7 +202,7 @@ const PinealTumorsInfographic = () => {
                                     </TableRow>
                                 </TableBody>
                             </Table>
-                         </div>
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -215,8 +215,8 @@ const PinealTumorsInfographic = () => {
                         <CardDescription>DWI/ADC reflects cellular density and is crucial for distinguishing high-grade (highly cellular) tumors from low-grade/cystic lesions.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                         <div className="overflow-x-auto">
-                             <Table className="text-xs">
+                        <div className="overflow-x-auto">
+                            <Table className="text-xs">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Tumor Type</TableHead>
@@ -232,35 +232,35 @@ const PinealTumorsInfographic = () => {
                                         <TableCell><strong className="text-destructive">Very Low</strong> (e.g., ~343 x 10⁻⁶)</TableCell>
                                         <TableCell>Indicates extreme cellularity (PNET).</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Germinoma (GCT)</TableCell>
                                         <TableCell>High (Restricted)</TableCell>
                                         <TableCell><strong className="text-orange-500">Low, but &gt; PB</strong> (Thresholds proposed)</TableCell>
                                         <TableCell>Highly cellular; ADC ratio ≤1.15 suggestive.</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Pineocytoma (Gr I/II)</TableCell>
                                         <TableCell>Variable/Low</TableCell>
-                                        <TableCell><strong style={{color: 'hsl(var(--chart-1))'}}>Higher</strong> (Less restricted)</TableCell>
+                                        <TableCell><strong style={{ color: 'hsl(var(--chart-1))' }}>Higher</strong> (Less restricted)</TableCell>
                                         <TableCell>Lower cellularity.</TableCell>
                                     </TableRow>
-                                     <TableRow>
+                                    <TableRow>
                                         <TableCell className="font-medium">Pineal Cyst</TableCell>
                                         <TableCell>Low (No restriction)</TableCell>
                                         <TableCell><strong className="text-blue-500">High (CSF-like)</strong></TableCell>
                                         <TableCell>Definitively excludes cellular tumor.</TableCell>
                                     </TableRow>
                                 </TableBody>
-                             </Table>
-                         </div>
-                         <p className="text-xs text-muted-foreground mt-2"><strong className="text-purple-500">SWI:</strong> Superior for calcification/hemorrhage (intense blooming in PB/Teratoma, minimal in Germinoma). <strong className="text-teal-500">MRS:</strong> Germinomas often show high lipids.</p>
+                            </Table>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2"><strong className="text-purple-500">SWI:</strong> Superior for calcification/hemorrhage (intense blooming in PB/Teratoma, minimal in Germinoma). <strong className="text-teal-500">MRS:</strong> Germinomas often show high lipids.</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader>
-                       <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                        <CardTitle className="flex items-center text-xl">
+                            <SectionIcon path="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                             5. Differentiating Pineal Cysts
                         </CardTitle>
                     </CardHeader>
@@ -269,21 +269,21 @@ const PinealTumorsInfographic = () => {
                         <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                             <li><strong>Typical MRI:</strong> CSF-like signal (Low T1, High T2), often incomplete FLAIR suppression.</li>
                             <li><strong>Enhancement Pitfall:</strong> Thin peripheral rim enhancement (&lt;2mm) is common and non-specific due to lack of BBB. Delayed scans may show diffuse filling.</li>
-                            <li><strong>Definitive Feature:</strong> PCs show <strong style={{color: 'hsl(var(--chart-1))'}}>NO restricted diffusion (High ADC)</strong>, reliably distinguishing them from cellular tumors, even if enhancement is atypical.</li>
+                            <li><strong>Definitive Feature:</strong> PCs show <strong style={{ color: 'hsl(var(--chart-1))' }}>NO restricted diffusion (High ADC)</strong>, reliably distinguishing them from cellular tumors, even if enhancement is atypical.</li>
                         </ul>
                     </CardContent>
                 </Card>
 
                 <Card>
-                     <CardHeader>
+                    <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-1.37-1.37m1.37 1.37l-1.586 1.585" />
                             6. Prognosis & Key Pointers
                         </CardTitle>
                     </CardHeader>
-                     <CardContent>
-                         <Card>
-                             <CardHeader className="p-2">
+                    <CardContent>
+                        <Card>
+                            <CardHeader className="p-2">
                                 <CardTitle className="text-base">5-Year Survival by WHO Grade</CardTitle>
                                 <CardDescription className="text-xs">Illustrates the significant prognostic impact of grade.</CardDescription>
                             </CardHeader>
@@ -293,9 +293,9 @@ const PinealTumorsInfographic = () => {
                                         <BarChart accessibilityLayer data={survivalData}>
                                             <CartesianGrid vertical={false} />
                                             <XAxis dataKey="grade" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
-                                            <YAxis unit="%" domain={[0, 100]}/>
+                                            <YAxis unit="%" domain={[0, 100]} />
                                             <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="survival" name="5-Year Survival" radius={4}>
+                                            <Bar dataKey="survival" name="5-Year Survival" radius={[4, 4, 0, 0]} barSize={40}>
                                                 {survivalData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -305,27 +305,27 @@ const PinealTumorsInfographic = () => {
                                 </ChartContainer>
                             </CardContent>
                         </Card>
-                         <h3 className="font-semibold text-foreground mb-1 mt-4">Key Pointers Summary:</h3>
-                         <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                        <h3 className="font-semibold text-foreground mb-1 mt-4">Key Pointers Summary:</h3>
+                        <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                             <li><strong>Age Matters:</strong> Pediatric favors PB/Germinoma; Adult favors PC/PPTID/Cyst.</li>
                             <li><strong>DWI/ADC is Crucial:</strong> Restricted diffusion = high cellularity (PB/Germinoma); No restriction = Cyst/PC. Lower ADC suggests PB &gt; Germinoma.</li>
                             <li><strong>Calcification Pattern:</strong> Exploded = PPT; Engulfed = GCT. Best seen on CT/SWI.</li>
-                         </ul>
+                        </ul>
                     </CardContent>
                 </Card>
-                
+
                 <Card className="md:col-span-2">
                     <CardHeader>
-                       <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           Sources
+                        <CardTitle className="flex items-center text-xl">
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground columns-1 md:columns-2">
-                           {sources.map((source, index) => (
+                            {sources.map((source, index) => (
                                 <li key={index} className="break-inside-avoid">
-                                    <span className="font-semibold">{source.title}</span> - {source.source}. 
+                                    <span className="font-semibold">{source.title}</span> - {source.source}.
                                     <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-1">
                                         [Access Link]
                                     </a>

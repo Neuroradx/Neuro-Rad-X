@@ -21,11 +21,11 @@ const SectionIcon = ({ path }: { path: string }) => (
 // --- Chart Data & Config ---
 
 const riskFactorData = [
-  { name: 'Hormonal Therapy', value: 23.4, key: "risk1" },
-  { name: 'Pregnancy/Puerperium', value: 20.0, key: "risk2" },
-  { name: 'Infections', value: 15.0, key: "risk3" },
-  { name: 'Thrombophilias', value: 10.0, key: "risk4" },
-  { name: 'Other/Unknown', value: 31.6, key: "risk5" },
+    { name: 'Hormonal Therapy', value: 23.4, key: "risk1" },
+    { name: 'Pregnancy/Puerperium', value: 20.0, key: "risk2" },
+    { name: 'Infections', value: 15.0, key: "risk3" },
+    { name: 'Thrombophilias', value: 10.0, key: "risk4" },
+    { name: 'Other/Unknown', value: 31.6, key: "risk5" },
 ];
 
 const riskFactorConfig = {
@@ -38,16 +38,16 @@ const riskFactorConfig = {
 
 
 const outcomeData = [
-  { stage: 'At Diagnosis', mRS_0_1: 18.7 },
-  { stage: 'At 3 Months', mRS_0_1: 83.2 },
-  { stage: 'At 6 Months', mRS_0_1: 85.1 },
+    { stage: 'At Diagnosis', mRS_0_1: 18.7 },
+    { stage: 'At 3 Months', mRS_0_1: 83.2 },
+    { stage: 'At 6 Months', mRS_0_1: 85.1 },
 ];
 
 const outcomeConfig = {
-  mRS_0_1: {
-    label: 'Good Outcome (mRS 0-1)',
-    color: 'hsl(var(--chart-1))',
-  },
+    mRS_0_1: {
+        label: 'Good Outcome (mRS 0-1)',
+        color: 'hsl(var(--chart-1))',
+    },
 };
 
 const mortalityData = [
@@ -105,7 +105,7 @@ const CerebralVenousSinusThrombosisInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Common Contributing Factors</CardTitle>
                                 <CardDescription>Approximate percentage distribution of key risk factors in studied cohorts.</CardDescription>
@@ -155,7 +155,7 @@ const CerebralVenousSinusThrombosisInfographic = () => {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            <SectionIcon path="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                             <h2 className="text-xl font-bold text-foreground">3. Diagnosis</h2>
                         </CardTitle>
                     </CardHeader>
@@ -169,12 +169,12 @@ const CerebralVenousSinusThrombosisInfographic = () => {
                         </ul>
                     </CardContent>
                 </Card>
-                
+
                 {/* Treatment and Management */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                            <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                             <h2 className="text-xl font-bold text-foreground">4. Treatment and Management</h2>
                         </CardTitle>
                     </CardHeader>
@@ -189,7 +189,7 @@ const CerebralVenousSinusThrombosisInfographic = () => {
                                 <li><strong>Pregnancy:</strong> LMWH is recommended throughout pregnancy and postpartum.</li>
                             </ul>
                         </div>
-                         <div>
+                        <div>
                             <h3 className="font-semibold text-secondary">Other Interventions</h3>
                             <ul className="list-disc list-inside text-base text-muted-foreground mt-1 space-y-1">
                                 <li><strong>Endovascular Treatment (EVT):</strong> Reserved as a rescue therapy for patients with clinical deterioration; no clear benefit over standard anticoagulation shown.</li>
@@ -209,7 +209,7 @@ const CerebralVenousSinusThrombosisInfographic = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Functional Recovery Over Time</CardTitle>
                                 <CardDescription>Percentage of patients with no or mild disability (mRS 0-1).</CardDescription>
@@ -222,26 +222,26 @@ const CerebralVenousSinusThrombosisInfographic = () => {
                                             <XAxis dataKey="stage" tickLine={false} tickMargin={10} axisLine={false} />
                                             <YAxis unit="%" />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="mRS_0_1" fill={outcomeConfig.mRS_0_1.color} radius={4} />
+                                            <Bar dataKey="mRS_0_1" fill={outcomeConfig.mRS_0_1.color} radius={[4, 4, 0, 0]} barSize={40} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </ChartContainer>
                             </CardContent>
                         </Card>
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Mortality Rates by Subgroup</CardTitle>
                                 <CardDescription>Mortality varies significantly based on cause and context.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                 <ChartContainer config={mortalityConfig} className="min-h-[200px] w-full">
+                                <ChartContainer config={mortalityConfig} className="min-h-[200px] w-full">
                                     <ResponsiveContainer width="100%" height={200}>
                                         <BarChart accessibilityLayer data={mortalityData} layout="vertical">
                                             <CartesianGrid horizontal={false} />
                                             <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={100} tick={{ fontSize: 12 }} />
                                             <XAxis dataKey="rate" type="number" unit="%" />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="rate" radius={5}>
+                                            <Bar dataKey="rate" radius={[0, 4, 4, 0]} barSize={30}>
                                                 {mortalityData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -253,23 +253,23 @@ const CerebralVenousSinusThrombosisInfographic = () => {
                         </Card>
                     </CardContent>
                 </Card>
-                 {/* Sources */}
+                {/* Sources */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                             <h2 className="text-xl font-bold text-foreground">Sources</h2>
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground columns-1 md:columns-2">
-                           <li className="break-inside-avoid">Algahtani, H., et al. (2022). *Brain Circulation*. <a href="https://doi.org/10.4103/bc.bc_50_22" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.4103/bc.bc_50_22</a></li>
-                           <li className="break-inside-avoid">Doggalli, N., et al. (2025). *Cureus*. <a href="https://doi.org/10.7759/cureus.84719" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.7759/cureus.84719</a></li>
-                           <li className="break-inside-avoid">Ferro, J. M., et al. (2017). *European Journal of Neurology*. <a href="https://doi.org/10.1111/ene.13381" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1111/ene.13381</a></li>
-                           <li className="break-inside-avoid">Furie, K. L., et al. (2021). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.121.035564" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.121.035564</a></li>
-                           <li className="break-inside-avoid">Khan, M. W. A., et al. (2020). *Cureus*. <a href="https://doi.org/10.7759/cureus.12221" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.7759/cureus.12221</a></li>
-                           <li className="break-inside-avoid">Saposnik, G., et al. (2024). *Stroke*. <a href="https://doi.org/10.1161/STR.0000000000000456" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STR.0000000000000456</a></li>
-                           <li className="break-inside-avoid">Sitthilok, P., et al. (2025). *PLoS ONE*. <a href="https://doi.org/10.1371/journal.pone.0316849" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1371/journal.pone.0316849</a></li>
+                            <li className="break-inside-avoid">Algahtani, H., et al. (2022). *Brain Circulation*. <a href="https://doi.org/10.4103/bc.bc_50_22" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.4103/bc.bc_50_22</a></li>
+                            <li className="break-inside-avoid">Doggalli, N., et al. (2025). *Cureus*. <a href="https://doi.org/10.7759/cureus.84719" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.7759/cureus.84719</a></li>
+                            <li className="break-inside-avoid">Ferro, J. M., et al. (2017). *European Journal of Neurology*. <a href="https://doi.org/10.1111/ene.13381" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1111/ene.13381</a></li>
+                            <li className="break-inside-avoid">Furie, K. L., et al. (2021). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.121.035564" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.121.035564</a></li>
+                            <li className="break-inside-avoid">Khan, M. W. A., et al. (2020). *Cureus*. <a href="https://doi.org/10.7759/cureus.12221" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.7759/cureus.12221</a></li>
+                            <li className="break-inside-avoid">Saposnik, G., et al. (2024). *Stroke*. <a href="https://doi.org/10.1161/STR.0000000000000456" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STR.0000000000000456</a></li>
+                            <li className="break-inside-avoid">Sitthilok, P., et al. (2025). *PLoS ONE*. <a href="https://doi.org/10.1371/journal.pone.0316849" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1371/journal.pone.0316849</a></li>
                         </ul>
                     </CardContent>
                 </Card>

@@ -26,13 +26,13 @@ const outcomeData = [
 ];
 
 const outcomeConfig = {
-  ptas: { label: 'PTAS Arm', color: 'hsl(var(--chart-2))' },
-  amm: { label: 'Medical Arm', color: 'hsl(var(--chart-1))' },
+    ptas: { label: 'PTAS Arm', color: 'hsl(var(--chart-2))' },
+    amm: { label: 'Medical Arm', color: 'hsl(var(--chart-1))' },
 };
 
 const strokeTypeData = [
-  { name: 'Ischemic Stroke (10.2%)', value: 23, key: 'ischemic' },
-  { name: 'Hemorrhagic Stroke (4.5%)', value: 10, key: 'hemorrhagic' },
+    { name: 'Ischemic Stroke (10.2%)', value: 23, key: 'ischemic' },
+    { name: 'Hemorrhagic Stroke (4.5%)', value: 10, key: 'hemorrhagic' },
 ];
 
 const strokeTypeConfig = {
@@ -78,7 +78,7 @@ const SammpisTrialInfographic = () => {
                 <Card>
                     <CardHeader className="items-center">
                         <CardTitle className="text-xl">The Unexpected Outcome: Intervention vs. Medication</CardTitle>
-                         <CardDescription className="text-center">The SAMMPRIS trial was stopped prematurely as endovascular therapy (PTAS) performed significantly worse than Aggressive Medical Management (AMM) alone.</CardDescription>
+                        <CardDescription className="text-center">The SAMMPRIS trial was stopped prematurely as endovascular therapy (PTAS) performed significantly worse than Aggressive Medical Management (AMM) alone.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <ChartContainer config={outcomeConfig} className="h-[250px] w-full">
@@ -88,8 +88,8 @@ const SammpisTrialInfographic = () => {
                                     <XAxis type="number" unit="%" />
                                     <YAxis dataKey="name" type="category" width={220} tick={{ fontSize: 12 }} />
                                     <ChartTooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent indicator="dot" />} />
-                                    <Bar dataKey="value" name="Primary Endpoint (Stroke or Death at 30 days)" radius={5}>
-                                         {outcomeData.map((entry) => (
+                                    <Bar dataKey="value" name="Primary Endpoint (Stroke or Death at 30 days)" radius={[0, 4, 4, 0]} barSize={30}>
+                                        {outcomeData.map((entry) => (
                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                         ))}
                                     </Bar>
@@ -119,7 +119,7 @@ const SammpisTrialInfographic = () => {
                                     </CardHeader>
                                     <CardContent className="p-0">
                                         <ChartContainer config={strokeTypeConfig} className="h-[180px] w-full">
-                                             <ResponsiveContainer width="100%" height="100%">
+                                            <ResponsiveContainer width="100%" height="100%">
                                                 <PieChart>
                                                     <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                                                     <Pie data={strokeTypeData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={70} label>
@@ -139,7 +139,7 @@ const SammpisTrialInfographic = () => {
                                 <CardDescription>A central review before randomization led to an average delay of 7 days, likely filtering out high-risk patients who failed medical therapy early, skewing results in favor of the medical arm.</CardDescription>
                             </CardHeader>
                             <CardContent className="flex flex-col justify-center items-center h-full">
-                               <div className="w-full space-y-3 p-2 border border-border/50 rounded-lg bg-muted/30">
+                                <div className="w-full space-y-3 p-2 border border-border/50 rounded-lg bg-muted/30">
                                     <div className="bg-card p-2 rounded-lg text-center shadow-sm">
                                         <p className="font-semibold text-foreground text-sm">Qualifying Ischemic Event</p>
                                     </div>
@@ -165,7 +165,7 @@ const SammpisTrialInfographic = () => {
                             </CardHeader>
                             <CardContent>
                                 <Card>
-                                     <CardHeader className="items-center p-2">
+                                    <CardHeader className="items-center p-2">
                                         <CardTitle className="text-base">Type of Procedural Ischemic Strokes</CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-0">
@@ -183,13 +183,13 @@ const SammpisTrialInfographic = () => {
                                 </Card>
                             </CardContent>
                         </Card>
-                        
+
                         <Card>
-                           <CardHeader>
+                            <CardHeader>
                                 <CardTitle className="text-lg text-primary">4. Technical & Device-Related Flaws</CardTitle>
                                 <CardDescription>Issues with sizing methodology may have led to vessel 'oversizing,' contributing to a high rate of Intracranial Hemorrhage (ICH), especially in smaller vessels.</CardDescription>
                             </CardHeader>
-                             <CardContent>
+                            <CardContent>
                                 <Card>
                                     <CardHeader className="items-center p-2">
                                         <CardTitle className="text-base">ICH Risk by Pre-Stent Vessel Diameter</CardTitle>
@@ -200,9 +200,9 @@ const SammpisTrialInfographic = () => {
                                                 <BarChart data={ichRiskData}>
                                                     <CartesianGrid vertical={false} />
                                                     <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-                                                    <YAxis unit="%" domain={[0, 12]}/>
+                                                    <YAxis unit="%" domain={[0, 12]} />
                                                     <ChartTooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent indicator="dot" />} />
-                                                     <Bar dataKey="value" name="ICH Risk" radius={5}>
+                                                    <Bar dataKey="value" name="ICH Risk" radius={[4, 4, 0, 0]} barSize={40}>
                                                         {ichRiskData.map((entry) => (
                                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                         ))}
@@ -216,7 +216,7 @@ const SammpisTrialInfographic = () => {
                         </Card>
                     </div>
                 </div>
-                
+
                 <Card className="text-center">
                     <CardHeader>
                         <CardTitle className="text-xl">Conclusion: Reinterpreting the Evidence</CardTitle>
@@ -229,14 +229,14 @@ const SammpisTrialInfographic = () => {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           References
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            References
                         </CardTitle>
                     </CardHeader>
-                     <CardContent>
+                    <CardContent>
                         <ul className="space-y-3 text-xs text-muted-foreground">
-                           <li className="break-inside-avoid">Chimowitz, M. I., et al. (2011). Stenting versus aggressive medical therapy for intracranial arterial stenosis. *New England Journal of Medicine*, *365*(11), 993–1003.</li>
-                           <li className="break-inside-avoid">Abou-Chebl, A., & Steinmetz, H. (2012). Critique of “Stenting versus Aggressive Medical Therapy for Intracranial Arterial Stenosis” by Chimowitz et al. *Stroke*, *43*(2), 616–620.</li>
+                            <li className="break-inside-avoid">Chimowitz, M. I., et al. (2011). Stenting versus aggressive medical therapy for intracranial arterial stenosis. *New England Journal of Medicine*, *365*(11), 993–1003.</li>
+                            <li className="break-inside-avoid">Abou-Chebl, A., & Steinmetz, H. (2012). Critique of “Stenting versus Aggressive Medical Therapy for Intracranial Arterial Stenosis” by Chimowitz et al. *Stroke*, *43*(2), 616–620.</li>
                         </ul>
                     </CardContent>
                 </Card>
@@ -249,7 +249,7 @@ const SammpisTrialInfographic = () => {
                 </p>
             </footer>
 
-            </div>
+        </div>
     );
 };
 

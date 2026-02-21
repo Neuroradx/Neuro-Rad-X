@@ -21,22 +21,22 @@ const SectionIcon = ({ path }: { path: string }) => (
 // --- Chart Data & Config ---
 
 const imagingMarkersData = [
-  { name: 'Lobar Cerebral Microbleeds', prevalence: 92.5, key: 'lobar' },
-  { name: 'WMHs (Multispot)', prevalence: 50.0, key: 'wmh' },
-  { name: 'Enlarged PVS', prevalence: 50.0, key: 'pvs' },
-  { name: 'Cortical Superficial Siderosis', prevalence: 47.8, key: 'siderosis' },
-  { name: 'Cerebellar Microbleeds', prevalence: 38.8, key: 'cerebellar' },
+    { name: 'Lobar Cerebral Microbleeds', prevalence: 92.5, key: 'lobar' },
+    { name: 'WMHs (Multispot)', prevalence: 50.0, key: 'wmh' },
+    { name: 'Enlarged PVS', prevalence: 50.0, key: 'pvs' },
+    { name: 'Cortical Superficial Siderosis', prevalence: 47.8, key: 'siderosis' },
+    { name: 'Cerebellar Microbleeds', prevalence: 38.8, key: 'cerebellar' },
 ];
 
 const imagingMarkersConfig = {
-  prevalence: {
-    label: 'Prevalence (%)',
-  },
-  lobar: { color: 'hsl(var(--chart-1))' },
-  wmh: { color: 'hsl(var(--chart-2))' },
-  pvs: { color: 'hsl(var(--chart-3))' },
-  siderosis: { color: 'hsl(var(--chart-4))' },
-  cerebellar: { color: 'hsl(var(--chart-5))' },
+    prevalence: {
+        label: 'Prevalence (%)',
+    },
+    lobar: { color: 'hsl(var(--chart-1))' },
+    wmh: { color: 'hsl(var(--chart-2))' },
+    pvs: { color: 'hsl(var(--chart-3))' },
+    siderosis: { color: 'hsl(var(--chart-4))' },
+    cerebellar: { color: 'hsl(var(--chart-5))' },
 };
 
 const bostonCriteriaData = [
@@ -99,12 +99,12 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                         </ul>
                     </CardContent>
                 </Card>
-                
+
                 {/* Diagnostic Imaging Markers */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                             <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                             3. Key Imaging Markers & Prevalence
                         </CardTitle>
                         <CardDescription>Data from a prospective cohort study.</CardDescription>
@@ -117,7 +117,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                                     <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={150} tick={{ fontSize: 10 }} />
                                     <XAxis dataKey="prevalence" type="number" unit="%" />
                                     <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                    <Bar dataKey="prevalence" name="Prevalence" radius={4}>
+                                    <Bar dataKey="prevalence" name="Prevalence" radius={[0, 4, 4, 0]} barSize={25}>
                                         {imagingMarkersData.map((entry) => (
                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                         ))}
@@ -128,7 +128,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                     </CardContent>
                 </Card>
 
-                 {/* Boston Criteria v2.0 */}
+                {/* Boston Criteria v2.0 */}
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
@@ -149,13 +149,13 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-secondary">Required MRI Patterns (Either A or B):</h3>
-                                 <ul className="list-disc list-inside text-base text-muted-foreground mt-1 space-y-1">
+                                <ul className="list-disc list-inside text-base text-muted-foreground mt-1 space-y-1">
                                     <li><strong>A:</strong> {'>='}2 strictly lobar hemorrhagic lesions (Intracerebral Hemorrhage, Cerebral Microbleeds, Cortical Superficial Siderosis).</li>
                                     <li><strong>B:</strong> 1 lobar hemorrhagic lesion + 1 white matter feature (severe PVS or multispot WMH).</li>
                                 </ul>
                             </div>
                         </div>
-                         <Card>
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Boston Criteria v2.0 vs v1.5 Accuracy</CardTitle>
                                 <CardDescription>For probable CAA diagnosis (vs. non-probable).</CardDescription>
@@ -169,8 +169,8 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                                             <YAxis unit="%" />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                             <Legend />
-                                            <Bar dataKey="sensitivity" fill="var(--color-sensitivity)" radius={4} name="Sensitivity" />
-                                            <Bar dataKey="specificity" fill="var(--color-specificity)" radius={4} name="Specificity" />
+                                            <Bar dataKey="sensitivity" fill="var(--color-sensitivity)" radius={[4, 4, 0, 0]} name="Sensitivity" />
+                                            <Bar dataKey="specificity" fill="var(--color-specificity)" radius={[4, 4, 0, 0]} name="Specificity" />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </ChartContainer>
@@ -189,7 +189,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                     </CardHeader>
                     <CardContent>
                         <ul className="list-disc list-inside text-base text-muted-foreground mt-1 space-y-2">
-                             <li><strong>Hypertension:</strong> Present in 70.6% of CAA patients in one study. Visit-to-visit BP variability is linked to Cerebral Microbleed and WMH progression.</li>
+                            <li><strong>Hypertension:</strong> Present in 70.6% of CAA patients in one study. Visit-to-visit BP variability is linked to Cerebral Microbleed and WMH progression.</li>
                             <li><strong>Anticoagulation Decisions:</strong> A diagnosis of CAA is a strong contraindication for antithrombotic therapy due to the high risk of recurrent Intracerebral Hemorrhage.</li>
                             <li><strong>Risk Stratification:</strong> The Boston Criteria help stratify the risk of recurrent Intracerebral Hemorrhage. v2.0 may identify a wider spectrum of the disease.</li>
                             <li><strong>Cognitive Impairment:</strong> CAA is a significant contributor to age-related cognitive decline, and early diagnosis can inform prognosis and management.</li>
@@ -223,7 +223,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                                     </CardContent>
                                 </Card>
                                 <Card>
-                                     <CardHeader className="p-3">
+                                    <CardHeader className="p-3">
                                         <CardTitle className="text-base text-foreground">Chronic Risk (After 90 Days)</CardTitle>
                                     </CardHeader>
                                     <CardContent className="p-3 pt-0">
@@ -232,7 +232,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                                 </Card>
                             </div>
                         </div>
-                         <div>
+                        <div>
                             <h3 className="font-semibold text-foreground">Key MRI Predictors of Future Bleeds</h3>
                             <ul className="space-y-2 mt-2 text-sm text-muted-foreground">
                                 <li><strong>Cortical Superficial Siderosis (cSS):</strong> The single strongest predictor. Widespread cSS elevates the annual risk to nearly 19%.</li>
@@ -247,22 +247,22 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
-                           <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                           7. Sources
+                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            7. Sources
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="space-y-3 text-sm text-muted-foreground columns-1 md:columns-2">
-                           <li className="break-inside-avoid">Charidimou, A., et al. (2022). *Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(22)00208-3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(22)00208-3</a></li>
-                           <li className="break-inside-avoid">Chen, S.-J., & Tsai, H.-H. (2019). *Ther Adv Neurol Disord*. <a href="https://doi.org/10.1177/1756286419844113" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1177/1756286419844113</a></li>
-                           <li className="break-inside-avoid">Greenberg, S. M., & Charidimou, A. (2018). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.117.016990" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.117.016990</a></li>
-                           <li className="break-inside-avoid">Kozberg, M. G. (2020). *Int J Stroke*. <a href="https://doi.org/10.1177/1747493020974464" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1177/1747493020974464</a></li>
-                           <li className="break-inside-avoid">Panteleienko, L., et al. (2024). *Neurology*. <a href="https://doi.org/10.1212/WNL.0000000000210084" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1212/WNL.0000000000210084</a></li>
-                           <li className="break-inside-avoid">Samarasekera, N., et al. (2017). *PLoS ONE*. <a href="https://doi.org/10.1371/journal.pone.0180923" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1371/journal.pone.0180923</a></li>
-                           <li className="break-inside-avoid">Schrag, M., & Kirshner, H. (2016). *Curr Neurol Neurosci Rep*. <a href="https://doi.org/10.1007/s11910-016-0674-1" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11910-016-0674-1</a></li>
-                           <li className="break-inside-avoid">Storti, B., et al. (2023). *Frontiers in Neuroscience*. <a href="https://doi.org/10.3389/fnins.2023.1219025" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.3389/fnins.2023.1219025</a></li>
-                           <li className="break-inside-avoid">Tanaka, F., et al. (2024). *Jpn J Radiol*. <a href="https://doi.org/10.1007/s11604-024-01720-2" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11604-024-01720-2</a></li>
-                           <li className="break-inside-avoid">Theodorou, A., et al. (2023). *J Clin Med*. <a href="https://doi.org/10.3390/jcm12175591" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.3390/jcm12175591</a></li>
+                            <li className="break-inside-avoid">Charidimou, A., et al. (2022). *Lancet Neurology*. <a href="https://doi.org/10.1016/S1474-4422(22)00208-3" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1016/S1474-4422(22)00208-3</a></li>
+                            <li className="break-inside-avoid">Chen, S.-J., & Tsai, H.-H. (2019). *Ther Adv Neurol Disord*. <a href="https://doi.org/10.1177/1756286419844113" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1177/1756286419844113</a></li>
+                            <li className="break-inside-avoid">Greenberg, S. M., & Charidimou, A. (2018). *Stroke*. <a href="https://doi.org/10.1161/STROKEAHA.117.016990" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1161/STROKEAHA.117.016990</a></li>
+                            <li className="break-inside-avoid">Kozberg, M. G. (2020). *Int J Stroke*. <a href="https://doi.org/10.1177/1747493020974464" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1177/1747493020974464</a></li>
+                            <li className="break-inside-avoid">Panteleienko, L., et al. (2024). *Neurology*. <a href="https://doi.org/10.1212/WNL.0000000000210084" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1212/WNL.0000000000210084</a></li>
+                            <li className="break-inside-avoid">Samarasekera, N., et al. (2017). *PLoS ONE*. <a href="https://doi.org/10.1371/journal.pone.0180923" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1371/journal.pone.0180923</a></li>
+                            <li className="break-inside-avoid">Schrag, M., & Kirshner, H. (2016). *Curr Neurol Neurosci Rep*. <a href="https://doi.org/10.1007/s11910-016-0674-1" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11910-016-0674-1</a></li>
+                            <li className="break-inside-avoid">Storti, B., et al. (2023). *Frontiers in Neuroscience*. <a href="https://doi.org/10.3389/fnins.2023.1219025" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.3389/fnins.2023.1219025</a></li>
+                            <li className="break-inside-avoid">Tanaka, F., et al. (2024). *Jpn J Radiol*. <a href="https://doi.org/10.1007/s11604-024-01720-2" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.1007/s11604-024-01720-2</a></li>
+                            <li className="break-inside-avoid">Theodorou, A., et al. (2023). *J Clin Med*. <a href="https://doi.org/10.3390/jcm12175591" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">DOI: 10.3390/jcm12175591</a></li>
                         </ul>
                     </CardContent>
                 </Card>

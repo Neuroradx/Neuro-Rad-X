@@ -1,7 +1,29 @@
+# Next.js
+.next/
+out/
 
-# Secret environment variables
+# Production
+build/
+
+# Dependency directories
+node_modules/
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
 .env.local
-node_modules
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Aider
 .aider*
-.env
-.env
+
+# OS metadata
+.DS_Store
+Thumbs.db

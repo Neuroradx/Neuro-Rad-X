@@ -110,7 +110,8 @@
     "buttons": {
       "daily": "Daily",
       "weekly": "Weekly",
-      "monthly": "Monthly"
+      "monthly": "Monthly",
+      "total": "Total"
     },
     "topicBreakdownTitle": "Topic Breakdown",
     "topicBreakdownDescription": "Analyze your strengths and weaknesses by category and subcategory.",
@@ -222,6 +223,15 @@
       "description": "Are you sure you want to delete this note? This action cannot be undone.",
       "confirmButton": "Delete Permanently"
     }
+  },
+  "bookmarksPage": {
+    "title": "My Bookmarks",
+    "description": "A collection of questions you've saved for later review.",
+    "noBookmarksTitle": "No Bookmarks Yet",
+    "noBookmarksDescription": "You haven't bookmarked any questions yet. Click the",
+    "noBookmarksDescriptionAfterIcon": "icon during a study session to save questions here.",
+    "errorLoadingIndex": "Could not load your bookmark list.",
+    "errorLoadingQuestions": "An error occurred while loading your bookmarked questions."
   },
   "auth": {
     "loginRequiredTitle": "Login Required",
@@ -635,6 +645,7 @@
     "numQuestionsLabel": "Number of Questions",
     "startSessionButton": "Start {{mode}} Session",
     "nextQuestionButton": "Next Question",
+    "submitAnswerButton": "Submit Answer",
     "previousButton": "Previous",
     "finishSessionButton": "Finish Session",
     "correctTitle": "Correct!",
@@ -880,5 +891,99 @@
   },
   "languageSwitcher": {
     "selectLanguageAriaLabel": "Select Language"
+  },
+  "settingsPage": {
+    "title": "Account Settings",
+    "description": "Manage your profile, visual preferences, and subscription.",
+    "profileInfo": "Profile Information",
+    "profileInfoDesc": "Manage your clinical and institution details.",
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "John",
+    "lastNameLabel": "Last Name",
+    "lastNamePlaceholder": "Doe",
+    "countryLabel": "Country",
+    "countrySelectPlaceholder": "Select a country",
+    "institutionLabel": "Institution",
+    "institutionPlaceholder": "Hospital or University",
+    "professionLabel": "Profession",
+    "selectProfessionPlaceholder": "Select your profession",
+    "professions": {
+      "neuroradiologist": "Neuroradiologist",
+      "radiologist": "Radiologist",
+      "neurologist": "Neurologist",
+      "neurosurgeon": "Neurosurgeon",
+      "other": "Other"
+    },
+    "specializationLevelLabel": "Specialization Level",
+    "selectSpecializationPlaceholder": "Select your level",
+    "specializationLevels": {
+      "subspecialist": "Subspecialist",
+      "fellow": "Fellow",
+      "specialist": "Specialist",
+      "resident": "Resident",
+      "student": "Student"
+    },
+    "roleLabel": "User Role",
+    "roleManagedByAdmin": "Your role is managed by administrators.",
+    "saveProfile": "Save Profile",
+    "appearance": "Appearance",
+    "appearanceDesc": "Customize how NeuroRadX looks for you.",
+    "darkMode": "Dark Mode",
+    "textSize": "Text Size",
+    "textSizeDesc": "Adjust the scale of typography across the app.",
+    "textSizes": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "language": "Language",
+    "selectLanguage": "Choose your preferred language.",
+    "subscription": "Subscription",
+    "subscriptionDesc": "Information about your current access level.",
+    "currentPlanLabel": "Current Plan:",
+    "plans": {
+      "free": "Free",
+      "basic": "Basic",
+      "premium": "Premium",
+      "trial": "Trial",
+      "evaluator": "Evaluator",
+      "owner": "Owner",
+      "ecmint": "ECMINT"
+    },
+    "dataManagement": {
+      "title": "Data Management",
+      "description": "Manage your study statistics and history.",
+      "resetStatisticsSectionTitle": "Reset All Statistics",
+      "resetStatisticsWarning": "Warning: This will permanently delete your entire study progress, accuracy data, and history.",
+      "resetStatisticsButton": "Clear Study History",
+      "disabledForTrial": "Statistics reset is disabled during trial mode."
+    },
+    "accountManagement": {
+      "title": "Account Management",
+      "description": "Critical actions for your account.",
+      "dangerZoneTitle": "Danger Zone",
+      "deleteAccountWarning": "Permanently delete your account and all associated data.",
+      "deleteAccountButton": "Delete Account"
+    },
+    "deleteAccountDialog": {
+      "title": "Delete Account",
+      "warning": "This action is extremely critical.",
+      "irreversible": "This will permanently delete your profile, study history, and bookmarks. This action cannot be undone.",
+      "confirmKeyword": "DELETE",
+      "confirmLabel": "Type '{{keyword}}' to confirm account deletion:",
+      "passwordLabel": "Password Required",
+      "passwordPlaceholder": "Enter your password for security",
+      "confirmButton": "Delete Permanently",
+      "reauthenticateAndConfirmButton": "Verify & Delete"
+    },
+    "resetStatisticsDialog": {
+      "title": "Reset Statistics",
+      "warning": "You are about to clear all your progress.",
+      "irreversible": "This will reset all your scores and history to zero. This cannot be undone.",
+      "confirmKeyword": "RESET",
+      "confirmLabel": "Type '{{keyword}}' to confirm reset:",
+      "confirmPlaceholder": "RESET",
+      "confirmButton": "Reset Now"
+    }
   }
 }

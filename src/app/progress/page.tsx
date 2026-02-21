@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { BarChart as LayersIcon, CheckCheck, TrendingUp, Loader2, AlertCircle, BookOpen, Brain, CheckCircle as CheckCircleIcon, Activity as ActivityIcon, XCircle as XCircleIcon, CircleDashed as CircleDashedIcon, Calendar as CalendarIcon, Shield, Layers } from "lucide-react";
+import { BarChart as LayersIcon, CheckCheck, TrendingUp, Loader2, AlertCircle, BookOpen, Brain, CheckCircle as CheckCircleIcon, Activity as ActivityIcon, XCircle as XCircleIcon, CircleDashed as CircleDashedIcon, Calendar as CalendarIcon, Shield, Layers, Trophy, Zap, Target, ArrowDown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, ComposedChart, Line, Legend, ResponsiveContainer, Cell } from "recharts";
@@ -127,13 +127,13 @@ export default function ProgressPage() {
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
-  
+
   const [allSessions, setAllSessions] = useState<QuizSession[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [dataError, setDataError] = useState<string | null>(null);
 
   const [performanceChartData, setPerformanceChartData] = useState<ChartDataItem[]>([]);
-  const [activePeriod, setActivePeriod] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
+  const [activePeriod, setActivePeriod] = useState<'daily' | 'weekly' | 'monthly' | 'total'>('monthly');
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   const [kpiData, setKpiData] = useState({
@@ -212,6 +212,7 @@ export default function ProgressPage() {
     }
 
     const filteredSessions = allSessions.filter(session => {
+      if (activePeriod === 'total') return true; // Ignore date range for "Total" view
       if (!dateRange?.from) return true;
       const sessionDate = session.quizDate;
       const fromDate = dateRange.from;
@@ -230,23 +231,27 @@ export default function ProgressPage() {
     let periodFormat: string;
 
     if (activePeriod === 'daily') {
-      intervalFunction = (range: {start: Date, end: Date}) => eachDayOfInterval(range);
+      intervalFunction = (range: { start: Date, end: Date }) => eachDayOfInterval(range);
       periodFormat = "MMM d, yyyy";
     } else if (activePeriod === 'weekly') {
-      intervalFunction = (range: {start: Date, end: Date}) => eachWeekOfInterval(range, { weekStartsOn: 1 });
+      intervalFunction = (range: { start: Date, end: Date }) => eachWeekOfInterval(range, { weekStartsOn: 1 });
       periodFormat = "MMM d, yyyy";
-    } else {
-      intervalFunction = (range: {start: Date, end: Date}) => eachMonthOfInterval(range);
+    } else if (activePeriod === 'monthly') {
+      intervalFunction = (range: { start: Date, end: Date }) => eachMonthOfInterval(range);
       periodFormat = "MMM yyyy";
+    } else {
+      // Total view: just one period covering everything
+      intervalFunction = (range: { start: Date, end: Date }) => [range.start];
+      periodFormat = "yyyy"; // Overall year or custom label
     }
-    
+
     const firstSessionDate = filteredSessions[0].quizDate;
     const lastSessionDate = filteredSessions[filteredSessions.length - 1].quizDate;
-    const periodsInRange = intervalFunction({start: firstSessionDate, end: lastSessionDate});
+    const periodsInRange = intervalFunction({ start: firstSessionDate, end: lastSessionDate });
 
     periodsInRange.forEach(periodStart => {
-        const key = format(periodStart, periodFormat, { locale: currentLocale });
-        aggregated[key] = { correct: 0, incorrect: 0, attempted: 0, date: periodStart, sessionsCount: 0 };
+      const key = format(periodStart, periodFormat, { locale: currentLocale });
+      aggregated[key] = { correct: 0, incorrect: 0, attempted: 0, date: periodStart, sessionsCount: 0 };
     });
 
     filteredSessions.forEach(session => {
@@ -255,8 +260,16 @@ export default function ProgressPage() {
         periodKey = format(session.quizDate, periodFormat, { locale: currentLocale });
       } else if (activePeriod === 'weekly') {
         periodKey = format(startOfWeek(session.quizDate, { weekStartsOn: 1 }), periodFormat, { locale: currentLocale });
-      } else {
+      } else if (activePeriod === 'monthly') {
         periodKey = format(startOfMonth(session.quizDate), periodFormat, { locale: currentLocale });
+      } else {
+        periodKey = t('progressPage.buttons.total', { defaultValue: 'All Time' });
+      }
+
+      if (activePeriod === 'total') {
+        if (!aggregated[periodKey]) {
+          aggregated[periodKey] = { correct: 0, incorrect: 0, attempted: 0, date: firstSessionDate, sessionsCount: 0 };
+        }
       }
 
       if (aggregated[periodKey]) {
@@ -278,7 +291,7 @@ export default function ProgressPage() {
       }))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
     setPerformanceChartData(chartData);
-    
+
     let bestDayPerc = 0;
     let bestDayDate = t('common.notAvailable');
     let maxQsDay = 0;
@@ -288,36 +301,36 @@ export default function ProgressPage() {
 
     const dailyAggForKpi: Record<string, { correct: number; attempted: number; date: Date }> = {};
     filteredSessions.forEach(session => {
-        const dayKey = format(session.quizDate, "yyyy-MM-dd");
-        if (!dailyAggForKpi[dayKey]) {
-            dailyAggForKpi[dayKey] = { correct: 0, attempted: 0, date: session.quizDate };
-        }
-        dailyAggForKpi[dayKey].correct += session.correctAnswers || 0;
-        dailyAggForKpi[dayKey].attempted += session.actualNumberOfQuestions || 0;
-        totalCorrectInRange += session.correctAnswers || 0;
-        totalAttemptedInRange += session.actualNumberOfQuestions || 0;
+      const dayKey = format(session.quizDate, "yyyy-MM-dd");
+      if (!dailyAggForKpi[dayKey]) {
+        dailyAggForKpi[dayKey] = { correct: 0, attempted: 0, date: session.quizDate };
+      }
+      dailyAggForKpi[dayKey].correct += session.correctAnswers || 0;
+      dailyAggForKpi[dayKey].attempted += session.actualNumberOfQuestions || 0;
+      totalCorrectInRange += session.correctAnswers || 0;
+      totalAttemptedInRange += session.actualNumberOfQuestions || 0;
     });
-    
-    Object.values(dailyAggForKpi).forEach(dayData => {
-        const dayAccuracy = dayData.attempted > 0 ? (dayData.correct / dayData.attempted) * 100 : 0;
-        if (dayAccuracy > bestDayPerc) {
-            bestDayPerc = dayAccuracy;
-            bestDayDate = format(dayData.date, "MMM d, yyyy", { locale: currentLocale });
-        }
 
-        if (dayData.attempted > maxQsDay) {
-            maxQsDay = dayData.attempted;
-            maxQsDayDate = format(dayData.date, "MMM d, yyyy", { locale: currentLocale });
-        }
+    Object.values(dailyAggForKpi).forEach(dayData => {
+      const dayAccuracy = dayData.attempted > 0 ? (dayData.correct / dayData.attempted) * 100 : 0;
+      if (dayAccuracy > bestDayPerc) {
+        bestDayPerc = dayAccuracy;
+        bestDayDate = format(dayData.date, "MMM d, yyyy", { locale: currentLocale });
+      }
+
+      if (dayData.attempted > maxQsDay) {
+        maxQsDay = dayData.attempted;
+        maxQsDayDate = format(dayData.date, "MMM d, yyyy", { locale: currentLocale });
+      }
     });
 
     setKpiData({
-        bestDayPerc: Math.round(bestDayPerc),
-        bestDayDate,
-        maxQsDay,
-        maxQsDayDate,
-        overallAvgPerc: totalAttemptedInRange > 0 ? Math.round((totalCorrectInRange / totalAttemptedInRange) * 100) : 0,
-        totalSessionsInRange: filteredSessions.length
+      bestDayPerc: Math.round(bestDayPerc),
+      bestDayDate,
+      maxQsDay,
+      maxQsDayDate,
+      overallAvgPerc: totalAttemptedInRange > 0 ? Math.round((totalCorrectInRange / totalAttemptedInRange) * 100) : 0,
+      totalSessionsInRange: filteredSessions.length
     });
 
   }, [allSessions, activePeriod, dateRange, currentLocale, t]);
@@ -397,7 +410,7 @@ export default function ProgressPage() {
       const questionDetailsMap = new Map<string, { category: string; subcategory?: string }>();
 
       const questionPromises = [];
-      for (let i = 0; i < questionIds.length; i += 30) { 
+      for (let i = 0; i < questionIds.length; i += 30) {
         const batchIds = questionIds.slice(i, i + Math.min(30, questionIds.length - i));
         if (batchIds.length > 0) {
           const questionsQuery = query(collection(db, "questions"), where(documentId(), "in", batchIds));
@@ -405,7 +418,7 @@ export default function ProgressPage() {
             questionDocsSnapshot.forEach(docSnap => {
               if (docSnap.exists()) {
                 const data = docSnap.data();
-                questionDetailsMap.set(docSnap.id, { 
+                questionDetailsMap.set(docSnap.id, {
                   category: data.main_localization,
                   subcategory: data.sub_main_location
                 });
@@ -415,15 +428,15 @@ export default function ProgressPage() {
         }
       }
       await Promise.all(questionPromises);
-      
+
       const aggregatedData: Record<string, AggregatedTopicStats> = {};
 
       userQuestionStates.forEach((uqs, questionId) => {
         const details = questionDetailsMap.get(questionId);
         if (!details) return;
 
-        const categoryKey = details.category; 
-        const subcategoryKey = details.subcategory || "N/A"; 
+        const categoryKey = details.category;
+        const subcategoryKey = details.subcategory || "N/A";
 
         if (!aggregatedData[categoryKey]) {
           aggregatedData[categoryKey] = { correct: 0, attempted: 0, percentage: 0, subtopics: {} };
@@ -469,7 +482,7 @@ export default function ProgressPage() {
       fetchTopicPerformanceDetails(firebaseUser.uid);
     }
   }, [authLoading, firebaseUser, fetchAllUserSessions, fetchTopicPerformanceDetails]);
-  
+
   useEffect(() => {
     processPerformanceData();
   }, [allSessions, activePeriod, dateRange, processPerformanceData]);
@@ -498,7 +511,7 @@ export default function ProgressPage() {
       </div>
     );
   }
-  
+
   if (dataError) {
     return (
       <div className="container mx-auto py-8">
@@ -532,33 +545,34 @@ export default function ProgressPage() {
                 <Button size="sm" variant={activePeriod === 'daily' ? 'default' : 'ghost'} onClick={() => setActivePeriod('daily')} disabled={isLoadingData}>{t('progressPage.buttons.daily')}</Button>
                 <Button size="sm" variant={activePeriod === 'weekly' ? 'default' : 'ghost'} onClick={() => setActivePeriod('weekly')} disabled={isLoadingData}>{t('progressPage.buttons.weekly')}</Button>
                 <Button size="sm" variant={activePeriod === 'monthly' ? 'default' : 'ghost'} onClick={() => setActivePeriod('monthly')} disabled={isLoadingData}>{t('progressPage.buttons.monthly')}</Button>
+                <Button size="sm" variant={activePeriod === 'total' ? 'default' : 'ghost'} onClick={() => setActivePeriod('total')} disabled={isLoadingData}>{t('progressPage.buttons.total')}</Button>
               </div>
             </div>
           </div>
           <div className="grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 pt-4">
-            <StatCard title={t('progressPage.stats.bestDayPerc.title')} value={`${kpiData.bestDayPerc}%`} icon={Layers} description={kpiData.bestDayDate} className="shadow-none border text-xs"/>
-            <StatCard title={t('progressPage.stats.maxQsDay.title')} value={kpiData.maxQsDay.toString()} icon={Layers} description={kpiData.maxQsDayDate} className="shadow-none border text-xs"/>
-            <StatCard title={t('progressPage.stats.overallAvgPerc.title')} value={`${kpiData.overallAvgPerc}%`} icon={Layers} description={t('progressPage.stats.inSelectedRange')} className="shadow-none border text-xs"/>
-            <StatCard title={t('progressPage.stats.totalSessionsInRange.title')} value={kpiData.totalSessionsInRange.toString()} icon={Layers} description={t('progressPage.stats.inSelectedRange')} className="shadow-none border text-xs"/>
+            <StatCard title={t('progressPage.stats.bestDayPerc.title')} value={`${kpiData.bestDayPerc}%`} icon={Trophy} description={kpiData.bestDayDate} className="shadow-none border text-xs" />
+            <StatCard title={t('progressPage.stats.maxQsDay.title')} value={kpiData.maxQsDay.toString()} icon={Zap} description={kpiData.maxQsDayDate} className="shadow-none border text-xs" />
+            <StatCard title={t('progressPage.stats.overallAvgPerc.title')} value={`${kpiData.overallAvgPerc}%`} icon={Target} description={t('progressPage.stats.inSelectedRange')} className="shadow-none border text-xs" />
+            <StatCard title={t('progressPage.stats.totalSessionsInRange.title')} value={kpiData.totalSessionsInRange.toString()} icon={ActivityIcon} description={t('progressPage.stats.inSelectedRange')} className="shadow-none border text-xs" />
           </div>
         </CardHeader>
         <CardContent className="h-[350px] w-full">
           {isLoadingData ? (
-             <div className="flex items-center justify-center h-full">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-             </div>
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
           ) : performanceChartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={performanceChartData} margin={{ top: 5, right: 5, left: -25, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))"/>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
                 <XAxis dataKey="periodLabel" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                 <YAxis yAxisId="left" tickFormatter={(value) => `${value}`} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                 <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => `${value}%`} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted)/0.3)' }}/>
+                <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--muted)/0.3)' }} />
                 <Legend wrapperStyle={{ fontSize: "10px" }} />
-                <Bar yAxisId="left" dataKey="correct" name={t('progressPage.chart.correct')} stackId="a" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} barSize={20}/>
-                <Bar yAxisId="left" dataKey="incorrect" name={t('progressPage.chart.incorrect')} stackId="a" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} barSize={20}/>
-                <Line yAxisId="right" type="monotone" dataKey="accuracy" name={t('progressPage.chart.accuracy')} stroke="hsl(var(--chart-3))" strokeWidth={2} dot={{ r:3, fill: 'hsl(var(--chart-3))', strokeWidth:1, stroke: 'hsl(var(--background))' }} activeDot={{ r: 5, strokeWidth:1 }}/>
+                <Bar yAxisId="left" dataKey="correct" name={t('progressPage.chart.correct')} stackId="a" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} barSize={20} />
+                <Bar yAxisId="left" dataKey="incorrect" name={t('progressPage.chart.incorrect')} stackId="a" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} barSize={20} />
+                <Line yAxisId="right" type="monotone" dataKey="accuracy" name={t('progressPage.chart.accuracy')} stroke="hsl(var(--chart-3))" strokeWidth={2} dot={{ r: 3, fill: 'hsl(var(--chart-3))', strokeWidth: 1, stroke: 'hsl(var(--background))' }} activeDot={{ r: 5, strokeWidth: 1 }} />
               </ComposedChart>
             </ResponsiveContainer>
           ) : (
@@ -568,7 +582,40 @@ export default function ProgressPage() {
           )}
         </CardContent>
       </Card>
-      
+
+      {!isLoadingTopicDetails && (
+        <Card className="shadow-lg mb-8 border-red-100 dark:border-red-900/30">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <ArrowDown className="h-5 w-5 text-red-500" />
+              <CardTitle>{t('progressPage.weakestTopicsTitle', { defaultValue: 'Opportunities for Improvement' })}</CardTitle>
+            </div>
+            <CardDescription>{t('progressPage.weakestTopicsDescription', { defaultValue: 'Top 3 categories where you can improve your accuracy.' })}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-3">
+              {Object.entries(topicPerformanceData)
+                .filter(([_, data]) => data.attempted > 0)
+                .sort((a, b) => a[1].percentage - b[1].percentage)
+                .slice(0, 3)
+                .map(([topic, data]) => (
+                  <div key={topic} className="p-4 rounded-lg bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/20">
+                    <p className="text-sm font-semibold mb-1">{topic === "General" ? t('studyMode.categoryOther') : t(`topics.${topic.toLowerCase()}` as any)}</p>
+                    <div className="flex items-end justify-between">
+                      <span className="text-2xl font-bold text-red-600 dark:text-red-400">{data.percentage}%</span>
+                      <span className="text-xs text-muted-foreground">{data.correct}/{data.attempted}</span>
+                    </div>
+                    <Progress value={data.percentage} className="h-1.5 mt-2 bg-red-100 dark:bg-red-900/20 [&>*:first-child]:bg-red-500" />
+                  </div>
+                ))}
+              {Object.values(topicPerformanceData).filter(d => d.attempted > 0).length === 0 && (
+                <p className="text-sm text-muted-foreground col-span-3 text-center py-4">{t('progressPage.noDataForWeakest', { defaultValue: 'Start practicing to see your improvement areas!' })}</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="shadow-lg mb-8">
         <CardHeader>
           <CardTitle>{t('progressPage.topicBreakdownTitle')}</CardTitle>
@@ -578,12 +625,12 @@ export default function ProgressPage() {
           {!isLoadingTopicDetails && !topicDetailsError ? (
             <Accordion type="multiple" className="w-full">
               {Object.entries(progressTopicStructure).map(([mainTopicKey, subtopicsArray]) => {
-                 const mainTopicDisplay = mainTopicKey === "General" 
-                    ? t('studyMode.categoryOther') 
-                    : t(`topics.${mainTopicKey.toLowerCase()}` as any);
+                const mainTopicDisplay = mainTopicKey === "General"
+                  ? t('studyMode.categoryOther')
+                  : t(`topics.${mainTopicKey.toLowerCase()}` as any);
                 const performance = topicPerformanceData[mainTopicKey];
                 const mainTopicStyles = getPerformanceStyles(performance?.percentage ?? 0, performance?.attempted ?? 0);
-                
+
                 const sortedSubtopics = subtopicsArray
                   .map(subtopicKey => ({
                     key: subtopicKey,
@@ -597,7 +644,7 @@ export default function ProgressPage() {
                       <div className="flex justify-between w-full items-center pr-2">
                         <span className="text-xl">{mainTopicDisplay}</span>
                         <div className="flex items-center gap-2 text-sm font-normal ml-auto mr-2">
-                           <mainTopicStyles.IconComponent className={cn("h-5 w-5", mainTopicStyles.iconColor)} />
+                          <mainTopicStyles.IconComponent className={cn("h-5 w-5", mainTopicStyles.iconColor)} />
                           {performance && performance.attempted > 0 ? (
                             <span className={mainTopicStyles.textColor}>
                               {t('progressPage.overallCategoryPerformance', {
@@ -607,14 +654,14 @@ export default function ProgressPage() {
                               })}
                             </span>
                           ) : (
-                           <span className={mainTopicStyles.textColor}>{t('progressPage.noAttemptsCategory')}</span>
+                            <span className={mainTopicStyles.textColor}>{t('progressPage.noAttemptsCategory')}</span>
                           )}
                         </div>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pl-2 pr-1">
                       <ul className="list-none space-y-3">
-                        {sortedSubtopics.map(({ key: subtopicKey, displayName: subtopicDisplayName }) => { 
+                        {sortedSubtopics.map(({ key: subtopicKey, displayName: subtopicDisplayName }) => {
                           const subtopicPerf = performance?.subtopics[subtopicKey];
                           const subtopicStyles = getPerformanceStyles(subtopicPerf?.percentage ?? 0, subtopicPerf?.attempted ?? 0);
                           return (
@@ -625,7 +672,7 @@ export default function ProgressPage() {
                                   <span className="text-md font-medium text-foreground">{subtopicDisplayName}</span>
                                 </div>
                                 <span className={cn("text-xs font-medium", subtopicStyles.textColor)}>
-                                  {subtopicPerf && subtopicPerf.attempted > 0 ? 
+                                  {subtopicPerf && subtopicPerf.attempted > 0 ?
                                     t('progressPage.performanceLabel', {
                                       percentage: subtopicPerf.percentage.toString(),
                                       correct: subtopicPerf.correct.toString(),
@@ -635,8 +682,8 @@ export default function ProgressPage() {
                                   }
                                 </span>
                               </div>
-                              <Progress 
-                                value={subtopicStyles.progressValue} 
+                              <Progress
+                                value={subtopicStyles.progressValue}
                                 className={cn("h-2", subtopicStyles.progressRootClass)}
                               />
                             </li>

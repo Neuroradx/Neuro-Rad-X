@@ -82,10 +82,18 @@
     "errorFetchingOverall": "Error al obtener sesiones: {{message}}",
     "errorFetchingTopicDetails": "Error al obtener rendimiento por tema: {{message}}",
     "stats": {
-      "bestDayPerc": { "title": "Mejor día" },
-      "maxQsDay": { "title": "Máx. preguntas/día" },
-      "overallAvgPerc": { "title": "Precisión" },
-      "totalSessionsInRange": { "title": "Sesiones" },
+      "bestDayPerc": {
+        "title": "Mejor día"
+      },
+      "maxQsDay": {
+        "title": "Máx. preguntas/día"
+      },
+      "overallAvgPerc": {
+        "title": "Precisión"
+      },
+      "totalSessionsInRange": {
+        "title": "Sesiones"
+      },
       "inSelectedRange": "En el periodo seleccionado"
     },
     "chart": {
@@ -215,6 +223,15 @@
       "confirmButton": "Eliminar permanentemente"
     }
   },
+  "bookmarksPage": {
+    "title": "Mis Marcadores",
+    "description": "Una colección de preguntas que has guardado para revisar más tarde.",
+    "noBookmarksTitle": "Sin marcadores todavía",
+    "noBookmarksDescription": "Aún no has marcado ninguna pregunta. Haz clic en el icono",
+    "noBookmarksDescriptionAfterIcon": "durante una sesión de estudio para guardar preguntas aquí.",
+    "errorLoadingIndex": "No se pudo cargar tu lista de marcadores.",
+    "errorLoadingQuestions": "Ocurrió un error al cargar tus preguntas marcadas."
+  },
   "auth": {
     "loginRequiredTitle": "Inicio de sesión requerido",
     "loginRequiredMessageBookmarks": "Inicia sesión para gestionar tus marcadores.",
@@ -254,11 +271,21 @@
     "dashboard": {
       "title": "Panel de administración",
       "description": "Gestionar usuarios, contenido y comunicaciones.",
-      "userManagement": { "title": "Gestión de usuarios" },
-      "contentAndIssues": { "title": "Contenido y problemas" },
-      "tools": { "title": "Herramientas" },
-      "communication": { "title": "Comunicación" },
-      "documentsAndPromotions": { "title": "Documentos y promociones" },
+      "userManagement": {
+        "title": "Gestión de usuarios"
+      },
+      "contentAndIssues": {
+        "title": "Contenido y problemas"
+      },
+      "tools": {
+        "title": "Herramientas"
+      },
+      "communication": {
+        "title": "Comunicación"
+      },
+      "documentsAndPromotions": {
+        "title": "Documentos y promociones"
+      },
       "stats": {
         "totalQuestions": "Total preguntas",
         "pendingReview": "Pendientes de revisión",
@@ -603,6 +630,7 @@
     "numQuestionsLabel": "Nº de preguntas",
     "startSessionButton": "Empezar {{mode}}",
     "nextQuestionButton": "Siguiente",
+    "submitAnswerButton": "Enviar respuesta",
     "previousButton": "Anterior",
     "finishSessionButton": "Terminar sesión",
     "correctTitle": "¡Correcto!",
@@ -826,10 +854,18 @@
     "trunkandviscera": "Tronco y Vísceras"
   },
   "nascetDetails": {
-    "lowGrade": { "title": "Estenosis leve (<50%)" },
-    "moderateGrade": { "title": "Estenosis moderada (50-69%)" },
-    "highGrade": { "title": "Estenosis severa (70-99%)" },
-    "totalOcclusion": { "title": "Oclusión total (100%)" },
+    "lowGrade": {
+      "title": "Estenosis leve (<50%)"
+    },
+    "moderateGrade": {
+      "title": "Estenosis moderada (50-69%)"
+    },
+    "highGrade": {
+      "title": "Estenosis severa (70-99%)"
+    },
+    "totalOcclusion": {
+      "title": "Oclusión total (100%)"
+    },
     "common": {
       "definitionTitle": "Definición",
       "imagingTitle": "Hallazgos de imagen",
@@ -840,5 +876,99 @@
   },
   "languageSwitcher": {
     "selectLanguageAriaLabel": "Seleccionar idioma"
+  },
+  "settingsPage": {
+    "title": "Configuración de la cuenta",
+    "description": "Gestiona tu perfil, preferencias visuales y suscripción.",
+    "profileInfo": "Información del perfil",
+    "profileInfoDesc": "Gestiona tus detalles clínicos e institucionales.",
+    "firstNameLabel": "Nombre",
+    "firstNamePlaceholder": "Juan",
+    "lastNameLabel": "Apellidos",
+    "lastNamePlaceholder": "Pérez",
+    "countryLabel": "País",
+    "countrySelectPlaceholder": "Selecciona un país",
+    "institutionLabel": "Institución",
+    "institutionPlaceholder": "Hospital o Universidad",
+    "professionLabel": "Profesión",
+    "selectProfessionPlaceholder": "Selecciona tu profesión",
+    "professions": {
+      "neuroradiologist": "Neurorradiólogo",
+      "radiologist": "Radiólogo",
+      "neurologist": "Neurólogo",
+      "neurosurgeon": "Neurocirujano",
+      "other": "Otro"
+    },
+    "specializationLevelLabel": "Nivel de especialización",
+    "selectSpecializationPlaceholder": "Selecciona tu nivel",
+    "specializationLevels": {
+      "subspecialist": "Subespecialista",
+      "fellow": "Fellow (Becario)",
+      "specialist": "Especialista",
+      "resident": "Residente",
+      "student": "Estudiante"
+    },
+    "roleLabel": "Rol de usuario",
+    "roleManagedByAdmin": "Tu rol es gestionado por administradores.",
+    "saveProfile": "Guardar perfil",
+    "appearance": "Apariencia",
+    "appearanceDesc": "Personaliza cómo se ve NeuroRadX para ti.",
+    "darkMode": "Modo oscuro",
+    "textSize": "Tamaño del texto",
+    "textSizeDesc": "Ajusta la escala de la tipografía en toda la aplicación.",
+    "textSizes": {
+      "small": "Pequeño",
+      "medium": "Mediano",
+      "large": "Grande"
+    },
+    "language": "Idioma",
+    "selectLanguage": "Elige tu idioma preferido.",
+    "subscription": "Suscripción",
+    "subscriptionDesc": "Información sobre tu nivel de acceso actual.",
+    "currentPlanLabel": "Plan actual:",
+    "plans": {
+      "free": "Gratis",
+      "basic": "Básico",
+      "premium": "Premium",
+      "trial": "Prueba",
+      "evaluator": "Evaluador",
+      "owner": "Propietario",
+      "ecmint": "ECMINT"
+    },
+    "dataManagement": {
+      "title": "Gestión de datos",
+      "description": "Gestiona tus estadísticas de estudio e historial.",
+      "resetStatisticsSectionTitle": "Reiniciar todas las estadísticas",
+      "resetStatisticsWarning": "Advertencia: Esto eliminará permanentemente todo tu progreso de estudio, datos de precisión e historial.",
+      "resetStatisticsButton": "Borrar historial de estudio",
+      "disabledForTrial": "El reinicio de estadísticas está desactivado en modo de prueba."
+    },
+    "accountManagement": {
+      "title": "Gestión de cuenta",
+      "description": "Acciones críticas para tu cuenta.",
+      "dangerZoneTitle": "Zona de peligro",
+      "deleteAccountWarning": "Elimina permanentemente tu cuenta y todos los datos asociados.",
+      "deleteAccountButton": "Eliminar cuenta"
+    },
+    "deleteAccountDialog": {
+      "title": "Eliminar cuenta",
+      "warning": "Esta acción es extremadamente crítica.",
+      "irreversible": "Esto eliminará permanentemente tu perfil, historial de estudio y marcadores. Esta acción no se puede deshacer.",
+      "confirmKeyword": "BORRAR",
+      "confirmLabel": "Escribe '{{keyword}}' para confirmar la eliminación de la cuenta:",
+      "passwordLabel": "Contraseña requerida",
+      "passwordPlaceholder": "Introduce tu contraseña por seguridad",
+      "confirmButton": "Eliminar permanentemente",
+      "reauthenticateAndConfirmButton": "Verificar y eliminar"
+    },
+    "resetStatisticsDialog": {
+      "title": "Reiniciar estadísticas",
+      "warning": "Estás a punto de borrar todo tu progreso.",
+      "irreversible": "Esto restablecerá todas tus puntuaciones e historial a cero. Esto no se puede desacelerar.",
+      "confirmKeyword": "REINICIAR",
+      "confirmLabel": "Escribe '{{keyword}}' para confirmar el reinicio:",
+      "confirmPlaceholder": "REINICIAR",
+      "confirmButton": "Reiniciar ahora"
+    }
   }
 }

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,11 +17,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription, AlertTitle as UIAlertTitle } from '@/components/ui/alert';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription,
   DialogTrigger
 } from '@/components/ui/dialog';
@@ -66,6 +66,14 @@ const getSendNotificationSchema = (t: (key: string) => string) => z.object({
 type SendNotificationFormValues = z.infer<ReturnType<typeof getSendNotificationSchema>>;
 
 export default function SendNotificationPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
+      <SendNotificationContent />
+    </Suspense>
+  );
+}
+
+function SendNotificationContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -132,24 +140,24 @@ export default function SendNotificationPage() {
 
   useEffect(() => {
     const userIdFromQuery = searchParams.get('userId');
-    if (userIdFromQuery && !form.getValues('userId')) { 
+    if (userIdFromQuery && !form.getValues('userId')) {
       form.setValue('userId', userIdFromQuery);
     }
   }, [searchParams, form]);
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (watchedUserId && watchedUserId.length >= 20 && currentUser) { 
+      if (watchedUserId && watchedUserId.length >= 20 && currentUser) {
         setIsFetchingUser(true);
         setTargetUser(null);
         setFetchUserError(null);
         try {
           const result = await fetchSimpleUserDetails(watchedUserId, currentUser.uid);
           if (result.success && result.user) {
-             setTargetUser(result.user);
+            setTargetUser(result.user);
           } else {
-             setTargetUser(null);
-             setFetchUserError(result.error || t('admin.sendNotification.userNotFound'));
+            setTargetUser(null);
+            setFetchUserError(result.error || t('admin.sendNotification.userNotFound'));
           }
         } catch (error: any) {
           console.error("Error fetching target user details:", error);
@@ -163,10 +171,10 @@ export default function SendNotificationPage() {
         setFetchUserError(null);
       }
     };
-    
+
     const debounceTimer = setTimeout(() => {
       fetchUser();
-    }, 500); 
+    }, 500);
 
     return () => clearTimeout(debounceTimer);
   }, [watchedUserId, t, currentUser]);
@@ -192,16 +200,16 @@ export default function SendNotificationPage() {
 
   const onSubmit = async (data: SendNotificationFormValues) => {
     if (!currentUser || !isAdmin) {
-      toast({ variant: "destructive", title: t('toast.errorTitle'), description: t('admin.accessDenied.description')});
+      toast({ variant: "destructive", title: t('toast.errorTitle'), description: t('admin.accessDenied.description') });
       return;
     }
 
     setIsSending(true);
     try {
       if (!targetUser && !isFetchingUser) {
-         toast({ variant: "destructive", title: t('toast.errorTitle'), description: t('admin.sendNotification.userNotFoundSendAttempt')});
-         setIsSending(false);
-         return;
+        toast({ variant: "destructive", title: t('toast.errorTitle'), description: t('admin.sendNotification.userNotFoundSendAttempt') });
+        setIsSending(false);
+        return;
       }
 
       const result = await sendCustomNotification({
@@ -217,7 +225,7 @@ export default function SendNotificationPage() {
           variant: 'success'
         });
         form.reset({ userId: '', title: '', message: '', type: 'adminMessage', link: '', icon: 'Info' });
-        setTargetUser(null); 
+        setTargetUser(null);
         setFetchUserError(null);
       } else {
         toast({
@@ -237,7 +245,7 @@ export default function SendNotificationPage() {
       setIsSending(false);
     }
   };
-  
+
   if (isAuthLoading) {
     return <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
@@ -257,7 +265,7 @@ export default function SendNotificationPage() {
       </div>
     );
   }
-  
+
   return (
     <div className="container mx-auto py-8">
       <Button onClick={() => router.push('/admin/dashboard')} variant="outline" className="mb-6">
@@ -288,8 +296,8 @@ export default function SendNotificationPage() {
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="flex gap-2">
-                      <Input 
-                        placeholder={t('admin.sendNotification.searchDialog.inputPlaceholder')} 
+                      <Input
+                        placeholder={t('admin.sendNotification.searchDialog.inputPlaceholder')}
                         value={nameSearchTerm}
                         onChange={(e) => setNameSearchTerm(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleNameSearch()}
@@ -306,8 +314,8 @@ export default function SendNotificationPage() {
                       ) : (
                         <div className="space-y-2">
                           {nameSearchResults.map((user) => (
-                            <div 
-                              key={user.id} 
+                            <div
+                              key={user.id}
                               className="flex items-center justify-between p-2 hover:bg-muted rounded-md cursor-pointer transition-colors border"
                               onClick={() => selectUserFromSearch(user)}
                             >
@@ -350,7 +358,7 @@ export default function SendNotificationPage() {
                   </FormItem>
                 )}
               />
-              
+
               {fetchUserError && !isFetchingUser && (
                 <Alert variant="destructive" className="mt-2">
                   <AlertCircleIcon className="h-4 w-4" />
@@ -359,9 +367,9 @@ export default function SendNotificationPage() {
                 </Alert>
               )}
               {targetUser && !isFetchingUser && !fetchUserError && (
-                 <div className="mt-4">
-                    <UserInfoCard user={targetUser} />
-                 </div>
+                <div className="mt-4">
+                  <UserInfoCard user={targetUser} />
+                </div>
               )}
 
               <FormField
@@ -405,9 +413,9 @@ export default function SendNotificationPage() {
                         </FormControl>
                         <SelectContent>
                           {notificationTypeOptions.map(type => (
-                        <SelectItem key={type} value={type}>
-                          {t(`admin.sendNotification.notificationTypes.${type}`, { defaultValue: type })}
-                       </SelectItem>
+                            <SelectItem key={type} value={type}>
+                              {t(`admin.sendNotification.notificationTypes.${type}`, { defaultValue: type })}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

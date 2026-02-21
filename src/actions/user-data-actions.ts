@@ -6,11 +6,38 @@ import admin from 'firebase-admin';
 import { type FieldValue, type Timestamp, type DocumentData } from "firebase-admin/firestore";
 import { sendApprovalEmail } from "@/actions/email-actions";
 import type { UserProfile, IssueReport as IssueReportType, UserQuestionState, ScientificArticle } from "@/types";
-import adminEmails from '@/lib/admin-emails.json'; 
+import adminEmails from '@/lib/admin-emails.json';
 import testerEmails from '@/lib/tester-emails.json';
 
 // Distributed Counters Configuration
 const NUM_SHARDS = 10;
+
+/**
+ * Helper to recursively convert Firestore Timestamps to ISO strings
+ * to ensure objects are plain and serializable for Next.js Server-to-Client communication.
+ */
+function serializeData(data: any): any {
+  if (!data || typeof data !== 'object') return data;
+
+  // Handle Firestore Timestamp
+  if (typeof data.toDate === 'function') {
+    return data.toDate().toISOString();
+  }
+
+  // Handle Arrays
+  if (Array.isArray(data)) {
+    return data.map(serializeData);
+  }
+
+  // Handle Objects
+  const serialized: any = {};
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      serialized[key] = serializeData(data[key]);
+    }
+  }
+  return serialized;
+}
 
 /**
  * Increments the user's total answered and correct counts using a random shard.
@@ -44,7 +71,7 @@ export async function recordQuestionAttempt(userId: string, questionId: string, 
 
   try {
     const userQuestionRef = adminDb.collection('users').doc(userId).collection('userQuestions').doc(questionId);
-    
+
     // Update individual question state
     await userQuestionRef.set({
       questionId,
@@ -248,7 +275,7 @@ export async function syncUserProfile(userData: {
 
 export async function fetchAllActiveUsers(page: number, pageSize: number, callerUid: string): Promise<{ success: boolean; users?: any[]; totalCount?: number; error?: string }> {
   if (!await verifyAdminRole(callerUid)) return { success: false, error: "Unauthorized access." };
-  
+
   if (!adminDb || !adminAuth) return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
 
   try {
@@ -263,10 +290,10 @@ export async function fetchAllActiveUsers(page: number, pageSize: number, caller
     const combinedUsers = await Promise.all(paginatedUsersData.map(async (firestoreUser) => {
       const authRecord = await adminAuth.getUser(firestoreUser.id).catch(() => null);
       const notificationsSnapshot = await adminDb.collection('notifications').where('userId', '==', firestoreUser.id).get();
-      
+
       // Get distributed stats
       const aggregateStats = await getUserAggregateStats(firestoreUser.id);
-      
+
       return {
         id: firestoreUser.id,
         email: authRecord?.email || firestoreUser.email || null,
@@ -285,7 +312,7 @@ export async function fetchAllActiveUsers(page: number, pageSize: number, caller
       };
     }));
 
-    return { success: true, users: combinedUsers, totalCount };
+    return { success: true, users: serializeData(combinedUsers), totalCount };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -328,12 +355,12 @@ export async function resetUserStatistics(userId: string, callerUid: string): Pr
 
     const subCollections = ["quiz_sessions", "userQuestions", "seenFacts", "bookmarkedQuestions", "questionNotes", "shards"];
     for (const sub of subCollections) {
-        const snapshot = await adminDb.collection(`users/${userId}/${sub}`).limit(500).get();
-        if (!snapshot.empty) {
-            const batch = adminDb.batch();
-            snapshot.docs.forEach(d => batch.delete(d.ref));
-            await batch.commit();
-        }
+      const snapshot = await adminDb.collection(`users/${userId}/${sub}`).limit(500).get();
+      if (!snapshot.empty) {
+        const batch = adminDb.batch();
+        snapshot.docs.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+      }
     }
     return { success: true, message: "User statistics reset successfully." };
   } catch (error: any) {
@@ -391,7 +418,7 @@ export async function fetchSimpleUserDetails(userId: string, callerUid: string):
 
     return {
       success: true,
-      user: {
+      user: serializeData({
         id: userId,
         email: authRecord?.email || data.email,
         displayName: authRecord?.displayName || data.displayName,
@@ -403,7 +430,9 @@ export async function fetchSimpleUserDetails(userId: string, callerUid: string):
         notificationCount: notifications.size,
         totalQuestionsAnsweredAllTime: aggregateStats.totalAnswered || data.totalQuestionsAnsweredAllTime || 0,
         totalCorrectAnswersAllTime: aggregateStats.totalCorrect || data.totalCorrectAnswersAllTime || 0,
-      }
+        createdAt: data.createdAt, // This will be serialized by serializeData
+        subscriptionExpiresAt: data.subscriptionExpiresAt, // This will be serialized by serializeData
+      })
     };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -412,14 +441,14 @@ export async function fetchSimpleUserDetails(userId: string, callerUid: string):
 
 export async function searchUsers(searchTerm: string, callerUid: string): Promise<{ success: boolean; users?: any[]; error?: string }> {
   if (!await verifyAdminRole(callerUid)) return { success: false, error: "Unauthorized access." };
-  
+
   if (!searchTerm || searchTerm.trim().length < 3) {
     return { success: false, error: "Search term must be at least 3 characters long." };
   }
-  
+
   try {
     if (!adminDb || !adminAuth) return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
-    
+
     const firestore = adminDb;
     const auth = adminAuth;
     const trimmedSearchTerm = searchTerm.trim();
@@ -430,7 +459,7 @@ export async function searchUsers(searchTerm: string, callerUid: string): Promis
     };
 
     try {
-      const userRecord = await auth.getUsers([{email: trimmedSearchTerm}]);
+      const userRecord = await auth.getUsers([{ email: trimmedSearchTerm }]);
       if (userRecord.users.length > 0) addUserToMap(userRecord.users[0]);
     } catch (error: any) { }
 
@@ -449,15 +478,15 @@ export async function searchUsers(searchTerm: string, callerUid: string): Promis
     displayNameSnapshot.forEach(doc => usersMap.set(doc.id, { ...usersMap.get(doc.id), firestore: doc.data() as FirestoreUserData }));
     firstNameSnapshot.forEach(doc => usersMap.set(doc.id, { ...usersMap.get(doc.id), firestore: doc.data() as FirestoreUserData }));
     lastNameSnapshot.forEach(doc => usersMap.set(doc.id, { ...usersMap.get(doc.id), firestore: doc.data() as FirestoreUserData }));
-    
+
     if (usersMap.size === 0) return { success: true, users: [] };
 
     const combinedUsersPromises = Array.from(usersMap.entries()).map(async ([uid, data]) => {
       const authRecord = data.auth || (adminAuth ? await adminAuth.getUser(uid).catch(() => null) : null);
       const firestoreProfile: FirestoreUserData = data.firestore || (adminDb ? (await adminDb.collection('users').doc(uid).get()).data() || {} : {});
-      
+
       const notificationsSnapshot = await firestore.collection('notifications').where('userId', '==', uid).get();
-      
+
       // Aggregation for search results
       const aggregateStats = await getUserAggregateStats(uid);
 
@@ -479,7 +508,7 @@ export async function searchUsers(searchTerm: string, callerUid: string): Promis
     });
 
     const combinedUsers = await Promise.all(combinedUsersPromises);
-    return { success: true, users: combinedUsers };
+    return { success: true, users: serializeData(combinedUsers) };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -492,7 +521,7 @@ export async function fetchReportedIssues(page: number, pageSize: number, caller
   try {
     const snapshot = await adminDb.collection('issueReports').where('status', '!=', 'archived').orderBy('status').orderBy('timestamp', 'desc').get();
     const allReports = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), timestamp: (doc.data().timestamp as admin.firestore.Timestamp).toDate().toISOString() }));
-    
+
     const startIndex = (page - 1) * pageSize;
     const paginated = allReports.slice(startIndex, startIndex + pageSize);
 
@@ -502,7 +531,7 @@ export async function fetchReportedIssues(page: number, pageSize: number, caller
       return { ...report, reporterProfile: user.success ? user.user : null };
     }));
 
-    return { success: true, reports: reportsWithUsers, totalCount: allReports.length };
+    return { success: true, reports: serializeData(reportsWithUsers), totalCount: allReports.length };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -526,7 +555,7 @@ export async function updateIssueStatus(
         userId: context.userId,
         titleKey: "notifications.issueReportUpdateTitle",
         messageKey: "notifications.issueReportUpdateBody",
-        messageParams: { 
+        messageParams: {
           questionId: context.questionId,
           statusKey: newStatus
         },
@@ -558,7 +587,7 @@ export async function fetchPendingUsers(page: number, pageSize: number, callerUi
       return { ...u, email: authRec?.email || u.email, displayName: authRec?.displayName || u.displayName };
     }));
 
-    return { success: true, users, totalCount: all.length };
+    return { success: true, users: serializeData(users), totalCount: all.length };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -575,20 +604,20 @@ export async function fetchUsersBySubscription(subscriptionLevel: string, page: 
 
     const users = await Promise.all(paginated.map(async (u: any) => {
       const authRec = await adminAuth.getUser(u.id).catch(() => null);
-      
+
       // Get aggregated stats for subscription list
       const aggregateStats = await getUserAggregateStats(u.id);
 
-      return { 
-        ...u, 
-        email: authRec?.email || u.email, 
+      return {
+        ...u,
+        email: authRec?.email || u.email,
         displayName: authRec?.displayName || u.displayName,
         totalQuestionsAnsweredAllTime: aggregateStats.totalAnswered || u.totalQuestionsAnsweredAllTime || 0,
         totalCorrectAnswersAllTime: aggregateStats.totalCorrect || u.totalCorrectAnswersAllTime || 0,
       };
     }));
 
-    return { success: true, users, totalCount: all.length };
+    return { success: true, users: serializeData(users), totalCount: all.length };
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -599,7 +628,7 @@ export async function fetchReviewerStats() {
   try {
     const reviewersQuery = await adminDb.collection('users').where('role', 'in', ['admin', 'tester', 'Owner', 'Evaluator']).get();
     if (reviewersQuery.empty) return { success: true, stats: [] };
-    
+
     const reviewerIds = reviewersQuery.docs.map(doc => doc.id);
     const [reviewed, edited] = await Promise.all([
       adminDb.collection('questions').where('Question_revised_by', 'in', reviewerIds).get(),
@@ -607,23 +636,23 @@ export async function fetchReviewerStats() {
     ]);
 
     const reviewedCounts: Record<string, number> = {};
-    reviewed.forEach(doc => { const id = doc.data().Question_revised_by; if(id) reviewedCounts[id] = (reviewedCounts[id] || 0) + 1; });
-    
+    reviewed.forEach(doc => { const id = doc.data().Question_revised_by; if (id) reviewedCounts[id] = (reviewedCounts[id] || 0) + 1; });
+
     const editedCounts: Record<string, number> = {};
-    edited.forEach(doc => { const id = doc.data().lastUpdatedBy; if(id) editedCounts[id] = (editedCounts[id] || 0) + 1; });
+    edited.forEach(doc => { const id = doc.data().lastUpdatedBy; if (id) editedCounts[id] = (editedCounts[id] || 0) + 1; });
 
     const stats = reviewersQuery.docs.map(doc => {
-        const userData = doc.data() as UserProfile;
-        return {
-            id: doc.id,
-            displayName: userData.displayName || 'N/A',
-            email: userData.email || 'N/A',
-            avatarUrl: userData.avatarUrl,
-            subscriptionLevel: userData.subscriptionLevel || 'free',
-            reviewedCount: reviewedCounts[doc.id] || 0,
-            editedCount: editedCounts[doc.id] || 0,
-        };
-    }).sort((a,b) => (b.reviewedCount + b.editedCount) - (a.reviewedCount + a.editedCount));
+      const userData = doc.data() as UserProfile;
+      return {
+        id: doc.id,
+        displayName: userData.displayName || 'N/A',
+        email: userData.email || 'N/A',
+        avatarUrl: userData.avatarUrl,
+        subscriptionLevel: userData.subscriptionLevel || 'free',
+        reviewedCount: reviewedCounts[doc.id] || 0,
+        editedCount: editedCounts[doc.id] || 0,
+      };
+    }).sort((a, b) => (b.reviewedCount + b.editedCount) - (a.reviewedCount + a.editedCount));
 
     return { success: true, stats };
   } catch (error: any) {
@@ -637,7 +666,7 @@ export async function fetchIncorrectlyAnsweredQuestions(userId: string) {
     const q = await adminDb.collection(`users/${userId}/userQuestions`)
       .where('incorrectCount', '>', 0)
       .get();
-    
+
     const ids = q.docs.map(doc => doc.id);
     return { success: true, questionIds: ids };
   } catch (error: any) {
@@ -649,7 +678,7 @@ export async function fetchQuestionStatsAndIdsForReview() {
   if (!adminDb) return { success: false, error: "Admin SDK not initialized." };
   try {
     const questionsRef = adminDb.collection('questions');
-    
+
     // FETCH IMPROVEMENT: Instead of querying for exactly null, 
     // fetch a batch and filter locally to find documents where the field is missing.
     // This solves the index problem for documents without the field.

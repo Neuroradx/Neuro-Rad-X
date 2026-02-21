@@ -82,10 +82,18 @@
     "errorFetchingOverall": "Fehler beim Abrufen der Sitzungen: {{message}}",
     "errorFetchingTopicDetails": "Fehler beim Abrufen der Themenleistung: {{message}}",
     "stats": {
-      "bestDayPerc": { "title": "Bester Tag" },
-      "maxQsDay": { "title": "Max. Fragen/Tag" },
-      "overallAvgPerc": { "title": "Genauigkeit" },
-      "totalSessionsInRange": { "title": "Sitzungen" },
+      "bestDayPerc": {
+        "title": "Bester Tag"
+      },
+      "maxQsDay": {
+        "title": "Max. Fragen/Tag"
+      },
+      "overallAvgPerc": {
+        "title": "Genauigkeit"
+      },
+      "totalSessionsInRange": {
+        "title": "Sitzungen"
+      },
       "inSelectedRange": "Im gewählten Zeitraum"
     },
     "chart": {
@@ -215,6 +223,15 @@
       "confirmButton": "Dauerhaft löschen"
     }
   },
+  "bookmarksPage": {
+    "title": "Meine Lesezeichen",
+    "description": "Eine Sammlung von Fragen, die Sie für eine spätere Überprüfung gespeichert haben.",
+    "noBookmarksTitle": "Noch keine Lesezeichen",
+    "noBookmarksDescription": "Sie haben noch keine Fragen markiert. Klicken Sie während einer Lernsitzung auf das",
+    "noBookmarksDescriptionAfterIcon": "Symbol, um Fragen hier zu speichern.",
+    "errorLoadingIndex": "Ihre Lesezeichenliste konnte nicht geladen werden.",
+    "errorLoadingQuestions": "Beim Laden Ihrer markierten Fragen ist ein Fehler aufgetreten."
+  },
   "auth": {
     "loginRequiredTitle": "Anmeldung erforderlich",
     "loginRequiredMessageBookmarks": "Bitte melden Sie sich an, um Lesezeichen zu verwalten.",
@@ -254,11 +271,21 @@
     "dashboard": {
       "title": "Admin-Dashboard",
       "description": "Benutzer, Inhalte und Systemkommunikation verwalten.",
-      "userManagement": { "title": "Benutzerverwaltung" },
-      "contentAndIssues": { "title": "Inhalte & Probleme" },
-      "tools": { "title": "Werkzeuge" },
-      "communication": { "title": "Kommunikation" },
-      "documentsAndPromotions": { "title": "Dokumente & Aktionen" },
+      "userManagement": {
+        "title": "Benutzerverwaltung"
+      },
+      "contentAndIssues": {
+        "title": "Inhalte & Probleme"
+      },
+      "tools": {
+        "title": "Werkzeuge"
+      },
+      "communication": {
+        "title": "Kommunikation"
+      },
+      "documentsAndPromotions": {
+        "title": "Dokumente & Aktionen"
+      },
       "stats": {
         "totalQuestions": "Fragen gesamt",
         "pendingReview": "Warten auf Review",
@@ -603,6 +630,7 @@
     "numQuestionsLabel": "Anzahl der Fragen",
     "startSessionButton": "{{mode}}-Sitzung starten",
     "nextQuestionButton": "Nächste Frage",
+    "submitAnswerButton": "Antwort absenden",
     "previousButton": "Zurück",
     "finishSessionButton": "Sitzung beenden",
     "correctTitle": "Richtig!",
@@ -826,10 +854,18 @@
     "trunkandviscera": "Rumpf & Eingeweide"
   },
   "nascetDetails": {
-    "lowGrade": { "title": "Milde Stenose (<50%)" },
-    "moderateGrade": { "title": "Moderate Stenose (50-69%)" },
-    "highGrade": { "title": "Schwere Stenose (70-99%)" },
-    "totalOcclusion": { "title": "Totalverschluss (100%)" },
+    "lowGrade": {
+      "title": "Milde Stenose (<50%)"
+    },
+    "moderateGrade": {
+      "title": "Moderate Stenose (50-69%)"
+    },
+    "highGrade": {
+      "title": "Schwere Stenose (70-99%)"
+    },
+    "totalOcclusion": {
+      "title": "Totalverschluss (100%)"
+    },
     "common": {
       "definitionTitle": "Definition",
       "imagingTitle": "Bildgebungsbefunde",
@@ -840,5 +876,99 @@
   },
   "languageSwitcher": {
     "selectLanguageAriaLabel": "Sprache auswählen"
+  },
+  "settingsPage": {
+    "title": "Kontoeinstellungen",
+    "description": "Verwalten Sie Ihr Profil, Ihre visuellen Einstellungen und Ihr Abonnement.",
+    "profileInfo": "Profilinformationen",
+    "profileInfoDesc": "Verwalten Sie Ihre klinischen und institutionellen Details.",
+    "firstNameLabel": "Vorname",
+    "firstNamePlaceholder": "Max",
+    "lastNameLabel": "Nachname",
+    "lastNamePlaceholder": "Mustermann",
+    "countryLabel": "Land",
+    "countrySelectPlaceholder": "Wählen Sie ein Land",
+    "institutionLabel": "Institution",
+    "institutionPlaceholder": "Krankenhaus oder Universität",
+    "professionLabel": "Beruf",
+    "selectProfessionPlaceholder": "Wählen Sie Ihren Beruf",
+    "professions": {
+      "neuroradiologist": "Neuroradiologe",
+      "radiologist": "Radiologe",
+      "neurologist": "Neurologe",
+      "neurosurgeon": "Neurochirurg",
+      "other": "Andere"
+    },
+    "specializationLevelLabel": "Spezialisierungsgrad",
+    "selectSpecializationPlaceholder": "Wählen Sie Ihren Grad",
+    "specializationLevels": {
+      "subspecialist": "Subspezialist",
+      "fellow": "Stipendiat (Fellow)",
+      "specialist": "Facharzt",
+      "resident": "Assistenzarzt",
+      "student": "Student"
+    },
+    "roleLabel": "Benutzerrolle",
+    "roleManagedByAdmin": "Ihre Rolle wird von Administratoren verwaltet.",
+    "saveProfile": "Profil speichern",
+    "appearance": "Erscheinungsbild",
+    "appearanceDesc": "Passen Sie das Aussehen von NeuroRadX an.",
+    "darkMode": "Dunkelmodus",
+    "textSize": "Textgröße",
+    "textSizeDesc": "Passen Sie die Skalierung der Typografie in der gesamten App an.",
+    "textSizes": {
+      "small": "Klein",
+      "medium": "Mittel",
+      "large": "Groß"
+    },
+    "language": "Sprache",
+    "selectLanguage": "Wählen Sie Ihre bevorzugte Sprache.",
+    "subscription": "Abonnement",
+    "subscriptionDesc": "Informationen über Ihren aktuellen Zugang.",
+    "currentPlanLabel": "Aktueller Plan:",
+    "plans": {
+      "free": "Kostenlos",
+      "basic": "Basis",
+      "premium": "Premium",
+      "trial": "Testversion",
+      "evaluator": "Bewerter",
+      "owner": "Eigentümer",
+      "ecmint": "ECMINT"
+    },
+    "dataManagement": {
+      "title": "Datenverwaltung",
+      "description": "Verwalten Sie Ihre Lernstatistiken und Ihren Verlauf.",
+      "resetStatisticsSectionTitle": "Alle Statistiken zurücksetzen",
+      "resetStatisticsWarning": "Warnung: Dies wird Ihren gesamten Lernfortschritt, Ihre Genauigkeitsdaten und Ihren Verlauf dauerhaft löschen.",
+      "resetStatisticsButton": "Lernverlauf löschen",
+      "disabledForTrial": "Das Zurücksetzen der Statistiken ist im Testmodus deaktiviert."
+    },
+    "accountManagement": {
+      "title": "Kontoverwaltung",
+      "description": "Kritische Aktionen für Ihr Konto.",
+      "dangerZoneTitle": "Gefahrenzone",
+      "deleteAccountWarning": "Löschen Sie Ihr Konto und alle zugehörigen Daten dauerhaft.",
+      "deleteAccountButton": "Konto löschen"
+    },
+    "deleteAccountDialog": {
+      "title": "Konto löschen",
+      "warning": "Diese Aktion ist extrem kritisch.",
+      "irreversible": "Dies wird Ihr Profil, Ihren Lernverlauf und Ihre Lesezeichen dauerhaft löschen. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmKeyword": "LÖSCHEN",
+      "confirmLabel": "Geben Sie '{{keyword}}' ein, um die Kontolöschung zu bestätigen:",
+      "passwordLabel": "Passwort erforderlich",
+      "passwordPlaceholder": "Geben Sie Ihr Passwort zur Sicherheit ein",
+      "confirmButton": "Dauerhaft löschen",
+      "reauthenticateAndConfirmButton": "Verifizieren & Löschen"
+    },
+    "resetStatisticsDialog": {
+      "title": "Statistiken zurücksetzen",
+      "warning": "Sie sind dabei, Ihren gesamten Fortschritt zu löschen.",
+      "irreversible": "Dies wird alle Ihre Ergebnisse und Ihren Verlauf auf Null zurücksetzen. Dies kann nicht rückgängig gemacht werden.",
+      "confirmKeyword": "ZURÜCKSETZEN",
+      "confirmLabel": "Geben Sie '{{keyword}}' ein, um das Zurücksetzen zu bestätigen:",
+      "confirmPlaceholder": "ZURÜCKSETZEN",
+      "confirmButton": "Jetzt zurücksetzen"
+    }
   }
 }

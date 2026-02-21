@@ -51,10 +51,10 @@ export interface UserProfile {
   institution?: string;
   avatarUrl?: string;
   subscriptionLevel?: 'free' | 'basic' | 'premium' | 'Trial' | 'Evaluator' | 'Owner' | 'ECMINT';
-  subscriptionExpiresAt?: any;
+  subscriptionExpiresAt?: string | null;
   totalQuestionsAnsweredAllTime?: number;
   totalCorrectAnswersAllTime?: number;
-  createdAt?: any;
+  createdAt?: string | null;
   lastSignInTime?: string;
   notificationCount?: number;
   totalReports?: number;
@@ -72,5 +72,25 @@ export interface Notification {
   createdAt: FieldValue | Date | string;
   link?: string;
   icon?: string;
+}
+
+export interface IssueReport {
+  id: string;
+  userId: string;
+  questionId: string;
+  topic?: string;
+  issueType: string;
+  description: string;
+  status: 'new' | 'acknowledged' | 'in-progress' | 'resolved' | 'archived';
+  timestamp: any;
+  reporterProfile?: UserProfile | null;
+}
+
+export interface UserQuestionState {
+  questionId: string;
+  seenCount: number;
+  correctCount: number;
+  incorrectCount: number;
+  lastSeen: any;
 }
 

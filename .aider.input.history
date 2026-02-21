@@ -31,3 +31,78 @@
 
 # 2026-02-13 16:45:50.976831
 +exit
+
+# 2026-02-13 17:10:37.849136
++y
+
+# 2026-02-13 17:14:03.208912
++/add src/components/questions/question-card.tsx
+
+# 2026-02-13 17:15:41.752735
++cd
+
+# 2026-02-13 17:16:25.434289
++/ls
+
+# 2026-02-13 17:16:53.981861
++tengo este error en la consola: Error: Only plain objects, and a few built-ins, can be passed to Client Components from Server Components. Classes or null prototypes are not supported.
++  {id: ..., country: ..., lastName: ..., subscriptionExpiresAt: ..., role: ..., displayName: ..., firstName: ..., institution: ..., totalQuestionsAnsweredAllTime: ..., uid: ..., createdAt: {_seconds: ..., _nanoseconds: 402000000}, subscriptionLevel: ..., totalCorrectAnswersAllTime: ..., email: ..., status: ...}
++                                                                                                                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++    at resolveErrorDev (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:1792:63)
++    at processFullStringRow (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:2071:17)
++    at processFullBinaryRow (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:2059:7)
++    at progress (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:2262:17)
+
+# 2026-02-13 17:18:04.155505
++y
+
+# 2026-02-13 17:18:21.569212
++Tengo un error de serialización porque estoy pasando un objeto de Firebase con Timestamps a un Client Component. En el componente o la página que recibe el objeto de usuario, convierte createdAt y cualquier otra fecha de Firebase a un string (.toISOString()) o un número antes de pasarlo al componente.
+
+# 2026-02-13 17:20:31.160822
++aider --model google/gemini-1.5-flash --no-repo-map
+
+# 2026-02-13 17:21:39.966568
++y
+
+# 2026-02-13 17:22:14.818496
++/add src/app/progress/page.tsx
+
+# 2026-02-13 17:22:24.973803
++Tengo un error de Next.js: 'Only plain objects can be passed to Client Components'. Esto es porque el objeto de usuario de Firebase tiene un campo createdAt que es un Timestamp. Por favor, busca dónde se obtiene el usuario en este archivo y serialízalo usando JSON.parse(JSON.stringify(user)) antes de pasarlo a cualquier Client Component, o convierte las fechas a strings ISO.
+
+# 2026-02-13 17:23:30.306588
++y
+
+# 2026-02-13 17:23:54.787962
++d
+
+# 2026-02-13 17:24:16.841184
++/add src/app/progress/page.tsx
+
+# 2026-02-13 17:24:23.874212
++En este archivo, busca dónde se obtienen los datos del usuario o del progreso desde Firebase. El objeto contiene Timestamps de Firestore que no son 'plain objects' y rompen los Client Components. Aplica JSON.parse(JSON.stringify(data)) al objeto antes de pasarlo como prop a cualquier componente hijo, o convierte manualmente los Timestamps a strings ISO.
+
+# 2026-02-13 17:25:07.000416
++y
+
+# 2026-02-13 17:25:41.848724
++n
+
+# 2026-02-13 17:25:46.328952
++d
+
+# 2026-02-13 17:26:00.605741
++y
+
+# 2026-02-13 22:01:13.400584
++> /add src/app/progress/page.tsx
+
+# 2026-02-13 22:01:25.267881
++d
+
+# 2026-02-13 22:01:30.157088
++> /add src/app/progress/page.tsx
+
+# 2026-02-13 22:03:04.874348
++y

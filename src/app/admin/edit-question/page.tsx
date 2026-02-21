@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,10 +8,13 @@ import * as z from 'zod';
 import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { getQuestionById, updateQuestion, deleteQuestionById } from '@/actions/question-actions';
+import { getSubcategoriesAction, registerSubcategoryAction } from '@/actions/subcategory-actions';
 import { findScientificArticleAction } from '@/actions/enrichment-actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MENU_DATA } from '@/lib/question-counts';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
@@ -25,13 +28,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, ArrowLeft, Save, Trash2, PlusCircle, Wand2, Search, Tag, CheckCircle2, FileEdit, FileText, Lightbulb } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Trash2, PlusCircle, Wand2, Search, Tag, CheckCircle2, FileEdit, FileText, Lightbulb, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 const questionFormSchema = z.object({
   topic: z.string().min(1, "Category is required"),
   subtopic: z.string().optional(),
+  newSubcategory: z.string().optional(),
   difficulty: z.string().min(1, "Difficulty is required"),
   correctAnswerIndex: z.number().min(0, "Correct answer selection is required"),
   translations: z.object({
@@ -61,13 +65,17 @@ function EditQuestionPageContent() {
   const [isSaving, setIsSaving] = useState(false);
   const [isFindingArticle, setIsFindingArticle] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [aiLog, setAiLog] = useState<string[]>([]);
+  const [aiLog, setAiLog] = useState<{ type: 'info' | 'success' | 'warning' | 'error'; text: string }[]>([]);
+
+  // Dynamic subcategories fetched from Firestore
+  const [dynamicSubcats, setDynamicSubcats] = useState<string[]>([]);
 
   const form = useForm<QuestionFormValues>({
     resolver: zodResolver(questionFormSchema),
     defaultValues: {
       topic: '',
       subtopic: '',
+      newSubcategory: '',
       difficulty: 'Medium',
       correctAnswerIndex: 0,
       translations: {
@@ -88,6 +96,20 @@ function EditQuestionPageContent() {
     name: "translations.en.options"
   });
 
+  /** Fetch custom subcategories from Firestore for the given main category */
+  const fetchDynamicSubcats = useCallback(async (mainCategory: string) => {
+    if (!mainCategory) {
+      setDynamicSubcats([]);
+      return;
+    }
+    const result = await getSubcategoriesAction(mainCategory);
+    if (result.success && result.subcats) {
+      setDynamicSubcats(result.subcats);
+    } else {
+      setDynamicSubcats([]);
+    }
+  }, []);
+
   useEffect(() => {
     if (questionId) {
       loadQuestionData(questionId);
@@ -99,9 +121,11 @@ function EditQuestionPageContent() {
     const result = await getQuestionById(id);
     if (result.success && result.question) {
       const q = result.question;
+      const mainCat = q.main_localization || q.topic || 'Head';
       form.reset({
-        topic: q.main_localization || q.topic || 'Head',
+        topic: mainCat,
         subtopic: q.sub_main_location || q.subtopic || '',
+        newSubcategory: '',
         difficulty: q.difficulty || 'Medium',
         correctAnswerIndex: q.correctAnswerIndex ?? 0,
         translations: {
@@ -115,6 +139,8 @@ function EditQuestionPageContent() {
           article_reference: q.scientificArticle?.article_reference || ''
         }
       });
+      // Fetch dynamic subcats for the loaded main category
+      await fetchDynamicSubcats(mainCat);
     } else {
       toast({ title: "Error", description: result.error || "Failed to load question", variant: "destructive" });
     }
@@ -124,10 +150,30 @@ function EditQuestionPageContent() {
   const onSubmit = async (data: QuestionFormValues) => {
     if (!questionId) return;
     setIsSaving(true);
-    
+
+    const finalSubcategory =
+      data.newSubcategory && data.newSubcategory.trim() !== ''
+        ? data.newSubcategory.trim()
+        : data.subtopic;
+
+    // If a new subcategory was typed, register it in Firestore first
+    if (data.newSubcategory && data.newSubcategory.trim() !== '') {
+      const regResult = await registerSubcategoryAction(data.topic, data.newSubcategory.trim());
+      if (!regResult.success) {
+        toast({
+          title: "Warning",
+          description: `Subcategory saved to question, but could not register it globally: ${regResult.error}`,
+          variant: "destructive"
+        });
+      } else {
+        // Refresh dynamic subcats to include the new one
+        await fetchDynamicSubcats(data.topic);
+      }
+    }
+
     const updateData = {
       main_localization: data.topic,
-      sub_main_location: data.subtopic,
+      sub_main_location: finalSubcategory,
       difficulty: data.difficulty,
       correctAnswerIndex: data.correctAnswerIndex,
       translations: {
@@ -139,6 +185,10 @@ function EditQuestionPageContent() {
     const result = await updateQuestion(questionId, updateData as any);
 
     if (result.success) {
+      // Clear new subcategory field after successful save
+      form.setValue('newSubcategory', '');
+      // Set the subtopic to the new one so badge updates
+      if (finalSubcategory) form.setValue('subtopic', finalSubcategory);
       toast({ title: "Success", description: "Question updated successfully", variant: "success" });
     } else {
       toast({ title: "Error", description: result.error, variant: "destructive" });
@@ -160,24 +210,73 @@ function EditQuestionPageContent() {
   const handleFindArticle = async () => {
     const values = form.getValues();
     setIsFindingArticle(true);
-    setAiLog(prev => [...prev, "Starting AI search for scientific article..."]);
-    
+    setAiLog([{ type: 'info', text: 'Searching medical literature...' }]);
+
     const correctIdx = values.correctAnswerIndex;
     const correctOpt = values.translations.en.options[correctIdx];
+
+    if (!correctOpt?.text) {
+      setAiLog([{ type: 'error', text: 'Please mark a correct answer before searching.' }]);
+      setIsFindingArticle(false);
+      return;
+    }
 
     const result = await findScientificArticleAction({
       questionStem: values.translations.en.questionText,
       options: values.translations.en.options.map(o => o.text),
-      correctAnswer: correctOpt?.text || ""
+      correctAnswer: correctOpt.text
     });
 
-    if (result.success && result.data?.isValid) {
-      form.setValue('scientificArticle.article_reference', `${result.data.articleTitle}. Available at: ${result.data.articleUrl}`);
-      setAiLog(prev => [...prev, `Found: ${result.data?.articleTitle}`]);
-    } else {
-      setAiLog(prev => [...prev, "AI could not find a specific match."]);
+    if (!result.success) {
+      setAiLog([{ type: 'error', text: `Error: ${result.error ?? 'Unknown error from AI.'}` }]);
+      setIsFindingArticle(false);
+      return;
     }
+
+    const data = result.data!;
+    const logs: { type: 'info' | 'success' | 'warning' | 'error'; text: string }[] = [];
+
+    if (data.isValid) {
+      // Fill the article reference field
+      if (data.articleTitle && data.articleUrl) {
+        form.setValue('scientificArticle.article_reference', `${data.articleTitle}. Available at: ${data.articleUrl}`);
+        logs.push({ type: 'success', text: `✓ Source found: ${data.articleTitle}` });
+        logs.push({ type: 'success', text: `  URL: ${data.articleUrl}` });
+      } else {
+        logs.push({ type: 'success', text: '✓ Answer validated but no specific article URL returned.' });
+      }
+      if (data.snippet) {
+        logs.push({ type: 'info', text: `Snippet: "${data.snippet}"` });
+      }
+      if (data.reasoning) {
+        logs.push({ type: 'info', text: `Reasoning: ${data.reasoning}` });
+      }
+    } else {
+      logs.push({ type: 'warning', text: '⚠ AI flagged the marked answer as potentially incorrect.' });
+      if (data.reasoning) {
+        logs.push({ type: 'warning', text: `Reason: ${data.reasoning}` });
+      }
+      if (data.validated_correct_answer) {
+        logs.push({ type: 'error', text: `AI-suggested correct answer: "${data.validated_correct_answer}"` });
+      }
+    }
+
+    setAiLog(logs);
     setIsFindingArticle(false);
+  };
+
+  /** Build the merged list of subcategories: static + dynamic (deduped), sorted A-Z in English locale */
+  const getMergedSubcats = (mainCategory: string): { name: string; isDynamic: boolean }[] => {
+    const staticKeys = mainCategory && MENU_DATA.sub_main_location[mainCategory]
+      ? Object.keys(MENU_DATA.sub_main_location[mainCategory])
+      : [];
+    const staticSet = new Set(staticKeys);
+    const dynamicOnly = dynamicSubcats.filter(s => !staticSet.has(s));
+    const merged = [
+      ...staticKeys.map(name => ({ name, isDynamic: false })),
+      ...dynamicOnly.map(name => ({ name, isDynamic: true })),
+    ];
+    return merged.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
   };
 
   if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
@@ -240,26 +339,93 @@ function EditQuestionPageContent() {
                   <FormField control={form.control} name="topic" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Main Category</FormLabel>
-                      <Input {...field} placeholder="e.g. Head" />
+                      <Select
+                        onValueChange={async (val) => {
+                          field.onChange(val);
+                          form.setValue('subtopic', '');
+                          await fetchDynamicSubcats(val);
+                        }}
+                        value={field.value || undefined}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {(['Head', 'Neck', 'Spine', 'General'] as const).map(cat => (
+                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )} />
+
                   <FormField control={form.control} name="subtopic" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Subcategory</FormLabel>
-                      <Input {...field} value={field.value || ''} placeholder="e.g. Vascular" />
+                      <Select onValueChange={field.onChange} value={field.value || undefined} disabled={!form.watch('topic')}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Subcategory" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {getMergedSubcats(form.watch('topic')).length > 0 ? (
+                            getMergedSubcats(form.watch('topic')).map(({ name, isDynamic }) => (
+                              <SelectItem key={name} value={name}>
+                                <span className="flex items-center gap-2">
+                                  {name}
+                                  {isDynamic && (
+                                    <span className="text-[10px] text-primary font-semibold bg-primary/10 rounded px-1">NEW</span>
+                                  )}
+                                </span>
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="none" disabled>No Predefined Subcategories</SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )} />
                 </div>
 
-                <FormField control={form.control} name="difficulty" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Difficulty Level</FormLabel>
-                    <Input {...field} placeholder="Easy, Medium, or Advanced" />
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="newSubcategory" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>New Subcategory (Optional)</FormLabel>
+                      <FormControl>
+                        <Input {...field} value={field.value || ''} placeholder="Type a custom subcategory..." />
+                      </FormControl>
+                      <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-primary" />
+                        If filled, this creates a new subcategory for the question and adds it to the list.
+                      </p>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="difficulty" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Difficulty Level</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || undefined}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Difficulty" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Easy">Easy</SelectItem>
+                          <SelectItem value="Medium">Medium</SelectItem>
+                          <SelectItem value="Advanced">Advanced</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
 
                 <Separator />
 
@@ -278,13 +444,13 @@ function EditQuestionPageContent() {
                       {enOptions.map((field, index) => (
                         <div key={field.id} className="flex gap-3 items-center group">
                           <span className="font-bold text-muted-foreground w-6">{String.fromCharCode(65 + index)}.</span>
-                          <Input 
-                            {...form.register(`translations.en.options.${index}.text` as const)} 
-                            placeholder={`Option ${index + 1}`} 
+                          <Input
+                            {...form.register(`translations.en.options.${index}.text` as const)}
+                            placeholder={`Option ${index + 1}`}
                             className="flex-1"
                           />
-                          <Button 
-                            type="button" 
+                          <Button
+                            type="button"
                             variant={form.watch('correctAnswerIndex') === index ? "default" : "outline"}
                             size="sm"
                             className={form.watch('correctAnswerIndex') === index ? "bg-primary text-primary-foreground min-w-[100px]" : "min-w-[100px] group-hover:border-primary/50"}
@@ -334,10 +500,10 @@ function EditQuestionPageContent() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <Button 
-                      type="button" 
-                      variant="secondary" 
-                      size="sm" 
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
                       className="w-full"
                       onClick={handleFindArticle}
                       disabled={isFindingArticle}
@@ -346,8 +512,20 @@ function EditQuestionPageContent() {
                       Find Source with AI
                     </Button>
                     {aiLog.length > 0 && (
-                      <div className="text-xs font-mono bg-black/10 dark:bg-white/10 p-2 rounded max-h-24 overflow-y-auto">
-                        {aiLog.map((log, i) => <div key={i}>{log}</div>)}
+                      <div className="text-xs font-mono bg-black/10 dark:bg-white/10 p-3 rounded max-h-40 overflow-y-auto space-y-1">
+                        {aiLog.map((log, i) => (
+                          <div
+                            key={i}
+                            className={
+                              log.type === 'success' ? 'text-green-400' :
+                                log.type === 'warning' ? 'text-yellow-400' :
+                                  log.type === 'error' ? 'text-red-400' :
+                                    'text-muted-foreground'
+                            }
+                          >
+                            {log.text}
+                          </div>
+                        ))}
                       </div>
                     )}
                   </CardContent>

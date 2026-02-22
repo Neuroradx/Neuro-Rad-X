@@ -18,6 +18,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import type { User as FirebaseUser } from "firebase/auth";
 import type { Firestore } from 'firebase/firestore';
 import { ReportIssueDialog } from '@/components/questions/report-issue-dialog';
+import { ArticleReferenceDisplay } from '@/components/article-reference-display';
 import Link from 'next/link';
 
 interface MCQDisplayProps {
@@ -133,11 +134,11 @@ const MCQDisplay: React.FC<MCQDisplayProps> = ({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
-                aria-label="Edit Question"
-                title="Edit Question"
+                aria-label="Review Question"
+                title="Review Question"
                 asChild
               >
-                <Link href={`/admin/edit-question?id=${currentQuestion.id}`} target="_blank" rel="noopener noreferrer">
+                <Link href={`/admin/review-questions/session?id=${currentQuestion.id}`} target="_blank" rel="noopener noreferrer">
                   <FileEdit className="h-5 w-5 text-muted-foreground hover:text-primary" />
                 </Link>
               </Button>
@@ -184,7 +185,7 @@ const MCQDisplay: React.FC<MCQDisplayProps> = ({
                     {currentQuestion.scientificArticle?.article_reference && (
                       <div>
                         <div className="flex justify-between items-center">
-                          <p className="font-semibold text-foreground">{t('common.sourceLabel')}:</p>
+                          <p className="font-semibold text-foreground">{t('common.sourceLabel')} (APA 7; links clickable):</p>
                           <a
                               href={`https://www.google.com/search?q=${encodeURIComponent(currentQuestion.scientificArticle.article_reference)}`}
                               target="_blank"
@@ -195,9 +196,10 @@ const MCQDisplay: React.FC<MCQDisplayProps> = ({
                               <Search className="h-4 w-4" />
                           </a>
                         </div>
-                        <p className="whitespace-pre-wrap">
-                          {currentQuestion.scientificArticle.article_reference}
-                        </p>
+                        <ArticleReferenceDisplay
+                          articleReference={currentQuestion.scientificArticle.article_reference}
+                          doi={currentQuestion.scientificArticle.doi}
+                        />
                       </div>
                     )}
                   </div>

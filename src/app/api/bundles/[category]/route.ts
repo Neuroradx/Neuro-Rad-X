@@ -1,15 +1,28 @@
 import { NextResponse } from 'next/server';
 import { generateQuestionBundle } from '@/actions/bundle-actions';
+import { adminAuth } from '@/lib/firebase-admin';
 
 /**
  * API Route Handler to serve Firestore Bundles.
- * This route is designed to be cached by the CDN (Content Delivery Network).
+ * Requires Firebase authentication. The client must pass the ID token in the Authorization header.
  */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ category: string }> }
 ) {
   try {
+    // Verify Firebase authentication
+    const authHeader = request.headers.get('Authorization');
+    const idToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!idToken || !adminAuth) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    try {
+      await adminAuth.verifyIdToken(idToken);
+    } catch {
+      return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+    }
+
     const { category } = await params;
 
     if (!category) {
@@ -26,7 +39,7 @@ export async function GET(
         // CDN Caching: 
         // s-maxage=3600: Cache in CDN for 1 hour
         // stale-while-revalidate=86400: Serve stale content for up to 24h while updating in background
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+        'Cache-Control': 'private, max-age=3600',
         'Content-Disposition': `attachment; filename="questions-${category.toLowerCase()}.bundle"`,
       },
     });

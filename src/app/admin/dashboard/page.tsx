@@ -88,6 +88,7 @@ const AdminDashboardPage = () => {
       links: [
         { href: "/admin/reported-questions", labelKey: "admin.dashboard.links.reportedQuestions", icon: FileWarning },
         { href: "/admin/review-questions", labelKey: "admin.dashboard.links.reviewQuestions", icon: FileCheck },
+        { href: "/admin/last-reviewed-questions", labelKey: "admin.dashboard.links.viewLastReviewQuestions", icon: FileCheck },
         { href: "/admin/reviewed-report", labelKey: "admin.dashboard.links.reviewedReport", icon: ClipboardCheck },
         { href: "/admin/enrich-questions", labelKey: "admin.dashboard.links.enrichQuestions", icon: Sparkles },
         { href: "/admin/edit-question", labelKey: "admin.dashboard.links.editQuestion", icon: FileEdit },

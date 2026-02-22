@@ -251,10 +251,13 @@ export default function StudyPage() {
         // --- BUNDLE OPTIMIZATION START ---
         // If a category is selected and no course filter is active, attempt to load the bundle.
         // Bundles are pre-calculated binaries served via CDN to reduce Firestore read costs.
-        if (selectedCategory !== 'all' && selectedCourse === 'none') {
+        if (selectedCategory !== 'all' && selectedCourse === 'none' && auth.currentUser) {
           console.log(`[Bundles] Attempting to load bundle for category: ${selectedCategory}`);
           try {
-            const response = await fetch(`/api/bundles/${selectedCategory.toLowerCase()}`);
+            const idToken = await auth.currentUser.getIdToken();
+            const response = await fetch(`/api/bundles/${selectedCategory.toLowerCase()}`, {
+              headers: { Authorization: `Bearer ${idToken}` },
+            });
             if (response.ok && response.body) {
               // Load the bundle into the local Firestore cache.
               // Subsequent queries for these documents will now be served from cache.
@@ -326,7 +329,7 @@ export default function StudyPage() {
   const handleStartReviewSession = async () => {
     if (!firebaseUser) return;
     setIsStartingReviewSession(true);
-    const result = await fetchIncorrectlyAnsweredQuestions(firebaseUser.uid);
+    const result = await fetchIncorrectlyAnsweredQuestions(firebaseUser.uid, firebaseUser.uid);
     if (result.success && result.questionIds && result.questionIds.length > 0) {
       await fetchAndSetQuestions(result.questionIds);
     } else {

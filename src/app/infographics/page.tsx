@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, ChevronRight, Image as ImageIcon, AlertCircle, Loader2, ExternalLink, Search } from "lucide-react";
 import Link from "next/link";
-import { collection, getDocs, orderBy, query, type Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { collection, doc, getDoc, getDocs, orderBy, query, type Timestamp } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 import type { Infographic } from "@/types";
 import { useTranslation } from '@/hooks/use-translation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -38,19 +39,24 @@ const formatTimestamp = (timestamp: any): string => {
 
 export default function InfographicsPage() {
     const { t } = useTranslation();
+    const [adminUidForSync, setAdminUidForSync] = useState<string | null>(null);
+    const [authReady, setAuthReady] = useState(false);
     const [infographics, setInfographics] = useState<Infographic[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const [searchTerm, setSearchTerm] = useState('');
 
-    const fetchInfographics = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
+  const fetchInfographics = useCallback(async (userUid: string | null) => {
+    setIsLoading(true);
+    setError(null);
 
-        await autoCreateOrUpdateInfographics();
+    // Only admins can trigger the infographics sync (create/update/delete)
+    if (userUid) {
+      await autoCreateOrUpdateInfographics(userUid);
+    }
 
-        try {
+    try {
             const infographicsCollection = collection(db, 'infographics');
             const q = query(infographicsCollection, orderBy('createdAt', 'desc'));
             const querySnapshot = await getDocs(q);
@@ -69,8 +75,23 @@ export default function InfographicsPage() {
     }, []);
 
     useEffect(() => {
-        fetchInfographics();
-    }, [fetchInfographics]);
+        const unsub = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                const admin = userDoc.exists() && userDoc.data()?.role === 'admin';
+                setAdminUidForSync(admin ? user.uid : null);
+            } else {
+                setAdminUidForSync(null);
+            }
+            setAuthReady(true);
+        });
+        return () => unsub();
+    }, []);
+
+    useEffect(() => {
+        if (!authReady) return;
+        fetchInfographics(adminUidForSync);
+    }, [fetchInfographics, authReady, adminUidForSync]);
 
     const filteredInfographics = useMemo(() => {
         return infographics.filter(infographic =>

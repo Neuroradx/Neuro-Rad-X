@@ -4,8 +4,10 @@
 import { adminDb } from "@/lib/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
 import { COMPONENT_INFOGRAPHICS } from '@/lib/infographic-registry'; // Import from the central registry
+import { verifyAdminRole } from '@/lib/auth-helpers';
 
-export async function autoCreateOrUpdateInfographics() {
+export async function autoCreateOrUpdateInfographics(callerUid: string) {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
   if (!adminDb) {
     console.error("[Auto-Sync] Infographics: Firestore admin is not initialized.");
     return { success: false, error: "Firestore admin not available" };

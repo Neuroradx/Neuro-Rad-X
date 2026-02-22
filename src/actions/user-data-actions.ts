@@ -623,7 +623,8 @@ export async function fetchUsersBySubscription(subscriptionLevel: string, page: 
   }
 }
 
-export async function fetchReviewerStats() {
+export async function fetchReviewerStats(callerUid: string) {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
   if (!adminDb || !adminAuth) return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
   try {
     const reviewersQuery = await adminDb.collection('users').where('role', 'in', ['admin', 'tester', 'Owner', 'Evaluator']).get();
@@ -660,7 +661,10 @@ export async function fetchReviewerStats() {
   }
 }
 
-export async function fetchIncorrectlyAnsweredQuestions(userId: string) {
+export async function fetchIncorrectlyAnsweredQuestions(userId: string, callerUid: string) {
+  if (callerUid !== userId && !await verifyAdminRole(callerUid)) {
+    return { success: false, error: 'Unauthorized access.' };
+  }
   if (!adminDb) return { success: false, error: "Admin SDK not initialized." };
   try {
     const q = await adminDb.collection(`users/${userId}/userQuestions`)
@@ -674,17 +678,34 @@ export async function fetchIncorrectlyAnsweredQuestions(userId: string) {
   }
 }
 
-export async function fetchQuestionStatsAndIdsForReview() {
+export async function fetchQuestionStatsAndIdsForReview(
+  callerUid: string,
+  options?: { category?: string; subcategory?: string }
+) {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
   if (!adminDb) return { success: false, error: "Admin SDK not initialized." };
   try {
     const questionsRef = adminDb.collection('questions');
+    const category = options?.category?.trim();
+    const subcategory = options?.subcategory?.trim();
 
-    // FETCH IMPROVEMENT: Instead of querying for exactly null, 
-    // fetch a batch and filter locally to find documents where the field is missing.
-    // This solves the index problem for documents without the field.
-    const snapshot = await questionsRef.limit(200).get();
+    let snapshot;
+    if (category) {
+      let query = questionsRef.where('main_localization', '==', category).limit(500);
+      if (subcategory) {
+        query = query.where('sub_main_location', '==', subcategory).limit(500);
+      }
+      snapshot = await query.get();
+    } else {
+      snapshot = await questionsRef.limit(500).get();
+    }
+
     const unreviewedIds = snapshot.docs
-      .filter(doc => !doc.data().Question_revised || doc.data().Question_revised !== 'yes')
+      .filter(doc => {
+        const d = doc.data();
+        if (d.Question_revised === 'yes') return false;
+        return true;
+      })
       .slice(0, 100)
       .map(doc => doc.id);
 
@@ -704,6 +725,7 @@ export async function fetchQuestionStatsAndIdsForReview() {
 }
 
 export async function markQuestionAsReviewed(questionId: string, reviewerUid: string, scientificArticle?: ScientificArticle) {
+  if (!await verifyAdminRole(reviewerUid)) return { success: false, error: 'Unauthorized access.' };
   if (!adminDb) return { success: false, error: "Admin SDK not initialized." };
   try {
     const updateData: any = {
@@ -717,6 +739,115 @@ export async function markQuestionAsReviewed(questionId: string, reviewerUid: st
     await adminDb.collection('questions').doc(questionId).update(updateData);
     return { success: true };
   } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+const PAGE_SIZE_LAST_REVIEWED = 10;
+
+export type LastReviewedQuestionItem = {
+  id: string;
+  questionText: string;
+};
+
+/**
+ * Fetches the last reviewed questions with cursor-based pagination (10 per page).
+ * Requires admin. Returns questions ordered by Question_revised_at desc.
+ */
+export async function fetchLastReviewedQuestions(
+  callerUid: string,
+  options: { afterDocId?: string; beforeDocId?: string }
+): Promise<{
+  success: boolean;
+  questions?: LastReviewedQuestionItem[];
+  totalCount?: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+  nextPageDocId?: string;
+  prevPageDocId?: string;
+  error?: string;
+}> {
+  if (!(await verifyAdminRole(callerUid))) return { success: false, error: 'Unauthorized access.' };
+  if (!adminDb) return { success: false, error: 'Admin SDK not initialized.' };
+  try {
+    const questionsRef = adminDb.collection('questions');
+    const baseQuery = questionsRef
+      .where('Question_revised', '==', 'yes')
+      .orderBy('Question_revised_at', 'desc');
+
+    const [countSnap, ...rest] = await Promise.all([
+      questionsRef.where('Question_revised', '==', 'yes').count().get(),
+      options.afterDocId
+        ? questionsRef.doc(options.afterDocId).get()
+        : Promise.resolve(null),
+      options.beforeDocId
+        ? questionsRef.doc(options.beforeDocId).get()
+        : Promise.resolve(null),
+    ]);
+    const totalCount = countSnap.data().count;
+    const afterDoc = rest[0] as admin.firestore.DocumentSnapshot | null;
+    const beforeDoc = rest[1] as admin.firestore.DocumentSnapshot | null;
+
+    let query: admin.firestore.Query = baseQuery.limit(PAGE_SIZE_LAST_REVIEWED + 1);
+    if (afterDoc?.exists) query = query.startAfter(afterDoc);
+    else if (beforeDoc?.exists) query = query.endBefore(beforeDoc).limit(PAGE_SIZE_LAST_REVIEWED + 1);
+
+    const snapshot = await query.get();
+    const allDocs = snapshot.docs;
+    const hasMore = allDocs.length > PAGE_SIZE_LAST_REVIEWED;
+    const docs = hasMore ? allDocs.slice(0, PAGE_SIZE_LAST_REVIEWED) : allDocs;
+    const questions: LastReviewedQuestionItem[] = docs.map((d) => {
+      const data = d.data();
+      const en = data.translations?.en;
+      const questionText = (en?.questionText ?? '').trim() || '(no text)';
+      return { id: d.id, questionText };
+    });
+    const firstDocId = docs[0]?.id;
+    const lastDocId = docs[docs.length - 1]?.id;
+
+    return {
+      success: true,
+      questions,
+      totalCount,
+      hasNextPage: options.beforeDocId ? true : hasMore,
+      hasPrevPage: options.afterDocId ? true : hasMore,
+      nextPageDocId: (options.beforeDocId ? lastDocId : hasMore ? lastDocId : undefined),
+      prevPageDocId: firstDocId,
+    };
+  } catch (error: any) {
+    console.error('Error in fetchLastReviewedQuestions:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Resets review progress to 0: removes Question_revised, Question_revised_by, Question_revised_at
+ * from all questions that were marked as reviewed. Admin only.
+ */
+export async function resetReviewProgress(callerUid: string): Promise<{ success: boolean; resetCount?: number; error?: string }> {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
+  if (!adminDb) return { success: false, error: "Admin SDK not initialized." };
+  try {
+    const snapshot = await adminDb.collection('questions').where('Question_revised', '==', 'yes').get();
+    const deleteField = admin.firestore.FieldValue.delete();
+    const BATCH_SIZE = 500;
+    let committed = 0;
+    for (let i = 0; i < snapshot.docs.length; i += BATCH_SIZE) {
+      const batch = adminDb.batch();
+      const chunk = snapshot.docs.slice(i, i + BATCH_SIZE);
+      chunk.forEach(doc => {
+        batch.update(doc.ref, {
+          Question_revised: deleteField,
+          Question_revised_by: deleteField,
+          Question_revised_at: deleteField,
+        });
+      });
+      await batch.commit();
+      committed += chunk.length;
+    }
+    return { success: true, resetCount: committed };
+  } catch (error: any) {
+    console.error("Error in resetReviewProgress:", error);
     return { success: false, error: error.message };
   }
 }

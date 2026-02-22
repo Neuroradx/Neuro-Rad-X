@@ -5,6 +5,7 @@ import { adminDb } from '@/lib/firebase-admin';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import type { Question } from '@/types';
 import { algoliaAdminClient, QUESTIONS_INDEX_NAME } from '@/lib/algolia';
+import { verifyAdminRole } from '@/lib/auth-helpers';
 
 const DETAILED_ADMIN_SDK_ERROR = "Server configuration error: The Admin SDK is not initialized. Check server startup logs for errors related to 'firebase_service_account'.";
 
@@ -38,7 +39,12 @@ export async function getQuestionById(questionId: string): Promise<{ success: bo
   }
 }
 
-export async function updateQuestion(questionId: string, data: Partial<Question>): Promise<{ success: boolean; error?: string }> {
+export async function updateQuestion(
+  questionId: string,
+  data: Partial<Question>,
+  callerUid: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
   if (!adminDb) {
     return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
   }
@@ -89,7 +95,8 @@ export async function updateQuestion(questionId: string, data: Partial<Question>
   }
 }
 
-export async function deleteQuestionById(questionId: string): Promise<{ success: boolean; message: string }> {
+export async function deleteQuestionById(questionId: string, callerUid: string): Promise<{ success: boolean; message: string }> {
+  if (!await verifyAdminRole(callerUid)) return { success: false, message: 'Unauthorized access.' };
   if (!adminDb) {
     return { success: false, message: DETAILED_ADMIN_SDK_ERROR };
   }

@@ -2,8 +2,10 @@
 
 import { adminDb } from '@/lib/firebase-admin';
 import { findScientificArticleFlow } from '@/ai/flows/find-scientific-article-flow';
-import type { FindScientificArticleInput, FindScientificArticleOutput } from '@/types/ai-schemas';
+import { questionQualityFlow } from '@/ai/flows/question-quality-flow';
+import type { FindScientificArticleInput, FindScientificArticleOutput, QuestionQualityInput, QuestionQualityOutput } from '@/types/ai-schemas';
 import { Timestamp } from 'firebase-admin/firestore';
+import { verifyAdminRole } from '@/lib/auth-helpers';
 
 /**
  * @fileOverview Acciones de servidor para el enriquecimiento de preguntas con IA.
@@ -39,9 +41,13 @@ function serializeTimestamps(obj: any): any {
 
 /**
  * Acción para buscar un artículo científico individual usando el flujo de IA.
- * @param input Datos de la pregunta para el prompt de la IA.
+ * Requiere rol admin.
  */
-export async function findScientificArticleAction(input: FindScientificArticleInput): Promise<{ success: boolean; data?: FindScientificArticleOutput; error?: string }> {
+export async function findScientificArticleAction(
+  input: FindScientificArticleInput,
+  callerUid: string
+): Promise<{ success: boolean; data?: FindScientificArticleOutput; error?: string }> {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
   try {
     // Llamada directa al flujo de Genkit 1.x
     const result = await findScientificArticleFlow(input);
@@ -59,9 +65,29 @@ export async function findScientificArticleAction(input: FindScientificArticleIn
 }
 
 /**
- * Obtiene estadísticas del estado de enriquecimiento bibliográfico en la base de datos.
+ * Runs the question quality check flow (question phrasing, options, correct answer, reference plausibility).
+ * Requires admin role.
  */
-export async function getQuestionEnrichmentStats(): Promise<{ success: boolean; total?: number; enriched?: number; error?: string }> {
+export async function runQuestionQualityCheckAction(
+  input: QuestionQualityInput,
+  callerUid: string
+): Promise<{ success: boolean; data?: QuestionQualityOutput; error?: string }> {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
+  try {
+    const result = await questionQualityFlow(input);
+    return { success: true, data: result };
+  } catch (error: any) {
+    console.error('Error en runQuestionQualityCheckAction:', error);
+    return { success: false, error: error.message || 'Quality check failed.' };
+  }
+}
+
+/**
+ * Obtiene estadísticas del estado de enriquecimiento bibliográfico en la base de datos.
+ * Requiere rol admin.
+ */
+export async function getQuestionEnrichmentStats(callerUid: string): Promise<{ success: boolean; total?: number; enriched?: number; error?: string }> {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
   if (!adminDb) return { success: false, error: "Admin SDK no inicializado." };
 
   try {
@@ -87,10 +113,14 @@ export async function getQuestionEnrichmentStats(): Promise<{ success: boolean; 
 
 /**
  * Procesa preguntas en lotes para buscar fuentes bibliográficas automáticamente.
- * @param batchSize Cantidad de preguntas a procesar por lote.
- * @param lastDocId ID del último documento procesado para paginación de la consulta.
+ * Requiere rol admin.
  */
-export async function enrichQuestionsWithSources(batchSize: number, lastDocId: string | null) {
+export async function enrichQuestionsWithSources(
+  batchSize: number,
+  lastDocId: string | null,
+  callerUid: string
+) {
+  if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
   if (!adminDb) return { success: false, error: "Admin SDK no inicializado." };
 
   try {

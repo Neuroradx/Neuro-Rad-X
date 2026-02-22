@@ -117,7 +117,7 @@ export default function BookmarksPage() {
             id: questionId,
             topic: topicDisplay,
             subtopic: subtopicDisplay,
-            difficulty: data.difficulty || 'Medium',
+            difficulty: data.difficulty === 'Advanced' ? 'Advanced' : 'Easy',
             type: data.type || 'mcq',
             localization: localizationDisplay,
             stem: langTranslations.questionText || 'No text.',

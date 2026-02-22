@@ -138,7 +138,7 @@ export default function MyNotesPage() {
                     id: noteMeta.id,
                     topic: data.main_localization === "General" ? t('studyMode.categoryOther') : t(`topics.${data.main_localization?.toLowerCase()}` as any, { defaultValue: data.main_localization }),
                     subtopic: data.sub_main_location || undefined,
-                    difficulty: data.difficulty || 'Medium',
+                    difficulty: data.difficulty === 'Advanced' ? 'Advanced' : 'Easy',
                     type: (data.type === "Multiple Choice" || data.type === "multiple_choice") ? 'mcq' : data.type || 'mcq',
                     localization: (data.main_localization === "General" ? t('studyMode.categoryOther') : t(`topics.${data.main_localization?.toLowerCase()}` as any, { defaultValue: data.main_localization })) as any,
                     stem: langTranslations.questionText || 'No stem available.',

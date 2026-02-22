@@ -2,6 +2,9 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { useTranslation } from '@/hooks/use-translation';
 import { getQuestionEnrichmentStats, enrichQuestionsWithSources } from '@/actions/enrichment-actions';
 import { Button } from '@/components/ui/button';
@@ -16,6 +19,8 @@ export default function EnrichQuestionsPage() {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const [currentUserUid, setCurrentUserUid] = useState<string | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [stats, setStats] = useState<{ total: number; enriched: number } | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [isEnriching, setIsEnriching] = useState(false);
@@ -26,10 +31,11 @@ export default function EnrichQuestionsPage() {
   const isRunningRef = useRef(false);
   const lastScannedDocIdRef = useRef<string | null>(null);
 
-  const fetchStats = useCallback(async (): Promise<{ enriched: number; total: number } | null> => {
+  const fetchStats = useCallback(async (uid: string | null): Promise<{ enriched: number; total: number } | null> => {
+    if (!uid) return null;
     setError(null);
     try {
-      const result = await getQuestionEnrichmentStats();
+      const result = await getQuestionEnrichmentStats(uid);
       if (result.success && result.total !== undefined && result.enriched !== undefined) {
         setStats({ total: result.total, enriched: result.enriched });
         return { enriched: result.enriched, total: result.total };
@@ -43,14 +49,35 @@ export default function EnrichQuestionsPage() {
   }, []);
 
   useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const isAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
+        if (isAdmin) setCurrentUserUid(user.uid);
+        else setCurrentUserUid(null);
+        if (!isAdmin) router.push('/admin/dashboard');
+      } else {
+        router.push('/auth/login');
+      }
+      setIsAuthLoading(false);
+    });
+    return () => unsub();
+  }, [router]);
+
+  useEffect(() => {
+    if (!currentUserUid) return;
     setIsLoadingStats(true);
-    fetchStats().finally(() => setIsLoadingStats(false));
-  }, [fetchStats]);
+    fetchStats(currentUserUid).finally(() => setIsLoadingStats(false));
+  }, [fetchStats, currentUserUid]);
 
   const handleStartStopAutoEnrichment = async () => {
     if (isRunningRef.current) {
       isRunningRef.current = false;
       setIsEnriching(false);
+      return;
+    }
+    if (!currentUserUid) {
+      setError('Authentication required.');
       return;
     }
 
@@ -65,7 +92,7 @@ export default function EnrichQuestionsPage() {
     // The initial stats are fetched inside the loop for the first time.
     while (isRunningRef.current) {
       try {
-        const result = await enrichQuestionsWithSources(BATCH_SIZE, lastScannedDocIdRef.current);
+        const result = await enrichQuestionsWithSources(BATCH_SIZE, lastScannedDocIdRef.current, currentUserUid!);
         
         if (result.success) {
           lastScannedDocIdRef.current = result.nextCursor;
@@ -76,7 +103,7 @@ export default function EnrichQuestionsPage() {
         }
         
         // After a successful batch, refresh the overall stats for the UI
-        await fetchStats();
+        await fetchStats(currentUserUid);
         
         // If there's no next cursor, the collection has been fully scanned.
         if (!lastScannedDocIdRef.current) {
@@ -96,11 +123,19 @@ export default function EnrichQuestionsPage() {
     // Clean up after the loop finishes or breaks
     isRunningRef.current = false;
     setIsEnriching(false);
-    await fetchStats(); // Final stats refresh
+    await fetchStats(currentUserUid); // Final stats refresh
   };
   
   const enrichmentPercentage = stats ? (stats.total > 0 ? (stats.enriched / stats.total) * 100 : 100) : 0;
   const isComplete = stats ? stats.enriched >= stats.total : false;
+
+  if (isAuthLoading) {
+    return (
+      <div className="container mx-auto py-8 flex justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8">

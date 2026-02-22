@@ -15,6 +15,7 @@ import type { Firestore } from 'firebase/firestore';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ArticleReferenceDisplay } from '@/components/article-reference-display';
 
 
 const ReportIssueDialog = dynamic(() => import('@/components/questions/report-issue-dialog').then(mod => mod.ReportIssueDialog), {
@@ -121,7 +122,7 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({
                     {currentQuestion.scientificArticle?.article_reference && (
                       <div>
                         <div className="flex justify-between items-center">
-                          <p className="font-semibold text-foreground">{t('common.sourceLabel')}:</p>
+                          <p className="font-semibold text-foreground">{t('common.sourceLabel')} (APA 7; links clickable):</p>
                           <a
                               href={`https://www.google.com/search?q=${encodeURIComponent(currentQuestion.scientificArticle.article_reference || '')}`}
                               target="_blank"
@@ -132,9 +133,10 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({
                               <Search className="h-4 w-4" />
                           </a>
                         </div>
-                        <p className="whitespace-pre-wrap">
-                          {currentQuestion.scientificArticle.article_reference}
-                        </p>
+                        <ArticleReferenceDisplay
+                          articleReference={currentQuestion.scientificArticle.article_reference}
+                          doi={currentQuestion.scientificArticle.doi}
+                        />
                       </div>
                     )}
                   </div>
@@ -150,11 +152,11 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
-                aria-label="Edit Question"
-                title="Edit Question"
+                aria-label="Review Question"
+                title="Review Question"
                 asChild
               >
-                <Link href={`/admin/edit-question?id=${currentQuestion.id}`} target="_blank" rel="noopener noreferrer">
+                <Link href={`/admin/review-questions/session?id=${currentQuestion.id}`} target="_blank" rel="noopener noreferrer">
                   <FileEdit className="h-5 w-5 text-muted-foreground hover:text-primary" />
                 </Link>
               </Button>

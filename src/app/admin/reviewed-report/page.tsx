@@ -2,6 +2,9 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { useTranslation } from '@/hooks/use-translation';
 import { fetchReviewerStats } from '@/actions/user-data-actions';
 import { Button } from '@/components/ui/button';
@@ -27,15 +30,18 @@ export default function ReviewedReportPage() {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const [currentUserUid, setCurrentUserUid] = useState<string | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [stats, setStats] = useState<ReviewerStat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStats = useCallback(async () => {
+  const fetchStats = useCallback(async (uid: string | null) => {
+    if (!uid) return;
     setIsLoading(true);
     setError(null);
     try {
-      const result = await fetchReviewerStats();
+      const result = await fetchReviewerStats(uid);
       if (result.success && result.stats) {
         setStats(result.stats);
       } else {
@@ -49,8 +55,23 @@ export default function ReviewedReportPage() {
   }, []);
 
   useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const isAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
+        if (isAdmin) {
+          setCurrentUserUid(user.uid);
+          fetchStats(user.uid);
+        } else {
+          router.push('/admin/dashboard');
+        }
+      } else {
+        router.push('/auth/login');
+      }
+      setIsAuthLoading(false);
+    });
+    return () => unsub();
+  }, [router, fetchStats]);
 
   const getAvatarFallback = (name: string, email: string) => {
     if (name && name.trim()) {
@@ -63,6 +84,14 @@ export default function ReviewedReportPage() {
     if (email) return email[0].toUpperCase();
     return 'U';
   };
+
+  if (isAuthLoading) {
+    return (
+      <div className="container mx-auto py-8 flex justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8">

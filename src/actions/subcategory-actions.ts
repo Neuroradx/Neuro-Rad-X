@@ -2,17 +2,20 @@
 
 import { adminDb } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { verifyAdminRole } from '@/lib/auth-helpers';
 
 const DETAILED_ADMIN_SDK_ERROR = "Server configuration error: The Admin SDK is not initialized.";
 
 /**
  * Registers a new subcategory under a main category in Firestore.
- * Uses arrayUnion to prevent duplicates automatically.
+ * Requires admin role.
  */
 export async function registerSubcategoryAction(
     mainCategory: string,
-    subcategoryName: string
+    subcategoryName: string,
+    callerUid: string
 ): Promise<{ success: boolean; error?: string }> {
+    if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
     if (!adminDb) {
         return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
     }
@@ -34,10 +37,13 @@ export async function registerSubcategoryAction(
 
 /**
  * Fetches the list of custom (dynamic) subcategories for a given main category.
+ * Requires admin role (used in admin edit-question flow).
  */
 export async function getSubcategoriesAction(
-    mainCategory: string
+    mainCategory: string,
+    callerUid: string
 ): Promise<{ success: boolean; subcats?: string[]; error?: string }> {
+    if (!await verifyAdminRole(callerUid)) return { success: false, error: 'Unauthorized access.' };
     if (!adminDb) {
         return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
     }

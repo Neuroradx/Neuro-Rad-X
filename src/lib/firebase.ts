@@ -6,12 +6,12 @@ import { getStorage } from "firebase/storage"; // Import getStorage
 
 // Tu configuración de Firebase específica
 const firebaseConfig = {
-  apiKey: "AIzaSyAcul5J-o83EE4o0FT9jdLvQmApQUoUQ7I",
-  authDomain: "neuroradx-jovto.firebaseapp.com",
-  projectId: "neuroradx-jovto",
-  storageBucket: "neuroradx-jovto.firebasestorage.app",
-  messagingSenderId: "930640165466",
-  appId: "1:930640165466:web:1ee43d3bcb83c2e2297663"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
 // Inicializa Firebase

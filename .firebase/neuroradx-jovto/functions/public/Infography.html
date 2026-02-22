@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroRadX: A Deep Dive into the Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F4F8;
+            color: #343E48;
+        }
+
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .kpi-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #00A9E0;
+            line-height: 1;
+        }
+
+        .kpi-label {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            color: #343E48;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .flow-chart-item {
+            background-color: #FFFFFF;
+            border: 2px solid #00A9E0;
+            color: #343E48;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .flow-chart-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #00A9E0;
+            margin: 0.5rem 0;
+        }
+        
+        .sticky-nav {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#343E48]">NeuroRadX</h1>
+            <p class="mt-2 text-lg md:text-xl text-[#00A9E0] font-semibold">A Deep Dive into the Neuroradiology Platform</p>
+        </div>
+    </header>
+    
+    <nav class="sticky-nav bg-[#343E48] shadow-lg">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-center space-x-4 md:space-x-8 overflow-x-auto py-3">
+                <a href="#vision" class="text-white font-semibold hover:text-[#FBB040] transition-colors duration-300 whitespace-nowrap px-2">Vision & Market</a>
+                <a href="#kpis" class="text-white font-semibold hover:text-[#FBB040] transition-colors duration-300 whitespace-nowrap px-2">Project KPIs</a>
+                <a href="#arquitectura" class="text-white font-semibold hover:text-[#FBB040] transition-colors duration-300 whitespace-nowrap px-2">Architecture</a>
+                <a href="#features" class="text-white font-semibold hover:text-[#FBB040] transition-colors duration-300 whitespace-nowrap px-2">Features</a>
+                <a href="#ia" class="text-white font-semibold hover:text-[#FBB040] transition-colors duration-300 whitespace-nowrap px-2">AI Engine</a>
+                <a href="#competencia" class="text-white font-semibold hover:text-[#FBB040] transition-colors duration-300 whitespace-nowrap px-2">Competition</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="vision" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#343E48]">Vision & Market Opportunity</h2>
+            <p class="text-center text-lg mb-8 max-w-3xl mx-auto">NeuroRadX was conceived to meet a growing demand for specialized digital study tools in the medical field. The goal is to offer a high-quality platform that adapts to the learning needs of students, residents, and specialists in neuroradiology.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-5xl mb-4">🎓</div>
+                    <h3 class="text-xl font-bold mb-2">Medical Students</h3>
+                    <p class="text-base">Consolidation of fundamental knowledge in neuroanatomy and neuroimaging principles.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-5xl mb-4">👨‍⚕️</div>
+                    <h3 class="text-xl font-bold mb-2">Radiology Residents</h3>
+                    <p class="text-base">Intensive preparation for certification exams with an extensive bank of clinical cases.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-5xl mb-4">🏆</div>
+                    <h3 class="text-xl font-bold mb-2">Fellows & Specialists</h3>
+                    <p class="text-base">Advanced content for subspecialty (CAQ) preparation and maintenance of certification (MOC).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="kpis" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#343E48]">Key Project Metrics</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div class="kpi-card">
+                    <div class="kpi-number">5k+</div>
+                    <div class="kpi-label">Questions in Firestore</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number">13k+</div>
+                    <div class="kpi-label">TS/TSX Lines of Code</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number">5</div>
+                    <div class="kpi-label">Main Collections</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number">3</div>
+                    <div class="kpi-label">Supported Languages</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="arquitectura" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#343E48]">Technological Architecture</h2>
+            <p class="text-center text-lg mb-8 max-w-3xl mx-auto">NeuroRadX is based on a modern, scalable, and robust technology stack, designed to offer optimal performance and a fluid user experience.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-4">Stack Breakdown</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="techStackChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm mt-4 text-gray-600">Representation of the main technologies and their interconnection in the platform.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-4">Code Organization</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="codebaseChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm mt-4 text-gray-600">Distribution of lines of code by type, showing the weight of the application logic.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#343E48]">Main Features</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-lg flex items-start space-x-4">
+                    <div class="text-3xl text-[#00A9E0]">📚</div>
+                    <div>
+                        <h3 class="text-xl font-bold">Study Modes</h3>
+                        <p class="mt-1">Tutor Mode, Exam Mode, and Flashcards for flexible and adaptive learning.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg flex items-start space-x-4">
+                    <div class="text-3xl text-[#00A9E0]">📈</div>
+                    <div>
+                        <h3 class="text-xl font-bold">Progress Tracking</h3>
+                        <p class="mt-1">Dashboard with detailed statistics on performance, accuracy, and areas for improvement.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg flex items-start space-x-4">
+                    <div class="text-3xl text-[#00A9E0]">🛠️</div>
+                    <div>
+                        <h3 class="text-xl font-bold">Personal Tools</h3>
+                        <p class="mt-1">Bookmark function and personal notes to save and review key questions.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg flex items-start space-x-4">
+                    <div class="text-3xl text-[#00A9E0]">🔐</div>
+                    <div>
+                        <h3 class="text-xl font-bold">User Management</h3>
+                        <p class="mt-1">Secure registration system with roles and a manual approval flow by administrators.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg flex items-start space-x-4">
+                    <div class="text-3xl text-[#00A9E0]">⚙️</div>
+                    <div>
+                        <h3 class="text-xl font-bold">Admin Panel</h3>
+                        <p class="mt-1">Robust tools for user management, content approval, and review.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg flex items-start space-x-4">
+                    <div class="text-3xl text-[#F26C4F]">🤖</div>
+                    <div>
+                        <h3 class="text-xl font-bold">AI-Powered Content</h3>
+                        <p class="mt-1">Automatic generation of questions from scientific articles for always up-to-date content.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ia" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#343E48]">The NeuroRadX AI Engine</h2>
+            <p class="text-center text-lg mb-8 max-w-3xl mx-auto">NeuroRadX's key competitive advantage is its ability to generate high-quality educational content scalably using generative AI.</p>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="w-full md:w-1/2 mb-6 md:mb-0">
+                        <h3 class="text-2xl font-bold mb-4">Content Generation Flow</h3>
+                        <div class="space-y-4">
+                            <div class="flow-chart-item">Scientific PDF Analysis</div>
+                            <div class="flow-chart-arrow">▼</div>
+                            <div class="flow-chart-item">Generation of Questions (Basic, Advanced)</div>
+                            <div class="flow-chart-arrow">▼</div>
+                            <div class="flow-chart-item">Metadata Extraction and Translation (EN, DE, ES)</div>
+                            <div class="flow-chart-arrow">▼</div>
+                            <div class="flow-chart-item">JSON Structuring and Storage in Firestore</div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 md:pl-8">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Structured Output</h3>
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="aiOutputChart"></canvas>
+                        </div>
+                        <p class="text-center text-sm mt-4 text-gray-600">Each AI-generated question is broken down into multiple metadata fields, ensuring high granularity for filtering and personalized study.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="competencia" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#343E48]">Competitive Positioning</h2>
+            <p class="text-center text-lg mb-8 max-w-3xl mx-auto">NeuroRadX differentiates itself in a competitive market by offering greater depth in its niche, an AI-scalable content model, and a superior user experience.</p>
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-4">Price and Question Comparison (Estimated)</h3>
+                <div class="chart-container" style="height: 450px;">
+                    <canvas id="competitorChart"></canvas>
+                </div>
+                <p class="text-center text-sm mt-4 text-gray-600">The chart compares NeuroRadX with key competitors based on the estimated number of neuroradiology questions and their pricing model. NeuroRadX is positioned with a high volume of specialized questions, justifying a premium subscription model.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#343E48] text-white text-center py-6 mt-16">
+        <p>&copy; 2025 NeuroRadX. An infographic generated to visualize the scope and complexity of the project.</p>
+        <p class="text-sm text-gray-400 mt-2">This is a visual representation of the application report. Neither Mermaid JS nor SVG graphics were used.</p>
+    </footer>
+
+    <script>
+        const COLORS = {
+            blue: '#00A9E0',
+            orange: '#F26C4F',
+            yellow: '#FBB040',
+            charcoal: '#343E48',
+            lightGray: '#F0F4F8',
+            white: '#FFFFFF'
+        };
+
+        const wrapLabel = (label) => {
+            const maxLength = 16;
+            if (label.length <= maxLength) return label;
+            const words = label.split(' ');
+            let currentLine = '';
+            const lines = [];
+            words.forEach(word => {
+                if ((currentLine + word).length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            } );
+            lines.push(currentLine.trim());
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+        
+        const defaultPlugins = {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: COLORS.charcoal,
+                    font: {
+                        size: 14
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    title: tooltipTitleCallback
+                }
+            }
+        };
+
+        const techStackCtx = document.getElementById('techStackChart').getContext('2d');
+        new Chart(techStackCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Next.js (Frontend)', 'Next.js Server Actions (Backend)', 'Firebase (BaaS)', 'Genkit (AI)', 'Tailwind/shadcn'],
+                datasets: [{
+                    label: 'Technologies',
+                    data: [30, 25, 25, 15, 5],
+                    backgroundColor: [
+                        COLORS.blue,
+                        '#4dbde6',
+                        COLORS.yellow,
+                        COLORS.orange,
+                        COLORS.charcoal
+                    ],
+                    borderColor: COLORS.white,
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: defaultPlugins
+            }
+        });
+
+        const codebaseCtx = document.getElementById('codebaseChart').getContext('2d');
+        new Chart(codebaseCtx, {
+            type: 'pie',
+            data: {
+                labels: ['TypeScript/TSX (Logic)', 'JSON (Data/Config)', 'CSS (Styles)'],
+                datasets: [{
+                    label: 'Lines of Code',
+                    data: [13412, 7845, 134],
+                    backgroundColor: [
+                        COLORS.blue,
+                        COLORS.orange,
+                        COLORS.lightGray
+                    ],
+                    borderColor: COLORS.white,
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: defaultPlugins
+            }
+        });
+
+        const aiOutputCtx = document.getElementById('aiOutputChart').getContext('2d');
+        new Chart(aiOutputCtx, {
+            type: 'radar',
+            data: {
+                labels: wrapLabel(['Difficulty Level', 'Main Location', 'Sub-Location', 'Topics', 'Sub-Topics', 'Anatomical Locations', 'Tags', 'Translations']),
+                datasets: [{
+                    label: 'Metadata Granularity',
+                    data: [8, 9, 7, 8, 7, 9, 6, 10],
+                    backgroundColor: 'rgba(0, 169, 224, 0.2)',
+                    borderColor: COLORS.blue,
+                    pointBackgroundColor: COLORS.blue,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: COLORS.blue
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: '#e0e0e0'
+                        },
+                        grid: {
+                            color: '#e0e0e0'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 11
+                            },
+                            color: COLORS.charcoal
+                        },
+                        ticks: {
+                            backdropColor: COLORS.white,
+                            color: COLORS.charcoal
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+        
+        const competitorCtx = document.getElementById('competitorChart').getContext('2d');
+        new Chart(competitorCtx, {
+            type: 'bar',
+            data: {
+                labels: wrapLabel(['Neuro Rad Quiz', 'BoardVitals', 'RadsQuestions', 'MRI Online', 'Radiopaedia', 'NeuroRadX']),
+                datasets: [
+                {
+                    label: 'Neuro Questions (Estimated)',
+                    data: [60, 1089, 500, 300, 269, 5000], 
+                    backgroundColor: COLORS.blue,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Annual Price (USD - Estimated)',
+                    data: [0, 889, 250, 500, 440, 399],
+                    backgroundColor: COLORS.orange,
+                    yAxisID: 'y1'
+                }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                           color: COLORS.charcoal
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        type: 'logarithmic',
+                        position: 'left',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Questions (Log Scale)',
+                            color: COLORS.charcoal
+                        },
+                        ticks: {
+                           color: COLORS.charcoal
+                        },
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Annual Price (USD)',
+                            color: COLORS.charcoal
+                        },
+                        grid: {
+                            drawOnChartArea: false, 
+                        },
+                        ticks: {
+                           color: COLORS.charcoal
+                        },
+                    }
+                },
+                plugins: defaultPlugins
+            }
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+User-Agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /settings/
+Disallow: /dashboard/
+Disallow: /progress/
+Disallow: /bookmarks/
+Disallow: /my-notes/
+Disallow: /study/
+
+Sitemap: https://neuroradx.de/sitemap.xml

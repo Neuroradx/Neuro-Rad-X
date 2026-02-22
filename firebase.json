@@ -1,23 +1,23 @@
 {
+  "hosting": {
+    "site": "neuroradx-jovto",
+    "source": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "frameworksBackend": {
+      "region": "europe-west3",
+      "memory": "2GiB",
+      "minInstances": 0
+    }
+  },
   "firestore": {
-    "database": "(default)",
-    "location": "eur3",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
   "storage": {
     "rules": "storage.rules"
-  },
-  "emulators": {
-    "auth": {
-      "port": 9099
-    },
-    "firestore": {
-      "port": 8080
-    },
-    "ui": {
-      "enabled": true
-    },
-    "singleProjectMode": true
   }
 }

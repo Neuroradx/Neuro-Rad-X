@@ -257,7 +257,7 @@
       "title": "Approval Pending",
       "descriptionLine1": "Thank you for registering!",
       "descriptionLine2": "Your account is currently under review by our medical board.",
-      "contactSupport": "If you have any questions, please contact support@neuroradx.de",
+      "contactSupport": "If you have any questions, please contact support@neuroradx.com",
       "logoutButton": "Sign Out"
     }
   },
@@ -986,6 +986,11 @@
       "student": "Student"
     },
     "roleLabel": "User Role",
+    "roles": {
+      "user": "User",
+      "admin": "Admin",
+      "tester": "Tester"
+    },
     "roleManagedByAdmin": "Your role is managed by administrators.",
     "saveProfile": "Save Profile",
     "appearance": "Appearance",

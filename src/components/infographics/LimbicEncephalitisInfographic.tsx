@@ -207,7 +207,7 @@ const LimbicEncephalitisInfographic = () => {
                 <p>This infographic summarizes key findings on Limbic Encephalitis based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">
-                    Created by <a href="http://www.neuroradx.de/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NeuroRadX</a> on July 4, 2025. Generated with Gemini.
+                    Created by <a href="https://www.neuroradx.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NeuroRadX</a> on July 4, 2025. Generated with Gemini.
                 </p>
             </footer>
 

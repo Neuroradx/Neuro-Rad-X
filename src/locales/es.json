@@ -256,7 +256,7 @@
       "title": "Aprobación pendiente",
       "descriptionLine1": "¡Gracias por registrarte!",
       "descriptionLine2": "Tu cuenta está siendo revisada por nuestro comité médico.",
-      "contactSupport": "Si tienes dudas, contacta con support@neuroradx.de",
+      "contactSupport": "Si tienes dudas, contacta con support@neuroradx.com",
       "logoutButton": "Salir"
     }
   },
@@ -971,6 +971,11 @@
       "student": "Estudiante"
     },
     "roleLabel": "Rol de usuario",
+    "roles": {
+      "user": "Usuario",
+      "admin": "Administrador",
+      "tester": "Tester"
+    },
     "roleManagedByAdmin": "Tu rol es gestionado por administradores.",
     "saveProfile": "Guardar perfil",
     "appearance": "Apariencia",

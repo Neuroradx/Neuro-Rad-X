@@ -37,7 +37,7 @@ export default function TermsOfUsePage() {
               Strasse 1<br />
               74078 Heilbronn<br />
               Germany<br />
-              Email: support@neuroradx.de
+              Email: support@neuroradx.com
             </address>
             <p className="mt-2">By creating an account or using the Service, you agree to be bound by these Terms.</p>
           </div>

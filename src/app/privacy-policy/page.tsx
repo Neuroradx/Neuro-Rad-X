@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
               Strasse 1<br />
               74078 Heilbronn<br />
               Germany<br />
-              Email: support@neuroradx.de
+              Email: support@neuroradx.com
             </address>
           </div>
 

@@ -193,7 +193,7 @@ const CerebralMicrobleedsInfographic = () => {
                 <p>This infographic summarizes key findings on Cerebral Microbleeds based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">
-                    Created by <a href="https://www.neuroradx.de/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NeuroRadX</a> on October 3, 2025. Generated with Gemini.
+                    Created by <a href="https://www.neuroradx.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NeuroRadX</a> on October 3, 2025. Generated with Gemini.
                 </p>
             </footer>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/common/logo';
 import { LanguageSwitcher } from '@/components/common/language-switcher';
@@ -10,14 +11,23 @@ import { ArrowRight, Wand, Database, Brain, Sparkles, TrendingUp, Bookmark } fro
 import { useTranslation } from '@/hooks/use-translation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
-/**
- * Static constant for the last publication date. 
- * Update this string manually whenever a major change is published.
- */
-const LAST_PUBLICATION_DATE = "2025-10-09";
-
 export default function HomePage() {
   const { t } = useTranslation();
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+
+  useEffect(() => {
+    const buildTime = process.env.NEXT_PUBLIC_BUILD_TIME;
+    const dateToFormat = buildTime ? new Date(buildTime) : new Date();
+
+    const formatted = dateToFormat.toLocaleString(undefined, {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    setLastUpdated(formatted);
+  }, []);
 
   const features = [
     {
@@ -136,7 +146,7 @@ export default function HomePage() {
           <div className="flex flex-col items-center md:items-start gap-1">
             <p className="text-center md:text-left">&copy; {new Date().getFullYear()} NeuroRadX. {t('homePage.copyright')}</p>
             <p className="text-[10px] opacity-60 uppercase tracking-wider">
-              {t('homePage.lastUpdated', { date: LAST_PUBLICATION_DATE })}
+              {lastUpdated && t('homePage.lastUpdated', { date: lastUpdated })}
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-6">

@@ -40,6 +40,7 @@ const getProfileFormSchema = (t: (key: string) => string) => z.object({
   institution: z.string().optional(),
   userDeclaredSpecialization: z.string().optional(),
   profession: z.string().optional(),
+  role: z.enum(['user', 'admin', 'tester']),
 });
 
 type ProfileFormValues = z.infer<ReturnType<typeof getProfileFormSchema>>;
@@ -51,6 +52,7 @@ const professionKeys = [
 const specializationKeys = [
   "subspecialist", "fellow", "specialist", "resident", "student"
 ];
+const roleKeys = ["user", "admin", "tester"];
 
 
 // --- Main Settings Page Component ---
@@ -63,6 +65,7 @@ export default function SettingsPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Authentication and Profile Loading Effect
   useEffect(() => {
@@ -70,6 +73,10 @@ export default function SettingsPage() {
       if (user) {
         setCurrentUser(user);
         try {
+          // Check custom claims for admin status
+          const tokenResult = await user.getIdTokenResult();
+          setIsAdmin(!!tokenResult.claims.admin);
+
           const userDocRef = doc(db, 'users', user.uid);
           const docSnap = await getDoc(userDocRef);
           if (docSnap.exists()) {
@@ -109,9 +116,9 @@ export default function SettingsPage() {
   if (!currentUser || !userProfile) {
     return <SettingsPageSkeleton />;
   }
-  
-  if(currentUser.isAnonymous) {
-     return (
+
+  if (currentUser.isAnonymous) {
+    return (
       <div className="container mx-auto py-8">
         <Alert>
           <AlertCircle className="h-4 w-4" />
@@ -130,7 +137,7 @@ export default function SettingsPage() {
       </div>
       <p className="text-muted-foreground">{t('settingsPage.description')}</p>
 
-      <ProfileForm currentUser={currentUser} userProfile={userProfile} />
+      <ProfileForm currentUser={currentUser} userProfile={userProfile} isAdmin={isAdmin} />
       <AppearanceSettings />
       <SubscriptionAndDataManagement userProfile={userProfile} currentUser={currentUser} />
     </div>
@@ -139,7 +146,7 @@ export default function SettingsPage() {
 
 // --- Sub-components for Settings Sections ---
 
-function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; userProfile: UserProfile }) {
+function ProfileForm({ currentUser, userProfile, isAdmin }: { currentUser: FirebaseUser; userProfile: UserProfile; isAdmin: boolean }) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
@@ -155,6 +162,7 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
       institution: userProfile.institution || '',
       userDeclaredSpecialization: userProfile.userDeclaredSpecialization || '',
       profession: userProfile.profession || '',
+      role: userProfile.role || 'user',
     },
   });
 
@@ -163,7 +171,8 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
     try {
       const userDocRef = doc(db, "users", currentUser.uid);
       const newDisplayName = `${data.firstName} ${data.lastName}`.trim();
-      
+
+      // Update non-restricted profile fields directly via Firestore client SDK
       const updateData: Partial<UserProfile> = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -172,10 +181,28 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
         institution: data.institution,
         userDeclaredSpecialization: data.userDeclaredSpecialization,
         profession: data.profession,
+        // NOTE: 'role' is intentionally excluded here — Firestore rules block client-side role updates.
+        // Role is updated via the Admin SDK API route below.
       };
 
       await updateDoc(userDocRef, updateData);
-      
+
+      // Update role via Admin SDK API route (bypasses Firestore client-side security rules)
+      const idToken = await currentUser.getIdToken();
+      const roleResponse = await fetch('/api/user/update-role', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ role: data.role }),
+      });
+
+      if (!roleResponse.ok) {
+        const roleError = await roleResponse.json();
+        throw new Error(roleError.message || roleError.error || 'Failed to update role');
+      }
+
       if (currentUser.displayName !== newDisplayName) {
         await updateProfile(currentUser, { displayName: newDisplayName });
       }
@@ -195,19 +222,19 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
       setIsSaving(false);
     }
   };
-  
+
   const getAvatarFallback = (displayName: string | null, email: string | null) => {
-      if (displayName) {
-        const nameParts = displayName.trim().split(/\s+/);
-        const firstInitial = nameParts[0]?.[0] || "";
-        const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || "" : "";
-        const initials = (firstInitial + lastInitial).toUpperCase();
-        if(initials) return initials;
-      }
-      if (email) {
-        return email[0].toUpperCase();
-      }
-      return <UserCircle className="h-5 w-5" />;
+    if (displayName) {
+      const nameParts = displayName.trim().split(/\s+/);
+      const firstInitial = nameParts[0]?.[0] || "";
+      const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || "" : "";
+      const initials = (firstInitial + lastInitial).toUpperCase();
+      if (initials) return initials;
+    }
+    if (email) {
+      return email[0].toUpperCase();
+    }
+    return <UserCircle className="h-5 w-5" />;
   };
 
   return (
@@ -219,15 +246,15 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-6">
-             <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16 border">
-                    <AvatarImage src={currentUser.photoURL || undefined} alt={currentUser.displayName || "User Avatar"} data-ai-hint="profile large" />
-                    <AvatarFallback>{getAvatarFallback(currentUser.displayName, currentUser.email)}</AvatarFallback>
-                </Avatar>
-                <div className="grid gap-1.5">
-                    <p className="text-lg font-semibold">{currentUser.displayName}</p>
-                    <p className="text-sm text-muted-foreground">{currentUser.email}</p>
-                </div>
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16 border">
+                <AvatarImage src={currentUser.photoURL || undefined} alt={currentUser.displayName || "User Avatar"} data-ai-hint="profile large" />
+                <AvatarFallback>{getAvatarFallback(currentUser.displayName, currentUser.email)}</AvatarFallback>
+              </Avatar>
+              <div className="grid gap-1.5">
+                <p className="text-lg font-semibold">{currentUser.displayName}</p>
+                <p className="text-sm text-muted-foreground">{currentUser.email}</p>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
@@ -262,21 +289,21 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settingsPage.countryLabel')}</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('settingsPage.countrySelectPlaceholder')} />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                           {COUNTRIES_LIST.map(c => (<SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>))}
-                        </SelectContent>
-                      </Select>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('settingsPage.countrySelectPlaceholder')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {COUNTRIES_LIST.map(c => (<SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-               <FormField
+              <FormField
                 control={form.control}
                 name="institution"
                 render={({ field }) => (
@@ -289,13 +316,13 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
                   </FormItem>
                 )}
               />
-               <FormField
+              <FormField
                 control={form.control}
                 name="profession"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settingsPage.professionLabel')}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder={t('settingsPage.selectProfessionPlaceholder')} />
@@ -313,13 +340,13 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
                   </FormItem>
                 )}
               />
-               <FormField
+              <FormField
                 control={form.control}
                 name="userDeclaredSpecialization"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('settingsPage.specializationLevelLabel')}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder={t('settingsPage.selectSpecializationPlaceholder')} />
@@ -327,7 +354,7 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
                       </FormControl>
                       <SelectContent>
                         {specializationKeys.map((key) => (
-                           <SelectItem key={key} value={key}>
+                          <SelectItem key={key} value={key}>
                             {t(`settingsPage.specializationLevels.${key}`)}
                           </SelectItem>
                         ))}
@@ -337,13 +364,36 @@ function ProfileForm({ currentUser, userProfile }: { currentUser: FirebaseUser; 
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('settingsPage.roleLabel')}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={!isAdmin}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('settingsPage.roleLabel')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {roleKeys.map((key) => (
+                          <SelectItem key={key} value={key}>
+                            {t(`settingsPage.roles.${key}`)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {!isAdmin && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {t('settingsPage.roleManagedByAdmin')}
+                      </p>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            {userProfile.role && userProfile.role !== 'user' && (
-              <Alert>
-                <UIAlertTitle>{t('settingsPage.roleLabel')}</UIAlertTitle>
-                <AlertDescription>{t('settingsPage.roleManagedByAdmin')}</AlertDescription>
-              </Alert>
-            )}
           </CardContent>
           <CardFooter>
             <Button type="submit" disabled={isSaving}>
@@ -370,11 +420,11 @@ function AppearanceSettings() {
     { value: 'de', label: 'Deutsch' },
     { value: 'es', label: 'Español' },
   ];
-  
+
   const textSizeOptions = [
-      { value: 'small', label: t('settingsPage.textSizes.small') },
-      { value: 'medium', label: t('settingsPage.textSizes.medium') },
-      { value: 'large', label: t('settingsPage.textSizes.large') },
+    { value: 'small', label: t('settingsPage.textSizes.small') },
+    { value: 'medium', label: t('settingsPage.textSizes.medium') },
+    { value: 'large', label: t('settingsPage.textSizes.large') },
   ];
 
   return (
@@ -386,36 +436,36 @@ function AppearanceSettings() {
       <CardContent className="space-y-2">
         <div className="flex items-center justify-between rounded-lg border p-4">
           <div className="flex items-center space-x-3">
-              {theme === 'dark' ? <Moon className="h-5 w-5 text-muted-foreground" /> : <Sun className="h-5 w-5 text-muted-foreground" />}
-              <Label htmlFor="dark-mode-switch">{t('settingsPage.darkMode')}</Label>
+            {theme === 'dark' ? <Moon className="h-5 w-5 text-muted-foreground" /> : <Sun className="h-5 w-5 text-muted-foreground" />}
+            <Label htmlFor="dark-mode-switch">{t('settingsPage.darkMode')}</Label>
           </div>
           <Switch
-              id="dark-mode-switch"
-              checked={theme === 'dark'}
-              onCheckedChange={handleThemeChange}
+            id="dark-mode-switch"
+            checked={theme === 'dark'}
+            onCheckedChange={handleThemeChange}
           />
         </div>
         <div className="flex items-center justify-between rounded-lg border p-4">
-            <div>
-              <Label>{t('settingsPage.textSize')}</Label>
-              <p className="text-sm text-muted-foreground">{t('settingsPage.textSizeDesc')}</p>
-            </div>
-            <Select value={textSize} onValueChange={(value) => setTextSize(value as 'small' | 'medium' | 'large')}>
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select size" />
-                </SelectTrigger>
-                <SelectContent>
-                    {textSizeOptions.map(option => (
-                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+          <div>
+            <Label>{t('settingsPage.textSize')}</Label>
+            <p className="text-sm text-muted-foreground">{t('settingsPage.textSizeDesc')}</p>
+          </div>
+          <Select value={textSize} onValueChange={(value) => setTextSize(value as 'small' | 'medium' | 'large')}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select size" />
+            </SelectTrigger>
+            <SelectContent>
+              {textSizeOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex items-center justify-between rounded-lg border p-4">
-           <div>
-              <Label>{t('settingsPage.language')}</Label>
-              <p className="text-sm text-muted-foreground">{t('settingsPage.selectLanguage')}</p>
-            </div>
+          <div>
+            <Label>{t('settingsPage.language')}</Label>
+            <p className="text-sm text-muted-foreground">{t('settingsPage.selectLanguage')}</p>
+          </div>
           <Select value={language} onValueChange={(value) => setLanguage(value as 'en' | 'de' | 'es')}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select language" />
@@ -445,8 +495,8 @@ function SubscriptionAndDataManagement({ userProfile, currentUser }: { userProfi
     <>
       <Card>
         <CardHeader>
-           <CardTitle>{t('settingsPage.subscription')}</CardTitle>
-           <CardDescription>{t('settingsPage.subscriptionDesc')}</CardDescription>
+          <CardTitle>{t('settingsPage.subscription')}</CardTitle>
+          <CardDescription>{t('settingsPage.subscriptionDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <p>{t('settingsPage.currentPlanLabel')} <Badge variant="secondary" className="capitalize">{t(`settingsPage.plans.${(userProfile.subscriptionLevel || 'free').toLowerCase()}`)}</Badge></p>
@@ -466,19 +516,19 @@ function SubscriptionAndDataManagement({ userProfile, currentUser }: { userProfi
               <Button variant="outline" className="mt-3 w-full sm:w-auto" onClick={() => setIsResetOpen(true)} disabled={isTrial}>
                 {t('settingsPage.dataManagement.resetStatisticsButton')}
               </Button>
-               {isTrial && <p className="text-xs text-muted-foreground mt-2">{t('settingsPage.dataManagement.disabledForTrial')}</p>}
+              {isTrial && <p className="text-xs text-muted-foreground mt-2">{t('settingsPage.dataManagement.disabledForTrial')}</p>}
             </AlertDescription>
           </Alert>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader>
-           <CardTitle className="flex items-center gap-2"><ShieldCheck className="h-5 w-5" />{t('settingsPage.accountManagement.title')}</CardTitle>
-           <CardDescription>{t('settingsPage.accountManagement.description')}</CardDescription>
+          <CardTitle className="flex items-center gap-2"><ShieldCheck className="h-5 w-5" />{t('settingsPage.accountManagement.title')}</CardTitle>
+          <CardDescription>{t('settingsPage.accountManagement.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-           <Alert variant="destructive">
+          <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <UIAlertTitle className="font-semibold">{t('settingsPage.accountManagement.dangerZoneTitle')}</UIAlertTitle>
             <AlertDescription>
@@ -490,7 +540,7 @@ function SubscriptionAndDataManagement({ userProfile, currentUser }: { userProfi
           </Alert>
         </CardContent>
       </Card>
-      
+
       <DeleteAccountDialog isOpen={isDeleteOpen} onOpenChange={setIsDeleteOpen} />
       <ResetStatisticsDialog isOpen={isResetOpen} onOpenChange={setIsResetOpen} currentUser={currentUser} />
     </>

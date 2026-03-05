@@ -48,10 +48,12 @@ export function ResetStatisticsDialog({ isOpen, onOpenChange, currentUser: initi
     },
   });
 
-  useEffect(() => {
-    // Sync with prop when it changes (e.g., on dialog open)
+  // Sync with prop when it changes (e.g., on dialog open) without using useEffect
+  const [prevUserProp, setPrevUserProp] = useState<FirebaseUser | null>(initialCurrentUser);
+  if (initialCurrentUser !== prevUserProp) {
+    setPrevUserProp(initialCurrentUser);
     setDialogAuthUser(initialCurrentUser);
-  }, [initialCurrentUser]);
+  }
 
   useEffect(() => {
     let unsubscribe: Unsubscribe | undefined;
@@ -88,14 +90,14 @@ export function ResetStatisticsDialog({ isOpen, onOpenChange, currentUser: initi
     }
 
     const confirmationKeyword = t('settingsPage.resetStatisticsDialog.confirmKeyword', { defaultValue: 'RESET' }).toUpperCase();
-            if (data.confirmationText.toUpperCase() !== confirmationKeyword) {
+    if (data.confirmationText.toUpperCase() !== confirmationKeyword) {
       form.setError("confirmationText", { type: "manual", message: t('toast.statsResetInvalidConfirmationDesc') });
       setIsResetting(false);
       return;
     }
 
     try {
-      const result = await resetUserStatistics(freshCurrentUser.uid);
+      const result = await resetUserStatistics(freshCurrentUser.uid, freshCurrentUser.uid);
 
       if (result.success) {
         toast({
@@ -149,7 +151,7 @@ export function ResetStatisticsDialog({ isOpen, onOpenChange, currentUser: initi
             <Input
               id="resetConfirmationText"
               {...form.register("confirmationText")}
-              placeholder={t('settingsPage.resetStatisticsDialog.confirmPlaceholder', {defaultValue: translatedConfirmKeyword})}
+              placeholder={t('settingsPage.resetStatisticsDialog.confirmPlaceholder', { defaultValue: translatedConfirmKeyword })}
               className={form.formState.errors.confirmationText ? "border-destructive focus-visible:ring-destructive" : ""}
             />
             {form.formState.errors.confirmationText && (

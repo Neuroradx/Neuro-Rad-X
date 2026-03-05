@@ -33,11 +33,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user: FirebaseUser | null) => {
       if (user) {
-        const userDocRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          setUserRole(docSnap.data()?.role || 'user');
-        } else {
+        try {
+          // Check custom claims first (most reliable for admin)
+          const tokenResult = await user.getIdTokenResult();
+          if (tokenResult.claims.admin === true) {
+            setUserRole('admin');
+            return;
+          }
+
+          // Fallback to Firestore for other roles
+          const userDocRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(userDocRef);
+          if (docSnap.exists()) {
+            setUserRole(docSnap.data()?.role || 'user');
+          } else {
+            setUserRole('user');
+          }
+        } catch (error) {
+          console.error("Error detecting user role:", error);
           setUserRole('user');
         }
       } else {
@@ -59,7 +72,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   const navItemsWithAdmin = userRole === 'admin' ? [ADMIN_DASHBOARD_NAV_ITEM, ...NAV_ITEMS] : NAV_ITEMS;
-  
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -77,17 +90,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <SidebarTrigger className="sm:hidden" />
           <div className="flex items-center gap-2 ml-auto">
-             <LanguageSwitcher />
-             <ThemeToggle />
-             <UserNav />
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <UserNav />
           </div>
         </header>
         <main className="flex-1 overflow-auto p-4 sm:p-6">
           {children}
         </main>
       </SidebarInset>
-      <ShareDialog 
-        isOpen={isShareDialogOpen} 
+      <ShareDialog
+        isOpen={isShareDialogOpen}
         onOpenChange={setIsShareDialogOpen}
         {...shareDialogTexts}
       />

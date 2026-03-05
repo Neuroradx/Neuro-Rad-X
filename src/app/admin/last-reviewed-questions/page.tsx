@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,8 +52,7 @@ export default function LastReviewedQuestionsPage() {
       setIsAuthLoading(true);
       if (user) {
         try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          const userIsAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
+          const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
           setIsAdmin(userIsAdmin);
           if (userIsAdmin) loadPage();
         } catch {

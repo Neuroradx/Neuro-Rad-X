@@ -6,9 +6,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -112,9 +112,7 @@ function SendNotificationContent() {
   const fetchAdminStatus = useCallback(async (user: FirebaseUser) => {
     setIsAuthLoading(true);
     try {
-      const userDocRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(userDocRef);
-      setIsAdmin(docSnap.exists() && docSnap.data()?.role === 'admin');
+      setIsAdmin(await checkIsAdmin({ uid: user.uid, email: user.email ?? null }));
     } catch (error) {
       console.error("Error fetching admin status:", error);
       setIsAdmin(false);

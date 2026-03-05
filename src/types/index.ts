@@ -49,6 +49,8 @@ export interface UserProfile {
   role: 'user' | 'admin' | 'tester';
   country?: string;
   institution?: string;
+  profession?: string;
+  userDeclaredSpecialization?: string;
   avatarUrl?: string;
   subscriptionLevel?: 'free' | 'basic' | 'premium' | 'Trial' | 'Evaluator' | 'Owner' | 'ECMINT';
   subscriptionExpiresAt?: string | null;

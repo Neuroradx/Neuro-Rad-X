@@ -9,6 +9,7 @@ import Link from "next/link";
 import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { checkIsAdmin } from "@/lib/admin-check";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,32 +58,44 @@ export function LoginForm() {
         const userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
-             setFirebaseError(t('auth.accountSetupIncompleteDescription'));
-             toast({
-                title: t('auth.accountSetupIncompleteTitle'),
-                description: t('auth.accountSetupIncompleteDescription'),
-                variant: "destructive",
-             });
-             await auth.signOut();
-             setIsLoading(false);
-             return;
+          // Fallback: if email is in admin allowlist, allow login and redirect to admin
+          const isAdminByEmail = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
+          if (isAdminByEmail) {
+            toast({ title: t('toast.loginSuccessTitle'), description: t('toast.loginSuccessDescription') });
+            router.push("/admin/dashboard");
+            setIsLoading(false);
+            return;
+          }
+          setFirebaseError(t('auth.accountSetupIncompleteDescription'));
+          toast({
+            title: t('auth.accountSetupIncompleteTitle'),
+            description: t('auth.accountSetupIncompleteDescription'),
+            variant: "destructive",
+          });
+          await auth.signOut();
+          setIsLoading(false);
+          return;
         }
 
         const userData = userDocSnap.data();
 
-        if (userData.status === 'pending') {
+        if (userData?.status === 'pending') {
             router.push('/pending-approval');
             return;
         }
 
-        if (userData.status !== 'approved') {
+        if (userData?.status !== 'approved') {
+          // Fallback: admins in allowlist bypass status check (single-admin setup)
+          const isAdminByEmail = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
+          if (!isAdminByEmail) {
             setFirebaseError(t('auth.accountStatusError'));
             await auth.signOut();
             setIsLoading(false);
             return;
+          }
         }
 
-        const isAdmin = userData?.role === 'admin';
+        const isAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
         const redirectPath = isAdmin ? "/admin/dashboard" : "/dashboard";
 
         toast({
@@ -90,21 +103,26 @@ export function LoginForm() {
           description: t('toast.loginSuccessDescription'),
         });
 
-        const result = await fetchUserNotifications(user.uid);
-        if (result.success && result.notifications) {
-          const hasUnread = result.notifications.some(n => n.status === 'unread');
-          if (hasUnread) {
-            toast({
-              title: t('toast.newNotificationsTitle'),
-              description: t('toast.newNotificationsDescription'),
-              action: (
-                <ToastAction altText={t('toast.newNotificationsAction')} onClick={() => router.push('/settings')}>
-                  {t('toast.newNotificationsAction')}
-                </ToastAction>
-              ),
-              duration: 8000,
-            });
+        // Fetch notifications in a non-blocking way - never let this fail the login
+        try {
+          const result = await fetchUserNotifications(user.uid, user.uid);
+          if (result.success && result.notifications) {
+            const hasUnread = result.notifications.some(n => n.status === 'unread');
+            if (hasUnread) {
+              toast({
+                title: t('toast.newNotificationsTitle'),
+                description: t('toast.newNotificationsDescription'),
+                action: (
+                  <ToastAction altText={t('toast.newNotificationsAction')} onClick={() => router.push('/settings')}>
+                    {t('toast.newNotificationsAction')}
+                  </ToastAction>
+                ),
+                duration: 8000,
+              });
+            }
           }
+        } catch {
+          // Silently ignore - notifications are optional, login must succeed
         }
         router.push(redirectPath);
       } else {
@@ -171,7 +189,7 @@ export function LoginForm() {
             />
              <div className="text-right">
               <Button variant="link" size="sm" className="text-xs text-muted-foreground px-0" asChild>
-                <Link href="/forgot-password">
+                <Link href="/auth/forgot-password">
                   {t('loginForm.forgotPasswordLink')}
                 </Link>
               </Button>

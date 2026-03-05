@@ -8,6 +8,7 @@ import { sendApprovalEmail } from "@/actions/email-actions";
 import type { UserProfile, IssueReport as IssueReportType, UserQuestionState, ScientificArticle } from "@/types";
 import adminEmails from '@/lib/admin-emails.json';
 import testerEmails from '@/lib/tester-emails.json';
+import { verifyAdminRole } from "@/lib/auth-helpers";
 
 // Distributed Counters Configuration
 const NUM_SHARDS = 10;
@@ -134,16 +135,7 @@ export async function getUserAggregateStats(userId: string): Promise<{ totalAnsw
   }
 }
 
-async function verifyAdminRole(callerUid: string | null) {
-  if (!callerUid || !adminDb) return false;
-  try {
-    const userDoc = await adminDb.collection('users').doc(callerUid).get();
-    return userDoc.exists && userDoc.data()?.role === 'admin';
-  } catch (error) {
-    console.error("[verifyAdminRole] Error:", error);
-    return false;
-  }
-}
+
 
 interface FirestoreUserData extends DocumentData {
   email?: string | null;
@@ -574,8 +566,20 @@ export async function updateIssueStatus(
 }
 
 export async function fetchPendingUsers(page: number, pageSize: number, callerUid: string): Promise<{ success: boolean; users?: any[]; totalCount?: number; error?: string }> {
-  if (!await verifyAdminRole(callerUid)) return { success: false, error: "Unauthorized access." };
-  if (!adminDb || !adminAuth) return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
+  console.error('[fetchPendingUsers] START. Env Keys:', Object.keys(process.env).filter(k => !k.includes('KEY') && !k.includes('SECRET')));
+  console.error('[fetchPendingUsers] Request by UID:', callerUid);
+  const isAdmin = await verifyAdminRole(callerUid);
+  console.error('[fetchPendingUsers] Is Admin result:', isAdmin);
+
+  if (!isAdmin) {
+    const dbStatus = adminDb ? "initialized" : "NULL";
+    const authStatus = adminAuth ? "initialized" : "NULL";
+    return { success: false, error: `Unauthorized access (UID: ${callerUid}, DB: ${dbStatus}, Auth: ${authStatus}).` };
+  }
+  if (!adminDb || !adminAuth) {
+    console.error('[fetchPendingUsers] adminDb or adminAuth missing despite being admin?');
+    return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
+  }
 
   try {
     const snapshot = await adminDb.collection('users').where('status', '==', 'pending').get();

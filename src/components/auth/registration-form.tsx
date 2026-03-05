@@ -77,7 +77,7 @@ export function RegistrationForm() {
 
     const continueUrl = typeof window !== "undefined"
       ? `${window.location.origin}/login` 
-      : "https://www.neuroradx.de/login";
+      : "https://www.neuroradx.com/login";
 
     const actionCodeSettings: ActionCodeSettings = {
       url: continueUrl,

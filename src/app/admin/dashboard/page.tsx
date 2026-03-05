@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,57 +19,25 @@ const AdminDashboardPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [summaryStats, setSummaryStats] = useState<any>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthLoading(true);
-      if (user) {
-        try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          const userIsAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
-          setIsAdmin(userIsAdmin);
-
-          if (userIsAdmin) {
-            setIsLoadingStats(true);
-            const statsResult = await getAdminSummaryStats(user.uid);
-            if (statsResult.success) {
-              setSummaryStats(statsResult.stats);
-            }
-            setIsLoadingStats(false);
-          }
-        } catch (error) {
-          console.error("Error verifying admin status:", error);
-          setIsAdmin(false);
+    const user = auth.currentUser;
+    if (user) {
+      setIsLoadingStats(true);
+      getAdminSummaryStats(user.uid).then((statsResult) => {
+        if (statsResult.success) {
+          setSummaryStats(statsResult.stats);
         }
-      } else {
-        setIsAdmin(false);
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
-  if (isAuthLoading) {
-    return <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertTitle>{t('admin.accessDenied.title')}</AlertTitle>
-          <AlertDescription>{t('admin.accessDenied.description')}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">{t('admin.accessDenied.backToDashboard')}</Button>
-      </div>
-    );
-  }
+        setIsLoadingStats(false);
+      }).catch(error => {
+        console.error("Error fetching admin stats:", error);
+        setIsLoadingStats(false);
+      });
+    }
+    setIsAuthLoading(false);
+  }, []);
 
   const adminSections = [
     {

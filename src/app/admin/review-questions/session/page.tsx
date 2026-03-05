@@ -4,8 +4,8 @@ import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -116,8 +116,7 @@ function ReviewSessionContent() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        const userIsAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
+        const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
         setIsAdmin(userIsAdmin);
         setCurrentUser(user);
         await fetchList(user.uid, idFromUrl);

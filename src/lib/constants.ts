@@ -40,7 +40,7 @@ export const SETTINGS_NAV_ITEM: NavItem = { title: "nav.settings", href: "/setti
 
 export const MOCK_USER: UserProfile = {
   name: "Dr. Alex Radiologist",
-  email: "alex.rad@neuroradx.de",
+  email: "alex.rad@neuroradx.com",
   avatarUrl: "https://placehold.co/100x100.png",
   role: "specialist",
   subscriptionLevel: "premium",

@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "list-users": "node scripts/list-firestore-users.js",
+    "list-auth-users": "node scripts/list-auth-users.js",
+    "ensure-admin": "node scripts/ensure-admin-firestore.js"
   },
   "dependencies": {
     "@genkit-ai/googleai": "1.0.4",
@@ -61,6 +64,7 @@
     "autoprefixer": "10.4.20",
     "eslint": "8.57.0",
     "eslint-config-next": "15.1.12",
+    "firebase-tools": "^15.7.0",
     "postcss": "8.4.45",
     "tailwindcss": "3.4.10",
     "typescript": "5.5.4"

@@ -256,7 +256,7 @@
       "title": "Genehmigung ausstehend",
       "descriptionLine1": "Vielen Dank für Ihre Registrierung!",
       "descriptionLine2": "Ihr Konto wird derzeit von unserem medizinischen Beirat geprüft.",
-      "contactSupport": "Bei Fragen kontaktieren Sie bitte support@neuroradx.de",
+      "contactSupport": "Bei Fragen kontaktieren Sie bitte support@neuroradx.com",
       "logoutButton": "Abmelden"
     }
   },
@@ -971,6 +971,11 @@
       "student": "Student"
     },
     "roleLabel": "Benutzerrolle",
+    "roles": {
+      "user": "Benutzer",
+      "admin": "Administrator",
+      "tester": "Tester"
+    },
     "roleManagedByAdmin": "Ihre Rolle wird von Administratoren verwaltet.",
     "saveProfile": "Profil speichern",
     "appearance": "Erscheinungsbild",

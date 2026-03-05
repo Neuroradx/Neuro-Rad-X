@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, ChevronRight, Image as ImageIcon, AlertCircle, Loader2, ExternalLink, Search } from "lucide-react";
 import Link from "next/link";
-import { collection, doc, getDoc, getDocs, orderBy, query, type Timestamp } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, type Timestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import type { Infographic } from "@/types";
 import { useTranslation } from '@/hooks/use-translation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -77,8 +78,7 @@ export default function InfographicsPage() {
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                const admin = userDoc.exists() && userDoc.data()?.role === 'admin';
+                const admin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
                 setAdminUidForSync(admin ? user.uid : null);
             } else {
                 setAdminUidForSync(null);

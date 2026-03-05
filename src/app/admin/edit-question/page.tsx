@@ -6,8 +6,8 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { getQuestionById, updateQuestion, deleteQuestionById } from '@/actions/question-actions';
@@ -137,8 +137,7 @@ function EditQuestionPageContent() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        setIsAdmin(userDoc.exists() && userDoc.data()?.role === 'admin');
+        setIsAdmin(await checkIsAdmin({ uid: user.uid, email: user.email ?? null }));
         setCurrentUser(user);
       } else {
         router.push('/auth/login');

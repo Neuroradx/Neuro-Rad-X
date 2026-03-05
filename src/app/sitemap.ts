@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
  
 export default function sitemap(): MetadataRoute.Sitemap {
   // Replace with your actual public domain
-  const baseUrl = 'https://neuroradx.de'
+  const baseUrl = 'https://neuroradx.com'
 
   return [
     {

@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
  
 export default function robots(): MetadataRoute.Robots {
   // Replace with your actual public domain
-  const sitemapUrl = 'https://neuroradx.de/sitemap.xml'
+  const sitemapUrl = 'https://neuroradx.com/sitemap.xml'
 
   return {
     rules: {

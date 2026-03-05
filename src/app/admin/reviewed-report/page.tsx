@@ -3,8 +3,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { fetchReviewerStats } from '@/actions/user-data-actions';
 import { Button } from '@/components/ui/button';
@@ -57,8 +57,7 @@ export default function ReviewedReportPage() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        const isAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
+        const isAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
         if (isAdmin) {
           setCurrentUserUid(user.uid);
           fetchStats(user.uid);

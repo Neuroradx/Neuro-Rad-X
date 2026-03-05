@@ -1,0 +1,37 @@
+# Firebase App Hosting Backend Configuration
+# This file exposes production secrets to the Cloud Run instance.
+# Secrets must first be stored in Google Secret Manager.
+# Reference: https://firebase.google.com/docs/app-hosting/configure
+
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 2048
+
+env:
+  # Firebase Admin SDK credentials (Service Account JSON)
+  # Store this in Google Secret Manager as: ADMIN_SERVICE_ACCOUNT
+  - variable: ADMIN_SERVICE_ACCOUNT
+    secret: ADMIN_SERVICE_ACCOUNT
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Google AI / Gemini API
+  - variable: GOOGLE_API_KEY
+    secret: GOOGLE_API_KEY
+    availability:
+      - RUNTIME
+
+  - variable: GOOGLE_GENAI_API_KEY
+    secret: GOOGLE_API_KEY
+    availability:
+      - RUNTIME
+
+  # Algolia Admin Key (server-side only, never exposed to browser)
+  - variable: ALGOLIA_ADMIN_KEY
+    secret: ALGOLIA_ADMIN_KEY
+    availability:
+      - RUNTIME

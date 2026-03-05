@@ -11,7 +11,9 @@ var nextConfig = {
     ]
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production"
+    // Keep console.error and console.warn in production for debugging.
+    // Only suppress console.log for performance.
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false
   },
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
@@ -19,6 +21,9 @@ var nextConfig = {
   experimental: {
     cpus: 1,
     workerThreads: false
+  },
+  env: {
+    NEXT_PUBLIC_BUILD_TIME: (/* @__PURE__ */ new Date()).toISOString()
   }
 };
 module.exports = nextConfig;

@@ -4,21 +4,9 @@ import { adminDb, adminAuth } from "@/lib/firebase-admin";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 import { Notification } from "@/types";
+import { verifyAdminRole } from "@/lib/auth-helpers";
 
-/**
- * SECURITY HELPER
- * Verifies if the caller has an 'admin' role in Firestore.
- */
-async function verifyAdminRole(callerUid: string | null) {
-  if (!callerUid || !adminDb) return false;
-  try {
-    const userDoc = await adminDb.collection('users').doc(callerUid).get();
-    return userDoc.exists && userDoc.data()?.role === 'admin';
-  } catch (error) {
-    console.error("[verifyAdminRole] Error:", error);
-    return false;
-  }
-}
+
 
 const sendNotificationSchema = z.object({
   userId: z.string().min(1, "User ID is required."),
@@ -161,10 +149,10 @@ export async function fetchAllSentNotifications(page: number, pageSize: number, 
       .orderBy("createdAt", "desc")
       .get();
 
-    const all = snapshot.docs.map(doc => ({ 
-      id: doc.id, 
-      ...doc.data(), 
-      createdAt: (doc.data().createdAt as Timestamp).toDate().toISOString() 
+    const all = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: (doc.data().createdAt as Timestamp).toDate().toISOString()
     }));
 
     const paginated = all.slice((page - 1) * pageSize, page * pageSize);
@@ -193,10 +181,10 @@ export async function fetchUserWithNotifications(userId: string, callerUid: stri
     const userDoc = await adminDb.collection("users").doc(userId).get();
     if (!userDoc.exists) return { success: false, error: "User not found." };
     const notificationsResult = await fetchUserNotifications(userId, callerUid);
-    return { 
-      success: true, 
-      user: userDoc.data(), 
-      notifications: notificationsResult.notifications 
+    return {
+      success: true,
+      user: userDoc.data(),
+      notifications: notificationsResult.notifications
     };
   } catch (error: any) {
     return { success: false, error: error.message };

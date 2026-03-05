@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { getDoc, doc } from 'firebase/firestore';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -135,8 +135,7 @@ export default function ReportedQuestionsPage() {
       if (user) {
         setCurrentUser(user);
         try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          const userIsAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
+          const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
           setIsAdmin(userIsAdmin);
           if (userIsAdmin) {
             fetchData(currentPage, user.uid);

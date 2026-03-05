@@ -32,7 +32,7 @@ interface ShareDialogProps {
   qrCodeLabel?: string;
 }
 
-const DEFAULT_SHARE_URL = "https://www.neuroradx.de/"; // Updated default URL
+const DEFAULT_SHARE_URL = "https://www.neuroradx.com/"; // Updated default URL
 
 export function ShareDialog({
   isOpen,

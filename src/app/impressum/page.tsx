@@ -49,7 +49,7 @@ export default function ImpressumPage() {
             <p>Telefon: [Please Add Your Phone Number Here]</p>
             <p>
               E-Mail:{' '}
-              <a href="mailto:support@neuroradx.de" className="text-primary hover:underline">support@neuroradx.de</a>
+              <a href="mailto:support@neuroradx.com" className="text-primary hover:underline">support@neuroradx.com</a>
             </p>
           </div>
 

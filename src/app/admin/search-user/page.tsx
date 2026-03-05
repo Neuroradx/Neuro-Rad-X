@@ -9,8 +9,8 @@ import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { searchUsers, resetUserStatistics, deleteUserAndTheirData, updateUserSubscription } from '@/actions/user-data-actions';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import type { UserProfile } from '@/types';
 import { UserInfoCard } from '@/components/admin/UserInfoCard';
 import { Button } from '@/components/ui/button';
@@ -69,8 +69,7 @@ export default function SearchUserPage() {
       if (user) {
         setCurrentUser(user);
         try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          setIsAdmin(userDoc.exists() && userDoc.data()?.role === 'admin');
+          setIsAdmin(await checkIsAdmin({ uid: user.uid, email: user.email ?? null }));
         } catch (error) {
           console.error("Error verifying admin status:", error);
           setIsAdmin(false);

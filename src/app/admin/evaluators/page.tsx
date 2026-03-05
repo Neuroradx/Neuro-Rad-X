@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,15 +19,14 @@ export default function AdminEvaluatorsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const evaluatorUrl = "https://www.neuroradx.de/auth/register?coupon=EV25RMK";
+  const evaluatorUrl = "https://www.neuroradx.com/auth/register?coupon=EV25RMK";
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setIsAuthLoading(true);
       if (user) {
         try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          const userIsAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
+          const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
           setIsAdmin(userIsAdmin);
           if (!userIsAdmin) {
             setError(t('admin.accessDenied.description'));

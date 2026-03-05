@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -88,30 +89,15 @@ export default function ActiveUsersPage() {
   }, [t]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthLoading(true);
-      if (user) {
-        setCurrentUser(user);
-        try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
-          const userIsAdmin = userDoc.exists() && userDoc.data()?.role === 'admin';
-          setIsAdmin(userIsAdmin);
-          if (userIsAdmin) {
-            fetchUsers(currentPage, user.uid);
-          }
-        } catch (error) {
-          console.error("Error verifying admin status:", error);
-          setIsAdmin(false);
-          setFetchError("Could not verify admin permissions.");
-        }
-      } else {
-        setIsAdmin(false);
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-
-    return () => unsubscribe();
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser(user);
+      setIsAdmin(true); // Parent AdminLayout guarantees this
+      fetchUsers(currentPage, user.uid);
+    } else {
+      router.push('/auth/login');
+    }
+    setIsAuthLoading(false);
   }, [router, currentPage, fetchUsers]);
 
   const handleReset = async () => {
@@ -127,7 +113,7 @@ export default function ActiveUsersPage() {
     setIsActionLoading(false);
     setDialogAction(null);
   };
-  
+
   const handleDelete = async () => {
     if (!selectedUser || dialogAction !== 'delete' || !currentUser) return;
     setIsActionLoading(true);
@@ -190,74 +176,74 @@ export default function ActiveUsersPage() {
         {!isLoading && !fetchError && activeUsers.length > 0 && (
           <Accordion type="multiple" className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {activeUsers.map(user => {
-                let avatarFallback = 'U';
-                if (user && user.displayName && user.displayName.trim()) {
-                    const nameParts = user.displayName.trim().split(/\s+/);
-                    const firstInitial = nameParts[0]?.[0] || '';
-                    const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
-                    const initials = (firstInitial + lastInitial).toUpperCase();
-                    if (initials) {
-                    avatarFallback = initials;
-                    }
-                } else if (user && user.email) {
-                    avatarFallback = user.email[0].toUpperCase();
+              let avatarFallback = 'U';
+              if (user && user.displayName && user.displayName.trim()) {
+                const nameParts = user.displayName.trim().split(/\s+/);
+                const firstInitial = nameParts[0]?.[0] || '';
+                const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1]?.[0] || '' : '';
+                const initials = (firstInitial + lastInitial).toUpperCase();
+                if (initials) {
+                  avatarFallback = initials;
                 }
+              } else if (user && user.email) {
+                avatarFallback = user.email[0].toUpperCase();
+              }
 
-                const subscriptionExpiresAt = user.subscriptionExpiresAt ? format(new Date(user.subscriptionExpiresAt), "dd/MM/yyyy") : t('common.notAvailable');
+              const subscriptionExpiresAt = user.subscriptionExpiresAt ? format(new Date(user.subscriptionExpiresAt), "dd/MM/yyyy") : t('common.notAvailable');
 
-                return (
-                  <Card key={user.id} className="shadow-sm">
-                      <AccordionItem value={user.id!} className="border-b-0">
-                          <AccordionTrigger className="p-4 hover:no-underline rounded-t-lg">
-                              <div className="flex items-center gap-4 text-left w-full">
-                                  <Avatar className="h-12 w-12 border">
-                                      <AvatarImage src={user.avatarUrl} alt={user.displayName || 'User Avatar'} />
-                                      <AvatarFallback>{avatarFallback}</AvatarFallback>
-                                  </Avatar>
-                                  <div className="flex-1">
-                                      <p className="font-semibold text-lg">{user.displayName || "User"}</p>
-                                      <p className="text-sm text-muted-foreground">{user.email}</p>
-                                  </div>
-                              </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="p-0">
-                            <div className="px-4 pb-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm pt-4 border-t">
-                                    {user.id && (
-                                        <div className="flex items-center gap-2"><KeySquare className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.userId')}</span><span className="font-mono text-xs bg-muted p-1 rounded break-all">{user.id}</span></div>
-                                    )}
-                                    <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.role')}</span><Badge variant={user.role === 'admin' ? 'destructive' : 'secondary'}>{t(`settingsPage.roles.${user.role}`)}</Badge>{user.status && <Badge variant={user.status === 'approved' ? 'default' : 'outline'}>{t(`admin.userInfoCard.statusValues.${user.status}`)}</Badge>}</div>
-                                    <div className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.joined')}</span><span>{formatTimestamp(user.createdAt)}</span></div>
-                                    <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.lastLogin')}</span><span>{formatTimestamp(user.lastSignInTime)}</span></div>
-                                    <div className="flex items-center gap-2"><DatabaseZap className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.statsAnswered')}</span><span>{user.totalQuestionsAnsweredAllTime ?? 0}</span></div>
-                                    <div className="flex items-center gap-2"><Target className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.statsAccuracy')}</span><span>{getAccuracy(user)}%</span></div>
-                                    <div className="flex items-center gap-2"><CreditCard className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.subscription')}</span><Badge variant="secondary" className="capitalize">{t(`settingsPage.plans.${(user.subscriptionLevel || 'free').toLowerCase()}`)}</Badge></div>
-                                    <div className="flex items-center gap-2"><Award className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.expires')}</span><span>{subscriptionExpiresAt}</span></div>
-                                    {user.notificationCount !== undefined && (
-                                        <div className="flex items-center gap-2"><Bell className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.notificationsSent')}</span><span>{user.notificationCount ?? 0}</span></div>
-                                    )}
-                                    {user.totalReports !== undefined && (
-                                        <div className="flex items-center gap-2"><FileWarning className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.issuesReported')}</span><span>{user.totalReports ?? 0}</span></div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="flex justify-end flex-wrap gap-2 p-4 pt-4 border-t bg-muted/20 rounded-b-lg">
-                                <Button variant="outline" size="sm" onClick={() => router.push(`/admin/sent-notifications/${user.id}`)}><Bell className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.notifications', {count: (user.notificationCount ?? 0).toString()})}</Button>
-                                <Button variant="outline" size="sm" onClick={() => router.push(`/admin/send-notification?userId=${user.id}`)}><Mail className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.notify')}</Button>
-                                <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setNewSubscriptionLevel(user.subscriptionLevel || 'free'); setDialogAction('subscription'); }}><CreditCard className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.subscription')}</Button>
-                                <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('reset'); }}><DatabaseZap className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.resetStats')}</Button>
-                                <Button variant="destructive" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('delete'); }}><Trash2 className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.deleteData')}</Button>
-                            </div>
-                          </AccordionContent>
-                      </AccordionItem>
-                  </Card>
-                )
+              return (
+                <Card key={user.id} className="shadow-sm">
+                  <AccordionItem value={user.id!} className="border-b-0">
+                    <AccordionTrigger className="p-4 hover:no-underline rounded-t-lg">
+                      <div className="flex items-center gap-4 text-left w-full">
+                        <Avatar className="h-12 w-12 border">
+                          <AvatarImage src={user.avatarUrl} alt={user.displayName || 'User Avatar'} />
+                          <AvatarFallback>{avatarFallback}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <p className="font-semibold text-lg">{user.displayName || "User"}</p>
+                          <p className="text-sm text-muted-foreground">{user.email}</p>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-0">
+                      <div className="px-4 pb-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm pt-4 border-t">
+                          {user.id && (
+                            <div className="flex items-center gap-2"><KeySquare className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.userId')}</span><span className="font-mono text-xs bg-muted p-1 rounded break-all">{user.id}</span></div>
+                          )}
+                          <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.role')}</span><Badge variant={user.role === 'admin' ? 'destructive' : 'secondary'}>{t(`settingsPage.roles.${user.role}`)}</Badge>{user.status && <Badge variant={user.status === 'approved' ? 'default' : 'outline'}>{t(`admin.userInfoCard.statusValues.${user.status}`)}</Badge>}</div>
+                          <div className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.joined')}</span><span>{formatTimestamp(user.createdAt)}</span></div>
+                          <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.lastLogin')}</span><span>{formatTimestamp(user.lastSignInTime)}</span></div>
+                          <div className="flex items-center gap-2"><DatabaseZap className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.statsAnswered')}</span><span>{user.totalQuestionsAnsweredAllTime ?? 0}</span></div>
+                          <div className="flex items-center gap-2"><Target className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.statsAccuracy')}</span><span>{getAccuracy(user)}%</span></div>
+                          <div className="flex items-center gap-2"><CreditCard className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.subscription')}</span><Badge variant="secondary" className="capitalize">{t(`settingsPage.plans.${(user.subscriptionLevel || 'free').toLowerCase()}`)}</Badge></div>
+                          <div className="flex items-center gap-2"><Award className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.expires')}</span><span>{subscriptionExpiresAt}</span></div>
+                          {user.notificationCount !== undefined && (
+                            <div className="flex items-center gap-2"><Bell className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.notificationsSent')}</span><span>{user.notificationCount ?? 0}</span></div>
+                          )}
+                          {user.totalReports !== undefined && (
+                            <div className="flex items-center gap-2"><FileWarning className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.issuesReported')}</span><span>{user.totalReports ?? 0}</span></div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex justify-end flex-wrap gap-2 p-4 pt-4 border-t bg-muted/20 rounded-b-lg">
+                        <Button variant="outline" size="sm" onClick={() => router.push(`/admin/sent-notifications/${user.id}`)}><Bell className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.notifications', { count: (user.notificationCount ?? 0).toString() })}</Button>
+                        <Button variant="outline" size="sm" onClick={() => router.push(`/admin/send-notification?userId=${user.id}`)}><Mail className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.notify')}</Button>
+                        <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setNewSubscriptionLevel(user.subscriptionLevel || 'free'); setDialogAction('subscription'); }}><CreditCard className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.subscription')}</Button>
+                        <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('reset'); }}><DatabaseZap className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.resetStats')}</Button>
+                        <Button variant="destructive" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('delete'); }}><Trash2 className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.deleteData')}</Button>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Card>
+              )
             })}
           </Accordion>
         )}
-        
+
         {!isLoading && totalPages > 1 && (
-           <div className="mt-8 flex justify-center items-center gap-4">
+          <div className="mt-8 flex justify-center items-center gap-4">
             <Button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1 || isLoading} variant="outline"><ChevronLeft className="mr-2 h-4 w-4" /> {t('pagination.previous')}</Button>
             <span className="text-sm text-muted-foreground">{t('pagination.page')} {currentPage} {t('pagination.of')} {totalPages}</span>
             <Button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || isLoading} variant="outline">{t('pagination.next')} <ChevronRight className="ml-2 h-4 w-4" /></Button>
@@ -270,16 +256,16 @@ export default function ActiveUsersPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>{dialogAction === 'reset' ? t('admin.activeUsers.dialogs.resetTitle') : t('admin.activeUsers.dialogs.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {dialogAction === 'reset' 
-                ? t('admin.activeUsers.dialogs.resetDescription', {name: selectedUser?.displayName || 'User'})
-                : t('admin.activeUsers.dialogs.deleteDescription', {name: selectedUser?.displayName || 'User'})
+              {dialogAction === 'reset'
+                ? t('admin.activeUsers.dialogs.resetDescription', { name: selectedUser?.displayName || 'User' })
+                : t('admin.activeUsers.dialogs.deleteDescription', { name: selectedUser?.displayName || 'User' })
               }
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isActionLoading}>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={dialogAction === 'reset' ? handleReset : handleDelete} 
+            <AlertDialogAction
+              onClick={dialogAction === 'reset' ? handleReset : handleDelete}
               disabled={isActionLoading}
               className={dialogAction === 'delete' ? 'bg-destructive hover:bg-destructive/90' : ''}
             >
@@ -316,7 +302,7 @@ export default function ActiveUsersPage() {
             </Select>
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isActionLoading} onClick={() => {setDialogAction(null); setSelectedUser(null);}}>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isActionLoading} onClick={() => { setDialogAction(null); setSelectedUser(null); }}>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleUpdateSubscription}
               disabled={isActionLoading}

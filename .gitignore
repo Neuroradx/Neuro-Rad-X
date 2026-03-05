@@ -29,3 +29,27 @@ yarn-error.log*
 # OS metadata
 .DS_Store
 Thumbs.db
+setup-production-secrets.sh
+
+# Firebase
+.firebase/
+*-debug.log
+firebase-debug*.log
+
+# Sensitive Keys
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!firestore.indexes.json
+!project-structure.json
+!mcp.json
+
+# Local environment
+.env*.local
+
+# Logs and debug
+*.log
+debug-*.txt
+debug-*.md
+cursor_error_*.md

@@ -39,7 +39,7 @@ export function UserNav() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.push("/auth/login"); 
+      router.push("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }

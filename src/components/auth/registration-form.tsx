@@ -76,8 +76,8 @@ export function RegistrationForm() {
     setFirebaseError(null);
 
     const continueUrl = typeof window !== "undefined"
-      ? `${window.location.origin}/login` 
-      : "https://www.neuroradx.com/login";
+      ? `${window.location.origin}/auth/login`
+      : "https://www.neuroradx.com/auth/login";
 
     const actionCodeSettings: ActionCodeSettings = {
       url: continueUrl,
@@ -146,14 +146,14 @@ export function RegistrationForm() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-xl">
+    <Card className="w-full max-w-lg shadow-xl">
       <CardHeader>
         <CardTitle className="text-2xl">{t('registrationForm.title')}</CardTitle>
         <CardDescription>{t('registrationForm.description')}</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 max-h-[min(70vh,640px)] overflow-y-auto">
             <Alert variant="default" className="border-primary/50 bg-primary/5 dark:bg-primary/10">
               <Info className="h-4 w-4 text-primary" />
               <AlertTitle className="font-bold text-primary">{t('registrationForm.trialInfoTitle')}</AlertTitle>
@@ -176,7 +176,7 @@ export function RegistrationForm() {
                   <FormItem>
                     <FormLabel htmlFor="firstName">{t('registrationForm.firstNameLabel')}</FormLabel>
                     <FormControl>
-                      <Input id="firstName" placeholder={t('registrationForm.firstNamePlaceholder')} {...field} />
+                      <Input id="firstName" autoComplete="given-name" placeholder={t('registrationForm.firstNamePlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -189,7 +189,7 @@ export function RegistrationForm() {
                   <FormItem>
                     <FormLabel htmlFor="lastName">{t('registrationForm.lastNameLabel')}</FormLabel>
                     <FormControl>
-                      <Input id="lastName" placeholder={t('registrationForm.lastNamePlaceholder')} {...field} />
+                      <Input id="lastName" autoComplete="family-name" placeholder={t('registrationForm.lastNamePlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -203,7 +203,7 @@ export function RegistrationForm() {
                 <FormItem>
                   <FormLabel htmlFor="email">{t('registrationForm.emailLabel')}</FormLabel>
                   <FormControl>
-                    <Input id="email" type="email" placeholder={t('registrationForm.emailPlaceholder')} {...field} />
+                    <Input id="email" type="email" autoComplete="email" placeholder={t('registrationForm.emailPlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -217,7 +217,7 @@ export function RegistrationForm() {
                   <FormItem>
                     <FormLabel htmlFor="password">{t('registrationForm.passwordLabel')}</FormLabel>
                     <FormControl>
-                      <Input id="password" type="password" placeholder={t('registrationForm.passwordPlaceholder')} {...field} />
+                      <Input id="password" type="password" autoComplete="new-password" placeholder={t('registrationForm.passwordPlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -230,7 +230,7 @@ export function RegistrationForm() {
                   <FormItem>
                     <FormLabel htmlFor="confirmPassword">{t('registrationForm.confirmPasswordLabel')}</FormLabel>
                     <FormControl>
-                      <Input id="confirmPassword" type="password" placeholder={t('registrationForm.confirmPasswordPlaceholder')} {...field} />
+                      <Input id="confirmPassword" type="password" autoComplete="new-password" placeholder={t('registrationForm.confirmPasswordPlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -244,7 +244,7 @@ export function RegistrationForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel htmlFor="country-register-select">{t('settingsPage.countryLabel')}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger id="country-register-select">
                           <SelectValue placeholder={t('settingsPage.countrySelectPlaceholder')} />
@@ -270,7 +270,7 @@ export function RegistrationForm() {
                   <FormItem>
                     <FormLabel htmlFor="institution">{t('settingsPage.institutionLabel')}</FormLabel>
                     <FormControl>
-                      <Input id="institution" placeholder={t('settingsPage.institutionPlaceholder')} {...field} />
+                      <Input id="institution" autoComplete="organization" placeholder={t('settingsPage.institutionPlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -316,8 +316,8 @@ export function RegistrationForm() {
               </Link>
               .
             </p>
-            <Button variant="link" size="sm" className="text-sm" onClick={() => router.push('/auth/login')} type="button">
-              {t('registrationForm.loginLink')}
+            <Button variant="link" size="sm" className="text-sm" asChild>
+              <Link href="/auth/login">{t('registrationForm.loginLink')}</Link>
             </Button>
           </CardFooter>
         </form>

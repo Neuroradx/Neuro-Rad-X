@@ -15,7 +15,7 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import {
-  LayoutDashboard, TrendingUp, Target, BookOpen, User, Book, Sparkles, AlertCircle, CalendarDays, BarChart, GraduationCap, ClipboardCheck, Layers3, Flame, Lightbulb
+  TrendingUp, Target, BookOpen, Sparkles, AlertCircle, CalendarDays, GraduationCap, ClipboardCheck, Layers3, Flame, Lightbulb, ArrowRight
 } from 'lucide-react';
 import type { QuizSession, UserProfile } from '@/types';
 import { format } from 'date-fns';
@@ -29,16 +29,20 @@ interface OverallStats {
 }
 
 const QuickStartCard = ({ mode, title, description, icon: Icon, onClick }: { mode: string; title: string; description: string; icon: React.ElementType, onClick: () => void; }) => (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer border-primary/10" onClick={onClick}>
-        <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-2">
-            <div className="p-2 bg-primary/10 rounded-full">
-                <Icon className="h-6 w-6 text-primary" />
-            </div>
-            <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <p className="text-sm text-muted-foreground">{description}</p>
-        </CardContent>
+    <Card
+      className="group cursor-pointer border-primary/15 hover:border-primary/30 hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5"
+      onClick={onClick}
+    >
+      <CardHeader className="flex flex-row items-start gap-4 space-y-0 pb-3">
+        <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+          <Icon className="h-6 w-6 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <CardTitle className="text-lg font-semibold leading-tight">{title}</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">{description}</p>
+        </div>
+        <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
+      </CardHeader>
     </Card>
 );
 
@@ -47,14 +51,14 @@ const DailyFactCard = ({ fact }: { fact: string | null }) => {
   if (!fact) return null;
 
   return (
-    <Card className="bg-primary/5 border-primary/20 shadow-md">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2 text-primary">
-          <Lightbulb className="h-5 w-5 text-yellow-500" />
+    <Card className="bg-primary/5 border-primary/20 shadow-sm overflow-hidden">
+      <CardHeader className="pb-2 pt-4 px-5">
+        <CardTitle className="text-base font-semibold flex items-center gap-2 text-primary">
+          <Lightbulb className="h-5 w-5 shrink-0 text-amber-500 dark:text-amber-400" />
           {t('dashboard.dailyFact.title')}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-5 pb-5 pt-0">
         <p className="text-sm italic text-muted-foreground leading-relaxed">
           "{fact}"
         </p>
@@ -164,7 +168,7 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         <Skeleton className="h-10 w-1/2" />
         <Skeleton className="h-6 w-3/4" />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -194,7 +198,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-6xl space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.welcomeBack', { name: userProfile?.displayName || 'User' })}</h1>
@@ -209,10 +213,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard title={t('dashboard.stats.totalQuestionsPracticed')} value={overallStats?.totalQuestions || 0} icon={BookOpen} className="border-primary/10" />
-        <StatCard title={t('dashboard.stats.overallAccuracy')} value={`${(overallStats?.overallAccuracy || 0).toFixed(0)}%`} icon={Target} className="border-primary/10" />
-        <StatCard title={t('dashboard.stats.studyActivity')} value={overallStats?.totalStudyDays || 0} icon={CalendarDays} className="border-primary/10" />
-        <StatCard title={t('progressPage.stats.bestDayPerc.title')} value={overallStats?.topicsCovered || 0} icon={TrendingUp} description={t('progressPage.topicBreakdownTitle')} className="border-primary/10" />
+        <StatCard title={t('dashboard.stats.totalQuestionsPracticed')} value={overallStats?.totalQuestions || 0} icon={BookOpen} href="/progress" className="border-primary/10" aria-label={t('dashboard.stats.totalQuestionsPracticed')} />
+        <StatCard title={t('dashboard.stats.overallAccuracy')} value={`${(overallStats?.overallAccuracy || 0).toFixed(0)}%`} icon={Target} href="/progress" className="border-primary/10" aria-label={t('dashboard.stats.overallAccuracy')} />
+        <StatCard title={t('dashboard.stats.studyActivity')} value={overallStats?.totalStudyDays || 0} icon={CalendarDays} href="/progress" className="border-primary/10" aria-label={t('dashboard.stats.studyActivity')} />
+        <StatCard title={t('dashboard.stats.topicsCovered')} value={overallStats?.topicsCovered || 0} icon={TrendingUp} description={t('progressPage.topicBreakdownTitle')} href="/progress" className="border-primary/10" aria-label={t('dashboard.stats.topicsCovered')} />
       </div>
 
       <DailyFactCard fact={dailyFact} />

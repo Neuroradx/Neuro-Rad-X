@@ -21,6 +21,7 @@ interface SearchResult {
 export function AlgoliaSearchBar() {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<SearchResult[]>([]);
+    const [totalCount, setTotalCount] = useState<number | null>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
@@ -43,6 +44,7 @@ export function AlgoliaSearchBar() {
         const search = async () => {
             if (!query.trim() || !algoliaSearchClient) {
                 setResults([]);
+                setTotalCount(null);
                 setIsOpen(false);
                 return;
             }
@@ -61,9 +63,10 @@ export function AlgoliaSearchBar() {
                     ],
                 });
 
-                // results is an array of SearchResponse
-                const hits = (results[0] as any).hits as SearchResult[];
-                setResults(hits);
+                // results is an array of SearchResponse; nbHits = total matching questions
+                const res = results[0] as { hits: SearchResult[]; nbHits: number };
+                setResults(res.hits);
+                setTotalCount(res.nbHits ?? null);
             } catch (error) {
                 console.error('[Algolia Search Error]:', error);
             } finally {
@@ -118,6 +121,11 @@ export function AlgoliaSearchBar() {
                             </div>
                         ) : results.length > 0 ? (
                             <div className="space-y-1">
+                                {totalCount != null && (
+                                    <p className="text-xs text-muted-foreground px-2 py-1.5 border-b">
+                                        {t('admin.searchQuestion.resultsCount', { count: totalCount.toString() })}
+                                    </p>
+                                )}
                                 {results.map((result) => (
                                     <button
                                         key={result.objectID}

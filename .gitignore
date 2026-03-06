@@ -53,3 +53,9 @@ firebase-debug*.log
 debug-*.txt
 debug-*.md
 cursor_error_*.md
+
+# Documentation (do not commit to GitHub)
+docs/
+PROJECT_STRUCTURE.md
+CONTRIBUTING.md
+.env.example

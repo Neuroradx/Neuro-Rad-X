@@ -85,9 +85,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
 
 
-    if (options && typeof options === 'object' && !('defaultValue' in options)) {
+    if (options && typeof options === 'object') {
       Object.keys(options).forEach(placeholder => {
-        translation = (translation as string).replace(new RegExp(`{{${placeholder}}}`, 'g'), (options as Record<string, string>)[placeholder]);
+        if (placeholder === 'defaultValue') return;
+        const value = (options as Record<string, unknown>)[placeholder];
+        translation = (translation as string).replace(new RegExp(`{{${placeholder}}}`, 'g'), String(value ?? ''));
       });
     }
     

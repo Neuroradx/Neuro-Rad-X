@@ -1,29 +1,32 @@
 import type { UserProfile, StudyMode, UserNote } from "@/types";
 
 export interface NavItem {
-  title: string; // Will now be a translation key e.g. "nav.dashboard"
+  title?: string; // Translation key e.g. "nav.dashboard" (optional for separator/groupLabel)
   href?: string;
   disabled?: boolean;
   external?: boolean;
-  icon?: string; 
+  icon?: string;
   label?: string;
   exactMatch?: boolean;
   subItems?: NavItem[];
-  action?: "openShareDialog"; 
+  action?: "openShareDialog";
   customClass?: string; // Added for custom styling
+  separator?: boolean; // Renders a visual divider before this item
+  groupLabel?: string; // Renders a group label above this item (translation key)
 }
 
 export const NAV_ITEMS: NavItem[] = [
   { title: "nav.dashboard", href: "/dashboard", icon: "LayoutDashboard", exactMatch: true },
-  // Study Modes as individual top-level items
+  { groupLabel: "nav.study", separator: true },
   { title: "nav.tutorMode", href: "/study/tutor", icon: "GraduationCap" },
   { title: "nav.examMode", href: "/study/exam", icon: "ClipboardCheck" },
   { title: "nav.flashcards", href: "/study/flashcards", icon: "Layers3" },
-  // End of Study Modes
+  { groupLabel: "nav.progressAndContent", separator: true },
   { title: "nav.myProgress", href: "/progress", icon: "TrendingUp" },
   { title: "nav.bookmarks", href: "/bookmarks", icon: "Bookmark" },
   { title: "nav.myNotes", href: "/my-notes", icon: "NotebookText" },
   { title: "nav.infographics", href: "/infographics", icon: "ImageIcon" },
+  { groupLabel: "nav.other", separator: true },
   { title: "nav.shareApp", icon: "Share2", action: "openShareDialog" },
   { title: "nav.aboutUs", href: "/about", icon: "Info" },
 ];

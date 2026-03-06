@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, type User as FirebaseUser, updateProfile } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
@@ -499,7 +500,7 @@ function SubscriptionAndDataManagement({ userProfile, currentUser }: { userProfi
           <CardDescription>{t('settingsPage.subscriptionDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p>{t('settingsPage.currentPlanLabel')} <Badge variant="secondary" className="capitalize">{t(`settingsPage.plans.${(userProfile.subscriptionLevel || 'free').toLowerCase()}`)}</Badge></p>
+          <div>{t('settingsPage.currentPlanLabel')} <Badge variant="secondary" className="capitalize">{t(`settingsPage.plans.${(userProfile.subscriptionLevel || 'free').toLowerCase()}`)}</Badge></div>
         </CardContent>
       </Card>
       <Card>
@@ -538,6 +539,21 @@ function SubscriptionAndDataManagement({ userProfile, currentUser }: { userProfi
               </Button>
             </AlertDescription>
           </Alert>
+          <div className="mt-4 text-xs text-muted-foreground">
+            <Link
+              href="/terms-of-use"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              {t('registrationForm.termsOfUse')}
+            </Link>{" "}
+            {t('registrationForm.andPrivacyPolicy')}{" "}
+            <Link
+              href="/privacy-policy"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              {t('registrationForm.privacyPolicy')}
+            </Link>
+          </div>
         </CardContent>
       </Card>
 

@@ -143,6 +143,8 @@ export function LoginForm() {
 
       if (authError.code === "auth/user-not-found" || authError.code === "auth/wrong-password" || authError.code === "auth/invalid-credential") {
         errorMessage = t('loginForm.errorInvalidCredentials');
+      } else if (authError.code === "auth/too-many-requests") {
+        errorMessage = t('loginForm.errorTooManyRequests');
       } else {
         console.error("Unexpected login error:", authError);
       }
@@ -176,7 +178,7 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel htmlFor="email-login">{t('loginForm.emailLabel')}</FormLabel>
                   <FormControl>
-                    <Input id="email-login" type="email" placeholder={t('loginForm.emailPlaceholder')} {...field} />
+                    <Input id="email-login" type="email" autoComplete="email" placeholder={t('loginForm.emailPlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -189,7 +191,7 @@ export function LoginForm() {
                 <FormItem>
                   <FormLabel htmlFor="password-login">{t('loginForm.passwordLabel')}</FormLabel>
                   <FormControl>
-                    <Input id="password-login" type="password" placeholder={t('loginForm.passwordPlaceholder')} {...field} />
+                    <Input id="password-login" type="password" autoComplete="current-password" placeholder={t('loginForm.passwordPlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -208,9 +210,30 @@ export function LoginForm() {
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t('loginForm.submitButton')}
             </Button>
-            <Button variant="link" size="sm" className="text-sm" onClick={() => router.push('/auth/register')} type="button">
+            <Button
+              variant="link"
+              size="sm"
+              className="text-sm"
+              onClick={() => router.push('/auth/register')}
+              type="button"
+            >
               {t('loginForm.registerLink')}
             </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              <Link
+                href="/terms-of-use"
+                className="underline underline-offset-4 hover:text-primary"
+              >
+                {t('registrationForm.termsOfUse')}
+              </Link>{" "}
+              {t('registrationForm.andPrivacyPolicy')}{" "}
+              <Link
+                href="/privacy-policy"
+                className="underline underline-offset-4 hover:text-primary"
+              >
+                {t('registrationForm.privacyPolicy')}
+              </Link>
+            </p>
           </CardFooter>
         </form>
       </Form>

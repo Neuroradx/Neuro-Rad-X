@@ -8,6 +8,9 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "study": "Study",
+    "progressAndContent": "Progress & Content",
+    "other": "Other",
     "tutorMode": "Tutor Mode",
     "examMode": "Exam Mode",
     "flashcards": "Flashcards",
@@ -26,10 +29,19 @@
   },
   "homePage": {
     "trialBadge": "30-Day Free Trial",
+    "goToDashboard": "Go to Dashboard",
     "titlePart1": "Master Neuroradiology with",
     "description": "The ultimate specialized platform for medical professionals. Expert-validated questions, AI-powered insights, and personalized progress tracking.",
     "registerButton": "Start Free Trial",
     "signInButton": "Sign In",
+    "stats": {
+      "questions": "5,000+",
+      "questionsLabel": "Board-style questions",
+      "studyModes": "3",
+      "studyModesLabel": "Study modes",
+      "languages": "3",
+      "languagesLabel": "Languages"
+    },
     "features": {
       "title": "Why Choose NeuroRadX?",
       "bank": {
@@ -68,6 +80,7 @@
       "totalQuestionsPracticed": "Questions Answered",
       "overallAccuracy": "Overall Accuracy",
       "studyActivity": "Study Days",
+      "topicsCovered": "Topics Covered",
       "studyStreakTitle": "Current Streak",
       "studyStreakValue": "{{days}} Days",
       "studyStreakDescriptionNonZero": "Keep the momentum going!",
@@ -79,6 +92,53 @@
     },
     "dailyFact": {
       "title": "Did You Know?"
+    }
+  },
+  "examResults": {
+    "title": "Exam Results",
+    "overallScore": "Overall Score",
+    "scoreDetails": "You answered {{correct}} out of {{total}} questions correctly.",
+    "questionBreakdown": "Question Breakdown",
+    "yourAnswer": "Your Answer",
+    "correctAnswer": "Correct Answer",
+    "viewQuestionDetails": "View Details",
+    "returnToConfiguration": "Return to Configuration",
+    "notAnswered": "Not Answered",
+    "optionNotFound": "Option not found",
+    "correctAnswerNotFound": "Correct answer not found"
+  },
+  "reportIssueDialog": {
+    "title": "Report Issue",
+    "description": "Help us improve by reporting errors, unclear content, or other problems with this question.",
+    "questionStemLabel": "Question",
+    "problemTypeLabel": "Problem type",
+    "problemTypePlaceholder": "Select the type of issue",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Describe the issue in detail (min. 10 characters)",
+    "userEmailLabel": "Your email",
+    "userEmailPlaceholder": "your@email.com",
+    "submitButton": "Submit Report",
+    "problemTypes": {
+      "typoGrammar": "Typo or grammar error",
+      "confusingQuestion": "Confusing or unclear question",
+      "correctAnswerIncorrect": "Correct answer is wrong",
+      "optionsIncorrect": "One or more options are incorrect",
+      "mediaProblem": "Image or media problem",
+      "displayFormatIssue": "Display or formatting issue",
+      "explanationIncorrect": "Explanation is wrong or incomplete",
+      "other": "Other"
+    },
+    "validation": {
+      "problemTypeRequired": "Please select a problem type",
+      "descriptionMinLength": "Description must be at least 10 characters",
+      "descriptionMaxLength": "Description must be at most 1000 characters",
+      "emailInvalid": "Please enter a valid email address"
+    },
+    "toast": {
+      "reportSuccessTitle": "Report submitted",
+      "reportSuccessDescription": "Thank you for helping us improve. We will review your report.",
+      "reportErrorTitle": "Error submitting report",
+      "reportErrorDescription": "Please try again later or contact support."
     }
   },
   "progressPage": {
@@ -241,6 +301,8 @@
     "errorLoadingQuestions": "An error occurred while loading your bookmarked questions."
   },
   "auth": {
+    "backToHome": "Back to Home",
+    "loadingForm": "Loading...",
     "loginRequiredTitle": "Login Required",
     "loginRequiredMessageBookmarks": "Please sign in to view and manage your bookmarks.",
     "loginRequiredMessageBookmarksAfterLink": "",
@@ -280,31 +342,58 @@
       "title": "Admin Dashboard",
       "description": "Manage users, content, and system communications.",
       "userManagement": {
-        "title": "User Management"
+        "title": "User Management",
+        "description": "Approve new users, review active accounts, and manage subscriptions."
       },
       "contentAndIssues": {
-        "title": "Content & Issues"
+        "title": "Content & Issues",
+        "description": "Monitor reported questions, review content quality, and track open issues."
       },
       "tools": {
-        "title": "Tools"
+        "title": "Tools",
+        "description": "Access clinical calculators and other administrative tools."
       },
       "communication": {
-        "title": "Communication"
+        "title": "Communication",
+        "description": "Send and review notifications sent to users."
       },
       "documentsAndPromotions": {
-        "title": "Documents & Promotions"
+        "title": "Documents & Promotions",
+        "description": "Manage ECMIT materials, invitations, and promotional resources."
+      },
+      "errors": {
+        "unauthorized": "You do not have administrator permissions.",
+        "adminSdkNotInit": "Server configuration error. Configure the Firebase Admin SDK service account.",
+        "seeDocs": "See troubleshooting guide"
       },
       "stats": {
         "totalQuestions": "Total Questions",
         "pendingReview": "Pending Review",
         "pendingUsers": "Pending Users",
         "activeIssues": "Active Issues",
-        "reviewedLabel": "{{count}} reviewed"
+        "reviewedLabel": "{{count}} reviewed",
+        "statsError": "Failed to load statistics: {{message}}",
+        "labelAllTime": "all time",
+        "labelPending": "pending",
+        "labelNeedsAttention": "needs attention"
+      },
+      "searchQuestion": {
+        "description": "Search questions by text to find and edit them."
+      },
+      "searchQuestion": {
+        "description": "Search questions by text to find and edit them."
+      },
+      "pendingTasks": {
+        "title": "Suggested actions",
+        "reviewQuestions": "Review {{count}} question(s)",
+        "approveUsers": "Approve {{count}} user(s)",
+        "resolveIssues": "Resolve {{count}} issue(s)"
       },
       "links": {
         "pendingUsers": "Pending Users",
         "activeUsers": "Active Users",
         "searchUser": "Search User",
+        "searchQuestion": "Search Question",
         "usersBySubscription": "By Subscription",
         "reportedQuestions": "Reported Questions",
         "reviewQuestions": "Review Questions",
@@ -317,7 +406,15 @@
         "sendNotification": "Send Notification",
         "ecmit": "ECMIT Materials",
         "inviteEvaluators": "Invite Evaluators"
+      },
+      "searchQuestion": {
+        "description": "Search questions by text to find and edit them."
       }
+    },
+    "searchQuestion": {
+      "title": "Search Question",
+      "description": "Search questions by text to find and edit them.",
+      "resultsCount": "{{count}} question(s) found"
     },
     "searchUser": {
       "title": "Search User",
@@ -328,10 +425,28 @@
       "searchButton": "Search",
       "noResults": "No users match your criteria."
     },
+    "help": {
+      "title": "Admin troubleshooting",
+      "description": "Common issues and solutions for administrators.",
+      "backToDashboard": "Back to Admin Dashboard",
+      "sections": {
+        "statsError": "Statistics not loading",
+        "statsErrorDesc": "Check that the Firebase Admin SDK is initialized with a valid service account. Ensure FIREBASE_SERVICE_ACCOUNT or GOOGLE_APPLICATION_CREDENTIALS is set.",
+        "unauthorized": "Access denied",
+        "unauthorizedDesc": "Your user must have role 'admin' in Firestore (users/{uid}) or be listed in admin-emails.json. Custom claims may also grant access."
+      }
+    },
     "accessDenied": {
       "title": "Access Denied",
       "description": "You do not have administrator permissions to view this page.",
       "backToDashboard": "Back to Dashboard"
+    },
+    "help": {
+      "description": "Common admin dashboard issues and how to resolve them.",
+      "unauthorizedTitle": "Unauthorized access",
+      "unauthorizedDesc": "Ensure your user has role 'admin' in Firestore (users/{uid}) or your email is in admin-emails.json. Custom claims may need to be refreshed.",
+      "adminSdkTitle": "Admin SDK not initialized",
+      "adminSdkDesc": "Configure the Firebase Admin SDK with a service account. Set FIREBASE_SERVICE_ACCOUNT or the appropriate environment variables for your deployment."
     },
     "userInfoCard": {
       "userId": "User ID",
@@ -804,6 +919,7 @@
     "forgotPasswordLink": "Forgot password?",
     "errorTitle": "Login Failed",
     "errorInvalidCredentials": "Invalid email or password.",
+    "errorTooManyRequests": "Too many failed attempts. Please try again later.",
     "errorUnexpected": "An unexpected error occurred. Please try again."
   },
   "validation": {
@@ -953,6 +1069,12 @@
   },
   "languageSwitcher": {
     "selectLanguageAriaLabel": "Select Language"
+  },
+  "themeToggle": {
+    "ariaLabel": "Toggle light/dark theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   },
   "settingsPage": {
     "title": "Account Settings",

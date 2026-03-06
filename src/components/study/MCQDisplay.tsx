@@ -222,33 +222,75 @@ const MCQDisplay: React.FC<MCQDisplayProps> = ({
           </Accordion>
         </CardContent>
 
-        <CardFooter className="pt-6 flex justify-between items-center">
-          {mode === 'exam' && !isConfigScreen && (
-             <Button variant="outline" onClick={handleRequestExamExit}>
-               {t('studyMode.quitExamButton')}
-             </Button>
-          )}
-          { (mode !== 'exam' || (mode === 'exam' && isConfigScreen)) &&
-             <Button variant="outline" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0}>
-               <ArrowLeft className="mr-2 h-4 w-4" /> {t('studyMode.previousButton')}
-             </Button>
-          }
-           {mode === 'exam' && !isConfigScreen && currentQuestionIndex === 0 && !isConfigScreen && <div className="w-[calc(10ch+1rem)] invisible"></div> /* Placeholder for alignment */}
+        <CardFooter className="pt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            {mode === "exam" && !isConfigScreen && (
+              <Button variant="outline" onClick={handleRequestExamExit}>
+                {t("studyMode.quitExamButton")}
+              </Button>
+            )}
+            {(mode !== "exam" || (mode === "exam" && isConfigScreen)) && (
+              <Button
+                variant="outline"
+                onClick={handlePreviousQuestion}
+                disabled={currentQuestionIndex === 0}
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />{" "}
+                {t("studyMode.previousButton")}
+              </Button>
+            )}
+          </div>
 
+          <div className="flex items-center gap-2 justify-end">
+            {mode === "tutor" && !isAnswerSubmitted && (
+              <>
+                <Button
+                  variant="ghost"
+                  type="button"
+                  onClick={handleSubmitAnswer}
+                >
+                  {t("studyMode.dontKnowButton", {
+                    defaultValue: "I don't know this",
+                  })}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleSubmitAnswer}
+                  disabled={!selectedOptionId}
+                >
+                  {t("studyMode.submitAnswerButton")}
+                </Button>
+              </>
+            )}
 
-          {mode === 'tutor' && !isAnswerSubmitted && (<Button onClick={handleSubmitAnswer} disabled={!selectedOptionId}>{t('studyMode.submitAnswerButton')}</Button>)}
-
-          {((mode === 'tutor' && isAnswerSubmitted) || (mode === 'exam' && !!selectedOptionId) || (mode === 'exam' && !selectedOptionId && currentQuestionIndex === totalQuestions -1 )) ? (
-            <Button onClick={handleNextQuestion} disabled={mode === 'exam' && !selectedOptionId && currentQuestionIndex < totalQuestions -1}>
-              {currentQuestionIndex === totalQuestions - 1 ? t('studyMode.finishSessionButton') : t('studyMode.nextQuestionButton')}
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : mode === 'exam' && !selectedOptionId ? ( 
-            <Button disabled> 
-              {currentQuestionIndex === totalQuestions - 1 ? t('studyMode.finishSessionButton') : t('studyMode.nextQuestionButton')}
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : null}
+            {((mode === "tutor" && isAnswerSubmitted) ||
+              (mode === "exam" && !!selectedOptionId) ||
+              (mode === "exam" &&
+                !selectedOptionId &&
+                currentQuestionIndex === totalQuestions - 1)) ? (
+              <Button
+                type="button"
+                onClick={handleNextQuestion}
+                disabled={
+                  mode === "exam" &&
+                  !selectedOptionId &&
+                  currentQuestionIndex < totalQuestions - 1
+                }
+              >
+                {currentQuestionIndex === totalQuestions - 1
+                  ? t("studyMode.finishSessionButton")
+                  : t("studyMode.nextQuestionButton")}
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : mode === "exam" && !selectedOptionId ? (
+              <Button type="button" disabled>
+                {currentQuestionIndex === totalQuestions - 1
+                  ? t("studyMode.finishSessionButton")
+                  : t("studyMode.nextQuestionButton")}
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : null}
+          </div>
         </CardFooter>
       </Card>
       {isReportDialogOpen && currentQuestion && (

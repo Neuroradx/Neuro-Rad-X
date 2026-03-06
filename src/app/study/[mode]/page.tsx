@@ -22,10 +22,14 @@ import {
   documentId,
   QueryConstraint,
   loadBundle,
+  setDoc,
+  deleteDoc,
+  serverTimestamp,
 } from 'firebase/firestore';
 
 import type { Question, UserProfile } from '@/types';
 import { useTranslation } from '@/hooks/use-translation';
+import { useToast } from '@/hooks/use-toast';
 
 import { Loader2, Sparkles, AlertCircle, BarChart, GraduationCap, ClipboardCheck, Layers3 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -51,6 +55,7 @@ export default function StudyPage() {
   const router = useRouter();
   const params = useParams();
   const { t, language } = useTranslation();
+  const { toast } = useToast();
 
   const mode = params.mode as Mode;
 
@@ -190,6 +195,43 @@ export default function StudyPage() {
     updateCount();
 }, [selectedCategory, selectedSubcategory, selectedDifficulty, isConfigScreen, t, currentSubcategoryOptions]);
 
+  // Sync bookmark status when current question or user changes
+  const currentQuestion = questions[currentQuestionIndex];
+  useEffect(() => {
+    if (!currentQuestion?.id || !firebaseUser || firebaseUser.isAnonymous) {
+      setIsBookmarked(false);
+      return;
+    }
+    let cancelled = false;
+    const bookmarkRef = doc(db, 'users', firebaseUser.uid, 'bookmarkedQuestions', currentQuestion.id);
+    getDoc(bookmarkRef).then((snap) => {
+      if (!cancelled) setIsBookmarked(snap.exists());
+    }).catch(() => {
+      if (!cancelled) setIsBookmarked(false);
+    });
+    return () => { cancelled = true; };
+  }, [currentQuestion?.id, firebaseUser?.uid]);
+
+  const handleBookmarkToggle = useCallback(async () => {
+    const q = questions[currentQuestionIndex];
+    if (!q?.id || !firebaseUser || firebaseUser.isAnonymous) return;
+    const bookmarkRef = doc(db, 'users', firebaseUser.uid, 'bookmarkedQuestions', q.id);
+    try {
+      if (isBookmarked) {
+        await deleteDoc(bookmarkRef);
+        setIsBookmarked(false);
+        toast({ title: t('toast.bookmarkRemovedTitle'), description: t('toast.bookmarkRemovedDescription') });
+      } else {
+        await setDoc(bookmarkRef, { addedAt: serverTimestamp() }, { merge: true });
+        setIsBookmarked(true);
+        toast({ title: t('toast.bookmarkAddedTitle', { defaultValue: 'Bookmark added' }), description: t('toast.bookmarkAddedDescription', { defaultValue: 'Question saved to your bookmarks.' }) });
+      }
+    } catch (e) {
+      console.error('Bookmark toggle error:', e);
+      toast({ title: t('toast.errorTitle'), description: t('toast.bookmarkError'), variant: 'destructive' });
+    }
+  }, [currentQuestionIndex, questions, firebaseUser, isBookmarked, t, toast]);
+
   const fetchAndSetQuestions = async (questionIds: string[]) => {
     try {
       const questionDocs = await Promise.all(questionIds.map(id => getDoc(doc(db, 'questions', id))));
@@ -295,7 +337,12 @@ export default function StudyPage() {
                 constraints.push(where('difficulty', '==', selectedDifficulty));
             }
 
-            const q = query(collection(db, 'questions'), ...constraints);
+            const q = query(
+              collection(db, 'questions'),
+              ...constraints,
+              // Limit to a reasonable pool size for random sampling
+              limit(500)
+            );
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
                 questionIds.push(doc.id);
@@ -422,8 +469,6 @@ export default function StudyPage() {
     }
   };
 
-  const currentQuestion = questions[currentQuestionIndex];
-  
   if (firebaseLoading) {
     return <div className="flex justify-center items-center h-64"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
@@ -499,7 +544,7 @@ export default function StudyPage() {
                 handleSubmitAnswer={() => setIsAnswerSubmitted(true)}
                 handleNextQuestion={handleNextQuestion}
                 handlePreviousQuestion={handlePreviousQuestion}
-                handleBookmarkToggle={async () => {}}
+                handleBookmarkToggle={handleBookmarkToggle}
                 handleSaveNotes={async () => {}}
                 setUserNotes={setUserNotes}
                 handleRequestExamExit={() => setIsConfigScreen(true)}
@@ -520,7 +565,7 @@ export default function StudyPage() {
                 setFlashcardFeedback={setFlashcardFeedback}
                 handleNextQuestion={handleNextQuestion}
                 handlePreviousQuestion={handlePreviousQuestion}
-                handleBookmarkToggle={async () => {}}
+                handleBookmarkToggle={handleBookmarkToggle}
                 firebaseUser={firebaseUser}
                 db={db}
             />

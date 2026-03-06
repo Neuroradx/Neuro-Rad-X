@@ -154,9 +154,16 @@ interface FirestoreUserData extends DocumentData {
 
 const DETAILED_ADMIN_SDK_ERROR = "Server configuration error: The Admin SDK is not initialized.";
 
+const ADMIN_STATS_CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes
+let adminStatsCache: { stats: any; expiresAt: number } | null = null;
+
 export async function getAdminSummaryStats(callerUid: string) {
   if (!await verifyAdminRole(callerUid)) return { success: false, error: "Unauthorized access." };
   if (!adminDb) return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
+
+  if (adminStatsCache && Date.now() < adminStatsCache.expiresAt) {
+    return { success: true, stats: adminStatsCache.stats };
+  }
 
   try {
     const questionsRef = adminDb.collection('questions');
@@ -174,17 +181,17 @@ export async function getAdminSummaryStats(callerUid: string) {
     const totalCount = totalQs.data().count;
     const reviewedCount = reviewedQs.data().count;
 
-    return {
-      success: true,
-      stats: {
-        totalQuestions: totalCount,
-        reviewedQuestions: reviewedCount,
-        pendingQuestions: Math.max(0, totalCount - reviewedCount),
-        totalUsers: totalUsers.data().count,
-        pendingUsers: pendingUsers.data().count,
-        activeReports: activeReports.data().count,
-      }
+    const stats = {
+      totalQuestions: totalCount,
+      reviewedQuestions: reviewedCount,
+      pendingQuestions: Math.max(0, totalCount - reviewedCount),
+      totalUsers: totalUsers.data().count,
+      pendingUsers: pendingUsers.data().count,
+      activeReports: activeReports.data().count,
     };
+
+    adminStatsCache = { stats, expiresAt: Date.now() + ADMIN_STATS_CACHE_TTL_MS };
+    return { success: true, stats };
   } catch (error: any) {
     console.error("Error fetching admin summary stats:", error);
     return { success: false, error: error.message };

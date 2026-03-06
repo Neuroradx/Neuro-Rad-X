@@ -8,6 +8,9 @@
   },
   "nav": {
     "dashboard": "Panel de control",
+    "study": "Estudio",
+    "progressAndContent": "Progreso y contenido",
+    "other": "Otros",
     "tutorMode": "Modo Tutor",
     "examMode": "Modo Examen",
     "flashcards": "Tarjetas",
@@ -26,10 +29,19 @@
   },
   "homePage": {
     "trialBadge": "Prueba gratuita de 30 días",
+    "goToDashboard": "Ir al panel",
     "titlePart1": "Domina la Neurorradiología con",
     "description": "La plataforma especializada definitiva para profesionales médicos. Preguntas validadas por expertos, información impulsada por IA y seguimiento personalizado del progreso.",
     "registerButton": "Iniciar prueba gratuita",
     "signInButton": "Entrar",
+    "stats": {
+      "questions": "5.000+",
+      "questionsLabel": "Preguntas tipo examen",
+      "studyModes": "3",
+      "studyModesLabel": "Modos de estudio",
+      "languages": "3",
+      "languagesLabel": "Idiomas"
+    },
     "features": {
       "title": "¿Por qué elegir NeuroRadX?",
       "bank": {
@@ -68,6 +80,7 @@
       "totalQuestionsPracticed": "Preguntas respondidas",
       "overallAccuracy": "Precisión general",
       "studyActivity": "Días de estudio",
+      "topicsCovered": "Temas cubiertos",
       "studyStreakTitle": "Racha actual",
       "studyStreakValue": "{{days}} Días",
       "studyStreakDescriptionNonZero": "¡Mantén el impulso!",
@@ -79,6 +92,58 @@
     },
     "dailyFact": {
       "title": "¿Sabías que?"
+    }
+  },
+  "examResults": {
+    "title": "Resultados del examen",
+    "overallScore": "Puntuación total",
+    "scoreDetails": "Has respondido correctamente {{correct}} de {{total}} preguntas.",
+    "questionBreakdown": "Desglose de preguntas",
+    "yourAnswer": "Tu respuesta",
+    "correctAnswer": "Respuesta correcta",
+    "viewQuestionDetails": "Ver detalles",
+    "returnToConfiguration": "Volver a la configuración",
+    "notAnswered": "Sin responder",
+    "optionNotFound": "Opción no encontrada",
+    "correctAnswerNotFound": "Respuesta correcta no encontrada"
+  },
+  "questionDetail": {
+    "notFound": "Pregunta no encontrada.",
+    "errorLoading": "Error al cargar la pregunta.",
+    "optionsLabel": "Opciones"
+  },
+  "reportIssueDialog": {
+    "title": "Reportar problema",
+    "description": "Ayúdanos a mejorar reportando errores, contenido poco claro u otros problemas con esta pregunta.",
+    "questionStemLabel": "Pregunta",
+    "problemTypeLabel": "Tipo de problema",
+    "problemTypePlaceholder": "Selecciona el tipo de problema",
+    "descriptionLabel": "Descripción",
+    "descriptionPlaceholder": "Describe el problema en detalle (mín. 10 caracteres)",
+    "userEmailLabel": "Tu email",
+    "userEmailPlaceholder": "tu@email.com",
+    "submitButton": "Enviar reporte",
+    "problemTypes": {
+      "typoGrammar": "Error tipográfico o gramatical",
+      "confusingQuestion": "Pregunta confusa o poco clara",
+      "correctAnswerIncorrect": "La respuesta correcta es incorrecta",
+      "optionsIncorrect": "Una o más opciones son incorrectas",
+      "mediaProblem": "Problema con imagen o medio",
+      "displayFormatIssue": "Problema de visualización o formato",
+      "explanationIncorrect": "La explicación es incorrecta o incompleta",
+      "other": "Otro"
+    },
+    "validation": {
+      "problemTypeRequired": "Por favor selecciona un tipo de problema",
+      "descriptionMinLength": "La descripción debe tener al menos 10 caracteres",
+      "descriptionMaxLength": "La descripción debe tener como máximo 1000 caracteres",
+      "emailInvalid": "Por favor introduce un email válido"
+    },
+    "toast": {
+      "reportSuccessTitle": "Reporte enviado",
+      "reportSuccessDescription": "Gracias por ayudarnos a mejorar. Revisaremos tu reporte.",
+      "reportErrorTitle": "Error al enviar el reporte",
+      "reportErrorDescription": "Por favor inténtalo más tarde o contacta con soporte."
     }
   },
   "progressPage": {
@@ -240,6 +305,8 @@
     "errorLoadingQuestions": "Ocurrió un error al cargar tus preguntas marcadas."
   },
   "auth": {
+    "backToHome": "Volver al inicio",
+    "loadingForm": "Cargando...",
     "loginRequiredTitle": "Inicio de sesión requerido",
     "loginRequiredMessageBookmarks": "Inicia sesión para gestionar tus marcadores.",
     "loginRequiredMessageBookmarksAfterLink": "",
@@ -279,31 +346,63 @@
       "title": "Panel de administración",
       "description": "Gestionar usuarios, contenido y comunicaciones.",
       "userManagement": {
-        "title": "Gestión de usuarios"
+        "title": "Gestión de usuarios",
+        "description": "Aprobar nuevos usuarios, revisar cuentas activas y gestionar suscripciones."
       },
       "contentAndIssues": {
-        "title": "Contenido y problemas"
+        "title": "Contenido y problemas",
+        "description": "Supervisar preguntas reportadas, revisar la calidad del contenido y seguir incidencias abiertas."
       },
       "tools": {
-        "title": "Herramientas"
+        "title": "Herramientas",
+        "description": "Acceder a calculadoras clínicas y otras herramientas administrativas."
       },
       "communication": {
-        "title": "Comunicación"
+        "title": "Comunicación",
+        "description": "Enviar y revisar notificaciones enviadas a los usuarios."
       },
       "documentsAndPromotions": {
-        "title": "Documentos y promociones"
+        "title": "Documentos y promociones",
+        "description": "Gestionar materiales ECMIT, invitaciones y recursos promocionales."
+      },
+      "errors": {
+        "unauthorized": "No tienes permisos de administrador.",
+        "adminSdkNotInit": "Error de configuración del servidor. Configura la cuenta de servicio del Admin SDK.",
+        "seeDocs": "Ver guía de resolución de problemas"
+      },
+      "errors": {
+        "unauthorized": "No tienes permisos de administrador.",
+        "adminSdkNotInit": "Error de configuración del servidor. Configura la cuenta de servicio del Firebase Admin SDK.",
+        "seeDocs": "Ver documentación de resolución de problemas"
       },
       "stats": {
         "totalQuestions": "Total preguntas",
         "pendingReview": "Pendientes de revisión",
         "pendingUsers": "Usuarios pendientes",
         "activeIssues": "Problemas activos",
-        "reviewedLabel": "{{count}} revisadas"
+        "reviewedLabel": "{{count}} revisadas",
+        "statsError": "Error al cargar estadísticas: {{message}}",
+        "labelAllTime": "total",
+        "labelPending": "pendientes",
+        "labelNeedsAttention": "requieren atención"
+      },
+      "errors": {
+        "unauthorized": "No tienes permisos de administrador.",
+        "adminSdkNotInit": "Error de configuración del servidor. Configura la cuenta de servicio del Admin SDK de Firebase.",
+        "seeDocs": "Ver guía de resolución de problemas"
+      },
+      "pendingTasks": {
+        "title": "Acciones sugeridas",
+        "reviewQuestions": "Revisar {{count}} pregunta(s) pendiente(s)",
+        "approveUsers": "Aprobar {{count}} usuario(s)",
+        "resolveIssues": "Resolver {{count}} problema(s) reportado(s)",
+        "viewReport": "Ver informe completo"
       },
       "links": {
         "pendingUsers": "Usuarios pendientes",
         "activeUsers": "Usuarios activos",
         "searchUser": "Buscar usuario",
+        "searchQuestion": "Buscar pregunta",
         "usersBySubscription": "Por suscripción",
         "reportedQuestions": "Preguntas reportadas",
         "reviewQuestions": "Revisar preguntas",
@@ -327,10 +426,22 @@
       "searchButton": "Buscar",
       "noResults": "Ningún usuario coincide con los criterios."
     },
+    "searchQuestion": {
+      "title": "Buscar pregunta",
+      "description": "Busca preguntas por texto para encontrarlas y editarlas.",
+      "resultsCount": "{{count}} pregunta(s) encontrada(s)"
+    },
     "accessDenied": {
       "title": "Acceso denegado",
       "description": "No tienes permisos de administrador para ver esta página.",
       "backToDashboard": "Volver al panel"
+    },
+    "help": {
+      "description": "Problemas habituales del panel de administración y cómo resolverlos.",
+      "unauthorizedTitle": "Acceso no autorizado",
+      "unauthorizedDesc": "Comprueba que tu usuario tenga role 'admin' en Firestore (users/{uid}) o que tu email esté en admin-emails.json. Los custom claims pueden necesitar actualizarse.",
+      "adminSdkTitle": "Admin SDK no inicializado",
+      "adminSdkDesc": "Configura el Firebase Admin SDK con una cuenta de servicio. Define FIREBASE_SERVICE_ACCOUNT o las variables de entorno adecuadas para tu despliegue."
     },
     "userInfoCard": {
       "userId": "ID de usuario",
@@ -789,6 +900,7 @@
     "forgotPasswordLink": "¿Olvidaste la clave?",
     "errorTitle": "Error acceso",
     "errorInvalidCredentials": "Credenciales no válidas.",
+    "errorTooManyRequests": "Demasiados intentos fallidos. Inténtalo más tarde.",
     "errorUnexpected": "Error inesperado. Inténtalo de nuevo."
   },
   "validation": {
@@ -938,6 +1050,12 @@
   },
   "languageSwitcher": {
     "selectLanguageAriaLabel": "Seleccionar idioma"
+  },
+  "themeToggle": {
+    "ariaLabel": "Cambiar tema claro/oscuro",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
   },
   "settingsPage": {
     "title": "Configuración de la cuenta",

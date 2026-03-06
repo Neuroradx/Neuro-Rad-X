@@ -25,6 +25,10 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useTranslation } from "@/hooks/use-translation";
@@ -183,17 +187,43 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
     );
   };
 
+  const buildNavGroups = () => {
+    const groups: { label?: string; items: NavItem[] }[] = [];
+    let currentGroup: { label?: string; items: NavItem[] } = { items: [] };
+    for (const item of items) {
+      if (item.href === "/admin/dashboard" && userRole !== "admin") continue;
+      if (item.groupLabel && item.separator) {
+        if (currentGroup.items.length > 0) groups.push(currentGroup);
+        currentGroup = { label: item.groupLabel, items: [] };
+      } else if (item.title || item.action) {
+        currentGroup.items.push(item);
+      }
+    }
+    if (currentGroup.items.length > 0) groups.push(currentGroup);
+    return groups;
+  };
+
+  const navGroups = buildNavGroups();
+
   return (
-    <nav className={cn("flex flex-col gap-1 px-2", className)}>
-      <SidebarMenu>
-        {items.map((item) => {
-          // If the item is the admin dashboard, only render if userRole is 'admin'
-          if (item.href === "/admin/dashboard" && userRole !== 'admin') {
-            return null;
-          }
-          return renderNavItem(item);
-        })}
-      </SidebarMenu>
+    <nav className={cn("flex flex-col gap-2 px-2", className)}>
+      {navGroups.map((group, gIdx) => (
+        <SidebarGroup key={group.label ?? `g-${gIdx}`} className={gIdx > 0 ? "mt-1" : ""}>
+          {group.label && (
+            <>
+              <SidebarGroupLabel className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60 group-data-[collapsible=icon]:hidden">
+                {t(group.label)}
+              </SidebarGroupLabel>
+              <SidebarSeparator className="my-1.5 group-data-[collapsible=icon]:hidden" />
+            </>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-0.5">
+              {group.items.map((item) => renderNavItem(item))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ))}
     </nav>
   );
 }

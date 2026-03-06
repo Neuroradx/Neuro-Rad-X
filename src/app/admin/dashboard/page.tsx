@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -9,35 +8,61 @@ import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, ShieldAlert, Users, UserCheck, UserSearch, CreditCard, FileWarning, FileEdit, Bell, Mail, FileText, Award, LayoutGrid, Calculator, FileCheck, ClipboardCheck, Sparkles, Database, CheckCircle, AlertCircle } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Users, UserCheck, UserSearch, CreditCard, FileWarning, FileEdit, Bell, Mail, FileText, Award, LayoutGrid, Calculator, FileCheck, ClipboardCheck, Sparkles, Database, AlertCircle, ExternalLink, Search } from 'lucide-react';
 import { getAdminSummaryStats } from '@/actions/user-data-actions';
 import { StatCard } from '@/components/dashboard/stat-card';
-import { AlgoliaSearchBar } from '@/components/questions/AlgoliaSearchBar';
+import { PendingTasksPanel } from '@/components/admin/pending-tasks-panel';
+
+const ERROR_MAP: Record<string, string> = {
+  "Unauthorized access.": "admin.dashboard.errors.unauthorized",
+  "Server configuration error: The Admin SDK is not initialized.": "admin.dashboard.errors.adminSdkNotInit",
+};
+
+function getStatStatus(value: number, warningThreshold: number, criticalThreshold: number): "ok" | "warning" | "critical" | undefined {
+  if (value >= criticalThreshold) return "critical";
+  if (value >= warningThreshold) return "warning";
+  return "ok";
+}
 
 const AdminDashboardPage = () => {
   const { t } = useTranslation();
   const [summaryStats, setSummaryStats] = useState<any>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
+  const [statsError, setStatsError] = useState<string | null>(null);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) return;
+      setStatsError(null);
       setIsLoadingStats(true);
-      getAdminSummaryStats(user.uid).then((statsResult) => {
-        if (statsResult.success) {
-          setSummaryStats(statsResult.stats);
-        }
-        setIsLoadingStats(false);
-      }).catch(error => {
-        console.error("Error fetching admin stats:", error);
-        setIsLoadingStats(false);
-      });
-    }
+      getAdminSummaryStats(user.uid)
+        .then((statsResult) => {
+          if (statsResult.success) {
+            setSummaryStats(statsResult.stats);
+            setStatsError(null);
+          } else {
+            setStatsError(statsResult.error || 'Unknown error');
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching admin stats:", error);
+          setStatsError(error?.message || 'Failed to load statistics');
+        })
+        .finally(() => setIsLoadingStats(false));
+    });
+    return () => unsubscribe();
   }, []);
 
   const adminSections = [
     {
       titleKey: "admin.dashboard.userManagement.title",
+      descriptionKey: "admin.dashboard.userManagement.description",
       icon: Users,
       links: [
         { href: "/admin/pending-users", labelKey: "admin.dashboard.links.pendingUsers", icon: UserCheck },
@@ -48,8 +73,10 @@ const AdminDashboardPage = () => {
     },
     {
       titleKey: "admin.dashboard.contentAndIssues.title",
+      descriptionKey: "admin.dashboard.contentAndIssues.description",
       icon: FileWarning,
       links: [
+        { href: "/admin/search-question", labelKey: "admin.dashboard.links.searchQuestion", icon: Search },
         { href: "/admin/reported-questions", labelKey: "admin.dashboard.links.reportedQuestions", icon: FileWarning },
         { href: "/admin/review-questions", labelKey: "admin.dashboard.links.reviewQuestions", icon: FileCheck },
         { href: "/admin/last-reviewed-questions", labelKey: "admin.dashboard.links.viewLastReviewQuestions", icon: FileCheck },
@@ -60,6 +87,7 @@ const AdminDashboardPage = () => {
     },
     {
       titleKey: "admin.dashboard.tools.title",
+      descriptionKey: "admin.dashboard.tools.description",
       icon: Calculator,
       links: [
         { href: "/admin/nascet-score", labelKey: "admin.dashboard.links.nascetScore", icon: Calculator },
@@ -67,6 +95,7 @@ const AdminDashboardPage = () => {
     },
     {
       titleKey: "admin.dashboard.communication.title",
+      descriptionKey: "admin.dashboard.communication.description",
       icon: Mail,
       links: [
         { href: "/admin/sent-notifications", labelKey: "admin.dashboard.links.seeNotifications", icon: Bell },
@@ -75,6 +104,7 @@ const AdminDashboardPage = () => {
     },
     {
       titleKey: "admin.dashboard.documentsAndPromotions.title",
+      descriptionKey: "admin.dashboard.documentsAndPromotions.description",
       icon: FileText,
       links: [
         { href: "/admin/ecmit", labelKey: "admin.dashboard.links.ecmit", icon: Award },
@@ -91,40 +121,85 @@ const AdminDashboardPage = () => {
       </div>
       <p className="text-muted-foreground mb-8">{t('admin.dashboard.description')}</p>
 
-      <div className="mb-10">
-        <AlgoliaSearchBar />
-      </div>
+      {statsError && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>
+            {ERROR_MAP[statsError]
+              ? t(ERROR_MAP[statsError])
+              : t('admin.dashboard.stats.statsError', { message: statsError }) || 'Error loading statistics'}
+          </AlertTitle>
+          <AlertDescription className="flex flex-wrap items-center gap-2">
+            <span>{ERROR_MAP[statsError] ? t(ERROR_MAP[statsError]) : statsError}</span>
+            <Link
+              href="/admin/help"
+              className="inline-flex items-center gap-1 text-sm underline focus:outline-none focus:ring-2 focus:ring-ring rounded"
+              aria-label={t('admin.dashboard.errors.seeDocs')}
+            >
+              {t('admin.dashboard.errors.seeDocs')}
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </AlertDescription>
+        </Alert>
+      )}
 
-      {/* Summary Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      {/* Summary Stats Row - scroll horizontal on small screens */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 overflow-x-auto pb-2">
         <StatCard
           title={t('admin.dashboard.stats.totalQuestions')}
           value={isLoadingStats ? "..." : (summaryStats?.totalQuestions || 0)}
           icon={Database}
-          className="shadow-sm border-primary/10"
+          labelContext={t('admin.dashboard.stats.labelAllTime')}
+          className="shadow-sm border-primary/10 dark:border-primary/20 min-w-[140px]"
+          isLoading={isLoadingStats}
+          aria-label={t('admin.dashboard.stats.totalQuestions')}
         />
         <StatCard
           title={t('admin.dashboard.stats.pendingReview')}
           value={isLoadingStats ? "..." : (summaryStats?.pendingQuestions || 0)}
           icon={FileCheck}
-          className="shadow-sm border-orange-200 bg-orange-50/30 dark:bg-orange-950/10"
+          href="/admin/review-questions"
           description={t('admin.dashboard.stats.reviewedLabel', { count: (summaryStats?.reviewedQuestions || 0).toString() })}
+          status={getStatStatus(summaryStats?.pendingQuestions ?? 0, 10, 50)}
+          className="shadow-sm border-orange-300 bg-orange-50/40 dark:border-orange-800 dark:bg-orange-950/30 min-w-[140px]"
+          isLoading={isLoadingStats}
+          aria-label={t('admin.dashboard.stats.pendingReview')}
         />
         <StatCard
           title={t('admin.dashboard.stats.pendingUsers')}
           value={isLoadingStats ? "..." : (summaryStats?.pendingUsers || 0)}
           icon={UserCheck}
-          className="shadow-sm border-blue-200 bg-blue-50/30 dark:bg-blue-950/10"
+          href="/admin/pending-users"
+          labelContext={(summaryStats?.pendingUsers ?? 0) > 0 ? t('admin.dashboard.stats.labelNeedsAttention') : undefined}
+          status={getStatStatus(summaryStats?.pendingUsers ?? 0, 1, 5)}
+          className="shadow-sm border-blue-300 bg-blue-50/40 dark:border-blue-800 dark:bg-blue-950/30 min-w-[140px]"
+          isLoading={isLoadingStats}
+          aria-label={t('admin.dashboard.stats.pendingUsers')}
         />
         <StatCard
           title={t('admin.dashboard.stats.activeIssues')}
           value={isLoadingStats ? "..." : (summaryStats?.activeReports || 0)}
           icon={AlertCircle}
-          className="shadow-sm border-red-200 bg-red-50/30 dark:bg-red-950/10"
+          href="/admin/reported-questions"
+          labelContext={(summaryStats?.activeReports ?? 0) > 0 ? t('admin.dashboard.stats.labelNeedsAttention') : undefined}
+          status={getStatStatus(summaryStats?.activeReports ?? 0, 1, 5)}
+          className="shadow-sm border-red-300 bg-red-50/40 dark:border-red-800 dark:bg-red-950/30 min-w-[140px]"
+          isLoading={isLoadingStats}
+          aria-label={t('admin.dashboard.stats.activeIssues')}
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="mb-8">
+        <PendingTasksPanel
+          pendingQuestions={summaryStats?.pendingQuestions ?? 0}
+          pendingUsers={summaryStats?.pendingUsers ?? 0}
+          activeReports={summaryStats?.activeReports ?? 0}
+          isLoading={isLoadingStats}
+        />
+      </div>
+
+      {/* Sections - Cards on desktop */}
+      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8">
         {adminSections.map((section) => {
           const SectionIcon = section.icon;
           return (
@@ -134,23 +209,67 @@ const AdminDashboardPage = () => {
                   <SectionIcon className="h-6 w-6 text-primary" />
                   {t(section.titleKey)}
                 </CardTitle>
+                {section.descriptionKey && (
+                  <CardDescription>
+                    {t(section.descriptionKey)}
+                  </CardDescription>
+                )}
               </CardHeader>
               <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {section.links.map(link => {
                   const LinkIcon = link.icon;
+                  const label = t(link.labelKey);
                   return (
                     <Button asChild key={link.href} variant="outline" className="h-auto justify-start whitespace-normal text-left">
-                      <Link href={link.href}>
-                        <LinkIcon className="mr-2 h-4 w-4" />
-                        {t(link.labelKey)}
+                      <Link href={link.href} aria-label={label}>
+                        <LinkIcon className="mr-2 h-4 w-4" aria-hidden />
+                        {label}
                       </Link>
                     </Button>
-                  )
+                  );
                 })}
               </CardContent>
             </Card>
           );
         })}
+      </div>
+
+      {/* Sections - Accordion on mobile */}
+      <div className="md:hidden">
+        <Accordion type="single" collapsible className="w-full">
+          {adminSections.map((section) => {
+            const SectionIcon = section.icon;
+            return (
+              <AccordionItem key={section.titleKey} value={section.titleKey}>
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="flex items-center gap-2">
+                    <SectionIcon className="h-5 w-5 text-primary" />
+                    {t(section.titleKey)}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  {section.descriptionKey && (
+                    <p className="text-sm text-muted-foreground mb-4">{t(section.descriptionKey)}</p>
+                  )}
+                  <div className="grid grid-cols-1 gap-2">
+                    {section.links.map(link => {
+                      const LinkIcon = link.icon;
+                      const label = t(link.labelKey);
+                      return (
+                        <Button asChild key={link.href!} variant="outline" size="sm" className="justify-start">
+                          <Link href={link.href!} aria-label={label}>
+                            <LinkIcon className="mr-2 h-4 w-4" aria-hidden />
+                            {label}
+                          </Link>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
       </div>
     </div>
   );

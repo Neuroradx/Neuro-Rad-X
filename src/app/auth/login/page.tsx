@@ -1,10 +1,10 @@
-// src/app/auth/login/page.tsx
-import { Suspense } from 'react';
+import { Suspense } from "react";
 import { LoginForm } from "@/components/auth/login-form";
+import { LoginPageFallback } from "@/components/auth/login-page-fallback";
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+    <Suspense fallback={<LoginPageFallback />}>
       <LoginForm />
     </Suspense>
   );

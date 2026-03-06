@@ -8,6 +8,9 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "study": "Lernen",
+    "progressAndContent": "Fortschritt & Inhalt",
+    "other": "Sonstiges",
     "tutorMode": "Tutor-Modus",
     "examMode": "Prüfungsmodus",
     "flashcards": "Flashcards",
@@ -26,10 +29,19 @@
   },
   "homePage": {
     "trialBadge": "30 Tage kostenlos testen",
+    "goToDashboard": "Zum Dashboard",
     "titlePart1": "Meistern Sie die Neuroradiologie mit",
     "description": "Die ultimative spezialisierte Plattform für medizinisches Fachpersonal. Expertenvalidierte Fragen, KI-gestützte Einblicke und personalisierte Fortschrittskontrolle.",
     "registerButton": "Kostenlosen Test starten",
     "signInButton": "Anmelden",
+    "stats": {
+      "questions": "5.000+",
+      "questionsLabel": "Prüfungsfragen",
+      "studyModes": "3",
+      "studyModesLabel": "Lernmodi",
+      "languages": "3",
+      "languagesLabel": "Sprachen"
+    },
     "features": {
       "title": "Warum NeuroRadX wählen?",
       "bank": {
@@ -68,6 +80,7 @@
       "totalQuestionsPracticed": "Beantwortete Fragen",
       "overallAccuracy": "Gesamtgenauigkeit",
       "studyActivity": "Studientage",
+      "topicsCovered": "Behandelte Themen",
       "studyStreakTitle": "Aktuelle Serie",
       "studyStreakValue": "{{days}} Tage",
       "studyStreakDescriptionNonZero": "Bleib dran!",
@@ -79,6 +92,58 @@
     },
     "dailyFact": {
       "title": "Wussten Sie schon?"
+    }
+  },
+  "examResults": {
+    "title": "Prüfungsergebnisse",
+    "overallScore": "Gesamtpunktzahl",
+    "scoreDetails": "Sie haben {{correct}} von {{total}} Fragen richtig beantwortet.",
+    "questionBreakdown": "Fragenübersicht",
+    "yourAnswer": "Ihre Antwort",
+    "correctAnswer": "Richtige Antwort",
+    "viewQuestionDetails": "Details anzeigen",
+    "returnToConfiguration": "Zurück zur Konfiguration",
+    "notAnswered": "Nicht beantwortet",
+    "optionNotFound": "Option nicht gefunden",
+    "correctAnswerNotFound": "Richtige Antwort nicht gefunden"
+  },
+  "questionDetail": {
+    "notFound": "Frage nicht gefunden.",
+    "errorLoading": "Fehler beim Laden der Frage.",
+    "optionsLabel": "Optionen"
+  },
+  "reportIssueDialog": {
+    "title": "Problem melden",
+    "description": "Helfen Sie uns zu verbessern, indem Sie Fehler, unklares Material oder andere Probleme mit dieser Frage melden.",
+    "questionStemLabel": "Frage",
+    "problemTypeLabel": "Problemtyp",
+    "problemTypePlaceholder": "Wählen Sie den Problemtyp",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Beschreiben Sie das Problem im Detail (mind. 10 Zeichen)",
+    "userEmailLabel": "Ihre E-Mail",
+    "userEmailPlaceholder": "ihre@email.com",
+    "submitButton": "Meldung absenden",
+    "problemTypes": {
+      "typoGrammar": "Tipp- oder Grammatikfehler",
+      "confusingQuestion": "Verwirrende oder unklare Frage",
+      "correctAnswerIncorrect": "Die richtige Antwort ist falsch",
+      "optionsIncorrect": "Eine oder mehrere Optionen sind falsch",
+      "mediaProblem": "Problem mit Bild oder Medium",
+      "displayFormatIssue": "Anzeige- oder Formatierungsproblem",
+      "explanationIncorrect": "Erklärung ist falsch oder unvollständig",
+      "other": "Sonstiges"
+    },
+    "validation": {
+      "problemTypeRequired": "Bitte wählen Sie einen Problemtyp",
+      "descriptionMinLength": "Die Beschreibung muss mindestens 10 Zeichen haben",
+      "descriptionMaxLength": "Die Beschreibung darf maximal 1000 Zeichen haben",
+      "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+    },
+    "toast": {
+      "reportSuccessTitle": "Meldung gesendet",
+      "reportSuccessDescription": "Vielen Dank für Ihre Hilfe. Wir werden Ihre Meldung prüfen.",
+      "reportErrorTitle": "Fehler beim Senden",
+      "reportErrorDescription": "Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support."
     }
   },
   "progressPage": {
@@ -240,6 +305,8 @@
     "errorLoadingQuestions": "Beim Laden Ihrer markierten Fragen ist ein Fehler aufgetreten."
   },
   "auth": {
+    "backToHome": "Zur Startseite",
+    "loadingForm": "Laden...",
     "loginRequiredTitle": "Anmeldung erforderlich",
     "loginRequiredMessageBookmarks": "Bitte melden Sie sich an, um Lesezeichen zu verwalten.",
     "loginRequiredMessageBookmarksAfterLink": "",
@@ -279,31 +346,58 @@
       "title": "Admin-Dashboard",
       "description": "Benutzer, Inhalte und Systemkommunikation verwalten.",
       "userManagement": {
-        "title": "Benutzerverwaltung"
+        "title": "Benutzerverwaltung",
+        "description": "Neue Benutzer freigeben, aktive Konten prüfen und Abonnements verwalten."
       },
       "contentAndIssues": {
-        "title": "Inhalte & Probleme"
+        "title": "Inhalte & Probleme",
+        "description": "Gemeldete Fragen überwachen, Inhaltsqualität prüfen und offene Meldungen verfolgen."
       },
       "tools": {
-        "title": "Werkzeuge"
+        "title": "Werkzeuge",
+        "description": "Zugriff auf klinische Rechner und weitere Admin‑Werkzeuge."
       },
       "communication": {
-        "title": "Kommunikation"
+        "title": "Kommunikation",
+        "description": "Benachrichtigungen an Nutzer senden und deren Verlauf einsehen."
       },
       "documentsAndPromotions": {
-        "title": "Dokumente & Aktionen"
+        "title": "Dokumente & Aktionen",
+        "description": "ECMIT‑Materialien, Einladungen und Promotion‑Ressourcen verwalten."
+      },
+      "errors": {
+        "unauthorized": "Sie haben keine Administratorrechte.",
+        "adminSdkNotInit": "Serverkonfigurationsfehler. Konfigurieren Sie das Firebase Admin SDK.",
+        "seeDocs": "Fehlerbehebungsanleitung anzeigen"
+      },
+      "errors": {
+        "unauthorized": "Sie haben keine Administratorrechte.",
+        "adminSdkNotInit": "Serverkonfigurationsfehler. Bitte konfigurieren Sie das Firebase Admin SDK.",
+        "seeDocs": "Fehlerbehebungsdokumentation anzeigen"
       },
       "stats": {
         "totalQuestions": "Fragen gesamt",
         "pendingReview": "Warten auf Review",
         "pendingUsers": "Ausstehende Benutzer",
         "activeIssues": "Aktive Probleme",
-        "reviewedLabel": "{{count}} geprüft"
+        "reviewedLabel": "{{count}} geprüft",
+        "statsError": "Statistiken konnten nicht geladen werden: {{message}}",
+        "labelAllTime": "gesamt",
+        "labelPending": "ausstehend",
+        "labelNeedsAttention": "benötigen Aufmerksamkeit"
+      },
+      "pendingTasks": {
+        "title": "Empfohlene Aktionen",
+        "reviewQuestions": "{{count}} Frage(n) zur Prüfung",
+        "approveUsers": "{{count}} Benutzer genehmigen",
+        "resolveIssues": "{{count}} gemeldete(s) Problem(e) lösen",
+        "viewReport": "Vollständigen Bericht anzeigen"
       },
       "links": {
         "pendingUsers": "Ausstehende Benutzer",
         "activeUsers": "Aktive Benutzer",
         "searchUser": "Benutzersuche",
+        "searchQuestion": "Frage suchen",
         "usersBySubscription": "Nach Abo",
         "reportedQuestions": "Gemeldete Fragen",
         "reviewQuestions": "Fragen prüfen",
@@ -327,10 +421,22 @@
       "searchButton": "Suchen",
       "noResults": "Keine Benutzer gefunden."
     },
+    "searchQuestion": {
+      "title": "Frage suchen",
+      "description": "Suchen Sie Fragen nach Text, um sie zu finden und zu bearbeiten.",
+      "resultsCount": "{{count}} Frage(n) gefunden"
+    },
     "accessDenied": {
       "title": "Zugriff verweigert",
       "description": "Sie haben keine Administratorrechte für diese Seite.",
       "backToDashboard": "Zurück zum Dashboard"
+    },
+    "help": {
+      "description": "Häufige Admin-Dashboard-Probleme und deren Lösung.",
+      "unauthorizedTitle": "Nicht autorisierter Zugriff",
+      "unauthorizedDesc": "Stellen Sie sicher, dass Ihr Benutzer die Rolle 'admin' in Firestore (users/{uid}) hat oder Ihre E-Mail in admin-emails.json steht. Custom Claims müssen ggf. aktualisiert werden.",
+      "adminSdkTitle": "Admin SDK nicht initialisiert",
+      "adminSdkDesc": "Konfigurieren Sie das Firebase Admin SDK mit einem Service-Konto. Setzen Sie FIREBASE_SERVICE_ACCOUNT oder die entsprechenden Umgebungsvariablen für Ihr Deployment."
     },
     "userInfoCard": {
       "userId": "Benutzer-ID",
@@ -789,6 +895,7 @@
     "forgotPasswordLink": "Passwort vergessen?",
     "errorTitle": "Anmeldung fehlgeschlagen",
     "errorInvalidCredentials": "Ungültige E-Mail oder Passwort.",
+    "errorTooManyRequests": "Zu viele Fehlversuche. Bitte später erneut versuchen.",
     "errorUnexpected": "Unerwarteter Fehler. Bitte erneut versuchen."
   },
   "validation": {
@@ -938,6 +1045,12 @@
   },
   "languageSwitcher": {
     "selectLanguageAriaLabel": "Sprache auswählen"
+  },
+  "themeToggle": {
+    "ariaLabel": "Hell-/Dunkelmodus umschalten",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
   },
   "settingsPage": {
     "title": "Kontoeinstellungen",

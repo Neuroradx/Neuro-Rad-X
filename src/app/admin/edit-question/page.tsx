@@ -11,7 +11,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { getQuestionById, updateQuestion, deleteQuestionById } from '@/actions/question-actions';
 import { getSubcategoriesAction, registerSubcategoryAction } from '@/actions/subcategory-actions';
-import { findScientificArticleAction } from '@/actions/enrichment-actions';
+import { findScientificArticleAction, runQuestionQualityCheckAction } from '@/actions/enrichment-actions';
 import { markQuestionAsReviewed } from '@/actions/user-data-actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -84,6 +84,8 @@ function EditQuestionPageContent() {
   const closeAfterSaveRef = useRef(false);
   const approveAfterSaveRef = useRef(false);
   const [aiLog, setAiLog] = useState<{ type: 'info' | 'success' | 'warning' | 'error'; text: string }[]>([]);
+  const [qualityResult, setQualityResult] = useState<Awaited<ReturnType<typeof runQuestionQualityCheckAction>>['data'] | null>(null);
+  const [isQualityChecking, setIsQualityChecking] = useState(false);
 
   // Dynamic subcategories fetched from Firestore
   const [dynamicSubcats, setDynamicSubcats] = useState<string[]>([]);
@@ -281,8 +283,12 @@ function EditQuestionPageContent() {
         const approveResult = await markQuestionAsReviewed(questionId, currentUser.uid);
         if (approveResult.success) {
           toast({ title: "Approved", description: "Question marked as reviewed", variant: "success" });
-          router.push('/admin/dashboard');
-          return; // Skip the closeAfterSave check if we're already redirecting
+          if (typeof window !== 'undefined') {
+            window.close();
+          } else {
+            router.push('/admin/dashboard');
+          }
+          return; // Skip the closeAfterSave check if we're already redirecting/closing
         } else {
           toast({ title: "Approval Error", description: approveResult.error, variant: "destructive" });
         }
@@ -459,6 +465,30 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
 
     setAiLog(logs);
     setIsFindingArticle(false);
+  };
+
+  const handleQualityCheck = async () => {
+    if (!currentUser?.uid) return;
+    const values = form.getValues();
+    const options = values.translations.en.options ?? [];
+    setIsQualityChecking(true);
+    setQualityResult(null);
+    const result = await runQuestionQualityCheckAction(
+      {
+        questionStem: values.translations.en.questionText ?? '',
+        options: options.map((o) => o.text),
+        correctAnswerIndex: values.correctAnswerIndex,
+        explanation: values.translations.en.explanation || null,
+        articleReference: values.scientificArticle?.article_reference || null,
+      },
+      currentUser.uid
+    );
+    setIsQualityChecking(false);
+    if (result.success && result.data) {
+      setQualityResult(result.data);
+    } else {
+      toast({ title: 'Quality check failed', description: result.error, variant: 'destructive' });
+    }
   };
 
   const handleRemoveCitations = () => {
@@ -942,6 +972,116 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
                             {log.text}
                           </div>
                         ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="border-primary/10">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">{t('admin.reviewQuestions.qualityCheckTitle')}</CardTitle>
+                    <CardDescription>{t('admin.reviewQuestions.qualityCheckDescription')}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button variant="outline" size="sm" onClick={handleQualityCheck} disabled={isQualityChecking}>
+                      {isQualityChecking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      {t('admin.reviewQuestions.runQualityCheckButton')}
+                    </Button>
+                    {qualityResult && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <div className="p-2 rounded border">
+                          <span className="font-medium">{t('admin.reviewQuestions.qualityQuestion')}: </span>
+                          <span
+                            className={
+                              qualityResult.questionWellFormed === 'pass'
+                                ? 'text-green-600'
+                                : qualityResult.questionWellFormed === 'fail'
+                                  ? 'text-destructive'
+                                  : 'text-amber-600'
+                            }
+                          >
+                            {qualityResult.questionWellFormed}
+                          </span>
+                          {qualityResult.questionMessage && (
+                            <p className="mt-1 text-muted-foreground">{qualityResult.questionMessage}</p>
+                          )}
+                        </div>
+                        <div className="p-2 rounded border">
+                          <span className="font-medium">{t('admin.reviewQuestions.qualityOptions')}: </span>
+                          <span
+                            className={
+                              qualityResult.optionsCoherent === 'pass'
+                                ? 'text-green-600'
+                                : qualityResult.optionsCoherent === 'fail'
+                                  ? 'text-destructive'
+                                  : 'text-amber-600'
+                            }
+                          >
+                            {qualityResult.optionsCoherent}
+                          </span>
+                          {qualityResult.optionsMessage && (
+                            <p className="mt-1 text-muted-foreground">{qualityResult.optionsMessage}</p>
+                          )}
+                        </div>
+                        <div className="p-2 rounded border">
+                          <span className="font-medium">{t('admin.reviewQuestions.qualityCorrectAnswer')}: </span>
+                          <span
+                            className={
+                              qualityResult.correctAnswerValid === 'pass'
+                                ? 'text-green-600'
+                                : qualityResult.correctAnswerValid === 'fail'
+                                  ? 'text-destructive'
+                                  : 'text-amber-600'
+                            }
+                          >
+                            {qualityResult.correctAnswerValid}
+                          </span>
+                          {qualityResult.correctAnswerMessage && (
+                            <p className="mt-1 text-muted-foreground">{qualityResult.correctAnswerMessage}</p>
+                          )}
+                        </div>
+                        <div className="p-2 rounded border">
+                          <span className="font-medium">
+                            {t('admin.reviewQuestions.explanationLabel') ?? 'Explanation Clarity'}:{' '}
+                          </span>
+                          <span
+                            className={
+                              qualityResult.explanationClarity === 'pass'
+                                ? 'text-green-600'
+                                : qualityResult.explanationClarity === 'fail'
+                                  ? 'text-destructive'
+                                  : 'text-amber-600'
+                            }
+                          >
+                            {qualityResult.explanationClarity}
+                          </span>
+                          {qualityResult.explanationMessage && (
+                            <p className="mt-1 text-muted-foreground">{qualityResult.explanationMessage}</p>
+                          )}
+                        </div>
+                        <div className="p-2 rounded border">
+                          <span className="font-medium">{t('admin.reviewQuestions.qualityReference')}: </span>
+                          <span
+                            className={
+                              qualityResult.referencePlausible === 'pass'
+                                ? 'text-green-600'
+                                : qualityResult.referencePlausible === 'fail'
+                                  ? 'text-destructive'
+                                  : 'text-amber-600'
+                            }
+                          >
+                            {qualityResult.referencePlausible}
+                          </span>
+                          {qualityResult.referenceMessage && (
+                            <p className="mt-1 text-muted-foreground">{qualityResult.referenceMessage}</p>
+                          )}
+                        </div>
+                        {qualityResult.evidenceLevel && qualityResult.evidenceLevel !== 'Unknown' && (
+                          <div className="p-2 rounded border col-span-1 sm:col-span-2 bg-muted/20">
+                            <span className="font-medium">Evidence Level / Context: </span>
+                            <span className="text-primary font-semibold">{qualityResult.evidenceLevel}</span>
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>

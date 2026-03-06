@@ -409,7 +409,7 @@ function ReviewSessionContent() {
             variant="ghost"
             size="sm"
             className="mt-2 text-muted-foreground"
-            onClick={() => setIsResetDialogOpen(true)}
+            disabled
           >
             <RotateCcw className="mr-2 h-4 w-4" />
             {t('admin.reviewQuestions.resetProgressButton')}

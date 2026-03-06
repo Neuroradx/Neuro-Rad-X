@@ -89,17 +89,28 @@ export default function UsersBySubscriptionPage() {
 
 
   return (
-    <div className="container mx-auto py-8">
-      <Button variant="outline" className="mb-6" onClick={() => router.push('/admin/dashboard')}>
+    <div className="container mx-auto py-8 max-w-6xl">
+      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
         <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
       </Button>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-3"><CreditCard className="h-8 w-8 text-primary" /><h1 className="text-3xl font-bold">{t('admin.usersBySubscription.title')}</h1></div>
-        <Button variant="outline" onClick={() => fetchUsers(selectedSubscription, currentPage)} disabled={isLoading}><RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />{t('admin.activeUsers.refreshButton')}</Button>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <CreditCard className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('admin.usersBySubscription.title')}</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">{t('admin.usersBySubscription.description')}</p>
+          </div>
+        </div>
+        <Button variant="outline" size="sm" className="rounded-lg shrink-0" onClick={() => fetchUsers(selectedSubscription, currentPage)} disabled={isLoading}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+          {t('admin.activeUsers.refreshButton')}
+        </Button>
       </div>
-      <p className="text-muted-foreground mb-6">{t('admin.usersBySubscription.description')}</p>
 
-      <div className="mb-8 max-w-sm">
+      <Card className="mb-8 rounded-xl border-border/80 p-4 shadow-sm">
+        <div className="max-w-sm">
         <Label htmlFor="subscription-select">{t('admin.usersBySubscription.selectLabel')}</Label>
         <Select value={selectedSubscription} onValueChange={(value) => {
           setSelectedSubscription(value as UserProfile['subscriptionLevel']);
@@ -114,12 +125,24 @@ export default function UsersBySubscriptionPage() {
             ))}
           </SelectContent>
         </Select>
-      </div>
+        </div>
+      </Card>
 
-      {isLoading && <div className="flex justify-center items-center py-10"><Loader2 className="h-10 w-10 animate-spin text-primary" /><p className="ml-3 text-muted-foreground">{t('admin.pendingUsers.loadingUsers')}</p></div>}
-      {!isLoading && fetchError && <Alert variant="destructive"><ShieldAlert className="h-4 w-4" /><AlertTitle>{t('toast.errorTitle')}</AlertTitle><AlertDescription>{fetchError}</AlertDescription></Alert>}
+      {isLoading && (
+        <div className="flex flex-col justify-center items-center py-16 rounded-xl border border-border/60 bg-muted/20">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <p className="mt-3 text-sm text-muted-foreground">{t('admin.pendingUsers.loadingUsers')}</p>
+        </div>
+      )}
+      {!isLoading && fetchError && (
+        <Alert variant="destructive" className="rounded-xl">
+          <ShieldAlert className="h-4 w-4" />
+          <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
+          <AlertDescription>{fetchError}</AlertDescription>
+        </Alert>
+      )}
       {!isLoading && !fetchError && users.length === 0 && selectedSubscription && (
-        <Alert>
+        <Alert className="rounded-xl border-border/60">
           <CheckCircle className="h-4 w-4" />
           <AlertTitle>{t('admin.usersBySubscription.noUsersTitle')}</AlertTitle>
           <AlertDescription>
@@ -148,7 +171,7 @@ export default function UsersBySubscriptionPage() {
             const subscriptionExpiresAt = user.subscriptionExpiresAt ? format(new Date(user.subscriptionExpiresAt), "dd/MM/yyyy") : t('common.notAvailable');
 
             return (
-              <Card key={user.id} className="shadow-sm">
+              <Card key={user.id} className="shadow-sm rounded-xl border-border/80 overflow-hidden">
                 <AccordionItem value={user.id!} className="border-b-0">
                   <AccordionTrigger className="p-4 hover:no-underline rounded-t-lg">
                     <div className="flex items-center gap-4 text-left w-full">
@@ -201,10 +224,10 @@ export default function UsersBySubscriptionPage() {
       )}
 
       {!isLoading && totalPages > 1 && (
-        <div className="mt-8 flex justify-center items-center gap-4">
-          <Button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1 || isLoading} variant="outline"><ChevronLeft className="mr-2 h-4 w-4" /> {t('pagination.previous')}</Button>
-          <span className="text-sm text-muted-foreground">{t('pagination.page')} {currentPage} {t('pagination.of')} {totalPages}</span>
-          <Button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || isLoading} variant="outline">{t('pagination.next')} <ChevronRight className="ml-2 h-4 w-4" /></Button>
+        <div className="mt-8 flex justify-center items-center gap-4 py-4 px-4 rounded-xl bg-muted/20 border border-border/50">
+          <Button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1 || isLoading} variant="outline" size="sm" className="rounded-lg"><ChevronLeft className="mr-2 h-4 w-4" /> {t('pagination.previous')}</Button>
+          <span className="text-sm text-muted-foreground font-medium">{t('pagination.page')} {currentPage} {t('pagination.of')} {totalPages}</span>
+          <Button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || isLoading} variant="outline" size="sm" className="rounded-lg">{t('pagination.next')} <ChevronRight className="ml-2 h-4 w-4" /></Button>
         </div>
       )}
     </div>

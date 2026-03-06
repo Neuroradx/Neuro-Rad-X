@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +21,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSe
 import { COUNTRIES_LIST } from "@/lib/countries";
 import Link from "next/link";
 import { syncUserProfile } from "@/actions/user-data-actions";
+import { verifyRecaptchaToken } from "@/actions/recaptcha-actions";
+import { ReCaptchaWidget, type ReCaptchaHandle } from "@/components/auth/recaptcha-widget";
 
 const getRegistrationFormSchema = (t: (key: string) => string) => z.object({
   firstName: z.string()
@@ -49,6 +51,10 @@ export function RegistrationForm() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = React.useRef<ReCaptchaHandle>(null);
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const recaptchaVersion = (process.env.NEXT_PUBLIC_RECAPTCHA_VERSION as "2" | "3") ?? "2";
 
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(getRegistrationFormSchema(t)),
@@ -74,6 +80,28 @@ export function RegistrationForm() {
   async function onSubmit(data: RegistrationFormValues) {
     setIsLoading(true);
     setFirebaseError(null);
+
+    if (siteKey) {
+      let token: string;
+      try {
+        token = await recaptchaRef.current?.getToken() ?? "";
+      } catch {
+        setFirebaseError(t("registrationForm.errorCaptcha"));
+        setIsLoading(false);
+        return;
+      }
+      if (!token) {
+        setFirebaseError(t("registrationForm.errorCaptcha"));
+        setIsLoading(false);
+        return;
+      }
+      const verify = await verifyRecaptchaToken(token);
+      if (!verify.success) {
+        setFirebaseError(t("registrationForm.errorCaptcha"));
+        setIsLoading(false);
+        return;
+      }
+    }
 
     const continueUrl = typeof window !== "undefined"
       ? `${window.location.origin}/auth/login`
@@ -146,15 +174,15 @@ export function RegistrationForm() {
   }
 
   return (
-    <Card className="w-full max-w-lg shadow-xl">
-      <CardHeader>
-        <CardTitle className="text-2xl">{t('registrationForm.title')}</CardTitle>
-        <CardDescription>{t('registrationForm.description')}</CardDescription>
+    <Card className="w-full max-w-lg shadow-xl border-border/80 rounded-xl overflow-hidden">
+      <CardHeader className="space-y-2 pb-4 border-b border-border/50">
+        <CardTitle className="text-2xl font-bold tracking-tight">{t('registrationForm.title')}</CardTitle>
+        <CardDescription className="text-muted-foreground/90">{t('registrationForm.description')}</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4 max-h-[min(70vh,640px)] overflow-y-auto">
-            <Alert variant="default" className="border-primary/50 bg-primary/5 dark:bg-primary/10">
+          <CardContent className="space-y-5 max-h-[min(70vh,640px)] overflow-y-auto px-6 py-5 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-muted/30 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20">
+            <Alert variant="default" className="border-primary/40 bg-primary/5 dark:bg-primary/10 rounded-lg">
               <Info className="h-4 w-4 text-primary" />
               <AlertTitle className="font-bold text-primary">{t('registrationForm.trialInfoTitle')}</AlertTitle>
               <AlertDescription className="text-foreground/90">
@@ -237,13 +265,14 @@ export function RegistrationForm() {
                 )}
               />
             </div>
+            <div className="border-t border-border/40 pt-5" aria-hidden />
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="country"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="country-register-select">{t('settingsPage.countryLabel')}</FormLabel>
+                    <FormLabel htmlFor="country-register-select">{t('registrationForm.countryLabel')}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger id="country-register-select">
@@ -268,7 +297,7 @@ export function RegistrationForm() {
                 name="institution"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="institution">{t('settingsPage.institutionLabel')}</FormLabel>
+                    <FormLabel htmlFor="institution">{t('registrationForm.institutionLabel')}</FormLabel>
                     <FormControl>
                       <Input id="institution" autoComplete="organization" placeholder={t('settingsPage.institutionPlaceholder')} {...field} />
                     </FormControl>
@@ -294,12 +323,25 @@ export function RegistrationForm() {
                 )}
               />
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+          <CardFooter className="flex flex-col gap-6 pt-6 border-t border-border/50 bg-muted/20 dark:bg-muted/10">
+            {siteKey && (
+              <div className="flex flex-col items-center gap-2 w-full flex-shrink-0 min-h-[90px] pb-4 relative z-10 rounded-lg border border-border/60 bg-muted/30 dark:bg-muted/20 px-4 py-3">
+                <p className="text-sm font-medium text-muted-foreground">{t('registrationForm.captchaLabel')}</p>
+                <ReCaptchaWidget
+                  ref={recaptchaRef}
+                  siteKey={siteKey}
+                  onTokenChange={recaptchaVersion === "2" ? setRecaptchaToken : undefined}
+                  theme="light"
+                  version={recaptchaVersion}
+                  className="[&>div]:!transform-none"
+                />
+              </div>
+            )}
+            <Button type="submit" className="w-full h-11 font-semibold" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t('registrationForm.submitButton')}
             </Button>
-            <p className="px-8 text-center text-xs text-muted-foreground">
+            <p className="px-4 text-center text-xs text-muted-foreground leading-relaxed">
               {t('registrationForm.agreeTo')}{" "}
               <Link
                 href="/terms-of-use"
@@ -316,7 +358,7 @@ export function RegistrationForm() {
               </Link>
               .
             </p>
-            <Button variant="link" size="sm" className="text-sm" asChild>
+            <Button variant="outline" size="sm" className="w-full text-sm" asChild>
               <Link href="/auth/login">{t('registrationForm.loginLink')}</Link>
             </Button>
           </CardFooter>

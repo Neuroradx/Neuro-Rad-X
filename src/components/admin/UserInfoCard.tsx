@@ -6,7 +6,7 @@ import type { UserProfile } from '@/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from '@/components/ui/badge';
-import { KeySquare, User, CalendarDays, Clock, DatabaseZap, Bell, CreditCard, FileWarning, Award, Target } from 'lucide-react';
+import { KeySquare, User, CalendarDays, Clock, DatabaseZap, Bell, CreditCard, FileWarning, Award, Target, Globe } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks/use-translation';
@@ -47,10 +47,11 @@ export function UserInfoCard({ user, children }: UserInfoCardProps) {
   }
 
   const subscriptionExpiresAt = user.subscriptionExpiresAt ? format(new Date(user.subscriptionExpiresAt), "dd/MM/yyyy") : t('common.notAvailable');
+  const registrationIp = user.registrationIp || t('common.notAvailable');
 
 
   return (
-    <Card className="shadow-md flex flex-col">
+    <Card className="shadow-md flex flex-col rounded-xl border-border/80 overflow-hidden">
       <CardHeader className="flex flex-row items-start gap-4">
         {user.id && (
              <Link href={`/admin/sent-notifications/${user.id}`} passHref>
@@ -83,6 +84,7 @@ export function UserInfoCard({ user, children }: UserInfoCardProps) {
             {user.id && (
                 <div className="flex items-center gap-2"><KeySquare className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.userId')}</span><span className="font-mono text-xs bg-muted p-1 rounded break-all">{user.id}</span></div>
             )}
+            <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.ipAddress')}</span><span className="font-mono text-xs bg-muted p-1 rounded break-all">{registrationIp}</span></div>
             <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.role')}</span><Badge variant={user.role === 'admin' ? 'destructive' : 'secondary'}>{t(`settingsPage.roles.${user.role}`)}</Badge>{user.status && <Badge variant={user.status === 'approved' ? 'default' : 'outline'}>{t(`admin.userInfoCard.statusValues.${user.status}`)}</Badge>}</div>
             <div className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.joined')}</span><span>{formatTimestamp(user.createdAt)}</span></div>
             <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{t('admin.userInfoCard.lastLogin')}</span><span>{formatTimestamp(user.lastSignInTime)}</span></div>

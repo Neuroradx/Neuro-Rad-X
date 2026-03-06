@@ -54,18 +54,22 @@ export default function ReviewQuestionsPage() {
 
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="outline" size="icon" onClick={() => router.push('/admin/dashboard')}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <ShieldCheck className="text-primary" /> {t('admin.reviewQuestions.title')}
-        </h1>
+    <div className="container mx-auto py-8 max-w-2xl">
+      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
+        <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
+      </Button>
+      <div className="flex items-center gap-3 mb-8">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <FileCheck className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('admin.reviewQuestions.title')}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t('admin.reviewQuestions.chooseCategoryDescription')}</p>
+        </div>
       </div>
 
       <div className="max-w-xl mx-auto">
-        <Card className="border-primary/10 shadow-sm overflow-hidden">
+        <Card className="rounded-xl border-border/80 shadow-lg overflow-hidden">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileCheck className="h-5 w-5 text-muted-foreground" />

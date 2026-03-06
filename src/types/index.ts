@@ -50,6 +50,7 @@ export interface UserProfile {
   email: string;
   status: 'pending' | 'approved' | 'rejected';
   role: 'user' | 'admin' | 'tester';
+  registrationIp?: string;
   country?: string;
   institution?: string;
   profession?: string;

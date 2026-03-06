@@ -185,7 +185,7 @@ const MCQDisplay: React.FC<MCQDisplayProps> = ({
                     {currentQuestion.scientificArticle?.article_reference && (
                       <div>
                         <div className="flex justify-between items-center">
-                          <p className="font-semibold text-foreground">{t('common.sourceLabel')} (APA 7; links clickable):</p>
+                          <p className="font-semibold text-foreground">{t('common.sourceLabel')}:</p>
                           <a
                               href={`https://www.google.com/search?q=${encodeURIComponent(currentQuestion.scientificArticle.article_reference)}`}
                               target="_blank"

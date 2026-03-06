@@ -64,33 +64,39 @@ export default function LastReviewedQuestionsPage() {
 
 
   return (
-    <div className="container mx-auto py-8">
-      <Button variant="outline" className="mb-6" asChild>
-        <Link href="/admin/dashboard">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('admin.backToAdminDashboard')}
-        </Link>
+    <div className="container mx-auto py-8 max-w-6xl">
+      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        {t('admin.backToAdminDashboard')}
       </Button>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileCheck className="h-5 w-5 text-primary" />
-            {t('admin.lastReviewedQuestions.title')}
-          </CardTitle>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <FileCheck className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('admin.lastReviewedQuestions.title')}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t('admin.lastReviewedQuestions.description')}</p>
+        </div>
+      </div>
+
+      <Card className="rounded-xl border-border/80 overflow-hidden shadow-lg">
+        <CardHeader className="border-b border-border/50 bg-muted/10">
+          <CardTitle>{t('admin.lastReviewedQuestions.title')}</CardTitle>
           <CardDescription>{t('admin.lastReviewedQuestions.description')}</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert variant="destructive" className="mb-4 rounded-xl">
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           {isLoading ? (
-            <div className="flex justify-center py-12">
+            <div className="flex flex-col justify-center items-center py-16 rounded-xl border border-border/60 bg-muted/20">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <p className="mt-3 text-sm text-muted-foreground">{t('common.loading')}</p>
             </div>
           ) : questions.length === 0 ? (
             <p className="text-muted-foreground py-8 text-center">{t('admin.lastReviewedQuestions.noQuestions')}</p>

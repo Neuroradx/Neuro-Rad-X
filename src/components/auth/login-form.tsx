@@ -156,16 +156,16 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-xl">
-      <CardHeader>
-        <CardTitle className="text-2xl">{t('loginForm.title')}</CardTitle>
-        <CardDescription>{t('loginForm.description')}</CardDescription>
+    <Card className="w-full max-w-md shadow-xl border-border/80 rounded-xl overflow-hidden">
+      <CardHeader className="space-y-2 pb-4 border-b border-border/50">
+        <CardTitle className="text-2xl font-bold tracking-tight">{t('loginForm.title')}</CardTitle>
+        <CardDescription className="text-muted-foreground/90">{t('loginForm.description')}</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5 px-6 py-5">
             {firebaseError && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="rounded-lg">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>{t('loginForm.errorTitle')}</AlertTitle>
                 <AlertDescription>{firebaseError}</AlertDescription>
@@ -197,29 +197,23 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            <div className="text-right">
-              <Button variant="link" size="sm" className="text-xs text-muted-foreground px-0" asChild>
+            <div className="text-right -mt-1">
+              <Button variant="link" size="sm" className="text-xs text-muted-foreground px-0 h-auto hover:text-primary transition-colors" asChild>
                 <Link href="/auth/forgot-password">
                   {t('loginForm.forgotPasswordLink')}
                 </Link>
               </Button>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+          <CardFooter className="flex flex-col gap-6 pt-6 border-t border-border/50 bg-muted/20 dark:bg-muted/10">
+            <Button type="submit" className="w-full h-11 font-semibold" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t('loginForm.submitButton')}
             </Button>
-            <Button
-              variant="link"
-              size="sm"
-              className="text-sm"
-              onClick={() => router.push('/auth/register')}
-              type="button"
-            >
-              {t('loginForm.registerLink')}
+            <Button variant="outline" size="sm" className="w-full text-sm" asChild>
+              <Link href="/auth/register">{t('loginForm.registerLink')}</Link>
             </Button>
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="px-4 text-center text-xs text-muted-foreground leading-relaxed">
               <Link
                 href="/terms-of-use"
                 className="underline underline-offset-4 hover:text-primary"
@@ -233,6 +227,7 @@ export function LoginForm() {
               >
                 {t('registrationForm.privacyPolicy')}
               </Link>
+              .
             </p>
           </CardFooter>
         </form>

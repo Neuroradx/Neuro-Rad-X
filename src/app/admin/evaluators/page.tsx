@@ -22,16 +22,20 @@ export default function AdminEvaluatorsPage() {
 
   return (
     <div className="container mx-auto py-8 max-w-2xl">
-      <Button variant="outline" className="mb-6" onClick={() => router.push('/admin/dashboard')}>
+      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
         <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
       </Button>
-      <div className="flex items-center gap-3 mb-4">
-        <Users className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">{t('admin.evaluatorsPage.title')}</h1>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Users className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('admin.evaluatorsPage.title')}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t('admin.evaluatorsPage.description')}</p>
+        </div>
       </div>
-      <p className="text-muted-foreground mb-8">{t('admin.evaluatorsPage.description')}</p>
 
-      <Card>
+      <Card className="rounded-xl border-border/80 overflow-hidden shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl text-center">{t('admin.evaluatorsPage.cardTitle')}</CardTitle>
         </CardHeader>

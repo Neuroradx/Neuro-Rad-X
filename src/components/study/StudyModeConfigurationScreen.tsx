@@ -89,8 +89,6 @@ const StudyModeConfigurationScreen: React.FC<StudyModeConfigurationScreenProps> 
   const questionsLeft = Math.max(0, 50 - questionsAnswered);
   const isTrial = userProfile?.subscriptionLevel === 'Trial';
 
-  const showSourceFilters = userProfile?.role === 'admin' || userProfile?.subscriptionLevel === 'ECMINT' || userProfile?.subscriptionLevel === 'Evaluator';
-  
   const handleNumQuestionsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
     if (isNaN(value)) {
@@ -104,18 +102,23 @@ const StudyModeConfigurationScreen: React.FC<StudyModeConfigurationScreenProps> 
 
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto px-4 sm:px-0">
       <Button onClick={() => routerPush('/dashboard')} variant="outline" className="mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" /> {t('studyMode.backToDashboard')}
       </Button>
       
       <Card className="shadow-xl mb-8">
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-2">
+        <CardHeader className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-3">
             {getModeIcon()}
-            <CardTitle className="text-3xl font-bold">{getModeTitle()}</CardTitle>
+            <CardTitle className="text-2xl sm:text-3xl font-bold">{getModeTitle()}</CardTitle>
           </div>
-          <CardDescription className="text-lg">{getModeDescription()}</CardDescription>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            {t('studyMode.stepLabel')}
+          </p>
+          <CardDescription className="text-sm sm:text-base text-muted-foreground">
+            {getModeDescription()}
+          </CardDescription>
         </CardHeader>
         
         {isTrial && (
@@ -137,109 +140,112 @@ const StudyModeConfigurationScreen: React.FC<StudyModeConfigurationScreenProps> 
           </CardContent>
         )}
         
-        <CardContent className="space-y-6">
-          <div>
-            <Label htmlFor="category-select" className="mb-2 block font-medium">{t('studyMode.categoryLabel')}</Label>
-            <Select value={selectedCategory} onValueChange={onCategoryChange} disabled={(showSourceFilters && selectedCourse !== 'none')}>
-              <SelectTrigger id="category-select"><SelectValue placeholder={t('studyMode.selectCategoryPlaceholder')} /></SelectTrigger>
-              <SelectContent>
-                {availableCategories.map(cat => (
-                  <SelectItem key={cat.value} value={cat.value}>
-                    {cat.label} 
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <CardContent className="space-y-8 px-4 sm:px-6">
+          <section className="space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t('studyMode.sections.questionPoolTitle')}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {t('studyMode.sections.questionPoolDescription')}
+              </p>
+            </div>
 
-          <div>
-            <Label htmlFor="subcategory-select" className="mb-2 block font-medium">{t('studyMode.subcategoryLabel')}</Label>
-            <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory} disabled={selectedCategory === "all" || currentSubcategoryOptions.length === 0 || (showSourceFilters && selectedCourse !== 'none')}>
-              <SelectTrigger id="subcategory-select"><SelectValue placeholder={t('studyMode.selectSubcategoryPlaceholder')} /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('studyMode.allSubcategories')}</SelectItem>
-                {sortedSubcategoryItems.map(item => (
-                  <SelectItem key={item.value} value={item.value}>
-                     {item.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="difficulty-select" className="mb-2 block font-medium">{t('studyMode.difficultyLabel')}</Label>
-            <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty} disabled={(showSourceFilters && selectedCourse !== 'none')}>
-              <SelectTrigger id="difficulty-select"><SelectValue placeholder={t('studyMode.selectDifficultyPlaceholder')} /></SelectTrigger>
-              <SelectContent>
-                {difficultiesForFilter.map(diff => (
-                  <SelectItem key={diff} value={diff} className="capitalize">
-                    {diff === "all" ? t('difficulty.all') : t(`difficulty.${diff.toLowerCase()}` as any) || diff}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {showSourceFilters && (
-            <>
-              <Separator className="my-6" />
-              <div className="space-y-2 mb-4">
-                 <h3 className="text-lg font-semibold text-primary">{t('studyMode.sourceFilter.ecmintCoursesTitle')}</h3>
-                 <p className="text-sm text-muted-foreground">{t('studyMode.sourceFilter.description')}</p>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="category-select" className="mb-2 block font-medium">{t('studyMode.categoryLabel')}</Label>
+                <Select value={selectedCategory} onValueChange={onCategoryChange}>
+                  <SelectTrigger id="category-select">
+                    <SelectValue placeholder={t('studyMode.selectCategoryPlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCategories.map(cat => (
+                      <SelectItem key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedCategory === 'all' && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t('studyMode.allCategories')} – {t('studyMode.sections.questionPoolAllHelper', { defaultValue: 'Includes all topics.' })}
+                  </p>
+                )}
               </div>
 
-              <div className="mt-6">
-                <Label htmlFor="course-select" className="mb-2 block font-medium">{t('studyMode.sourceFilter.chooseCourseLabel')}</Label>
-                <Select value={selectedCourse} onValueChange={onCourseChange}>
-                    <SelectTrigger id="course-select">
-                        <SelectValue placeholder="Choose a course..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="none">{t('studyMode.sourceFilter.courseNone')}</SelectItem>
-                        <SelectItem value="ecmint_6.1">{t('studyMode.sourceFilter.course61')}</SelectItem>
-                    </SelectContent>
+              <div>
+                <Label htmlFor="subcategory-select" className="mb-2 block font-medium">{t('studyMode.subcategoryLabel')}</Label>
+                <Select
+                  value={selectedSubcategory}
+                  onValueChange={setSelectedSubcategory}
+                  disabled={selectedCategory === "all" || currentSubcategoryOptions.length === 0}
+                >
+                  <SelectTrigger id="subcategory-select">
+                    <SelectValue placeholder={t('studyMode.selectSubcategoryPlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('studyMode.allSubcategories')}</SelectItem>
+                    {sortedSubcategoryItems.map(item => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
 
-              {selectedCourse === 'ecmint_6.1' && (
-                  <div className="mt-6">
-                    <Label htmlFor="event-day-select" className="mb-2 block font-medium">{t('studyMode.sourceFilter.ecmintDayLabel')}</Label>
-                    <Select value={selectedEventDay} onValueChange={onEventDayChange}>
-                      <SelectTrigger id="event-day-select">
-                        <SelectValue placeholder={t('studyMode.sourceFilter.ecmintDayPlaceholder')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">{t('studyMode.sourceFilter.ecmintDayNone')}</SelectItem>
-                        <SelectItem value="scientific_articles">{t('studyMode.sourceFilter.ecmintScientificArticles')}</SelectItem>
-                        <SelectItem value="ecmint_day_1">{t('studyMode.sourceFilter.ecmintFirstDay')}</SelectItem>
-                        <SelectItem value="ecmint_day_2">{t('studyMode.sourceFilter.ecmintSecondDay')}</SelectItem>
-                        <SelectItem value="ecmint_day_3">{t('studyMode.sourceFilter.ecmintThirdDay')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-              )}
-            </>
-          )}
+              <div>
+                <Label htmlFor="difficulty-select" className="mb-2 block font-medium">{t('studyMode.difficultyLabel')}</Label>
+                <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
+                  <SelectTrigger id="difficulty-select">
+                    <SelectValue placeholder={t('studyMode.selectDifficultyPlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {difficultiesForFilter.map(diff => (
+                      <SelectItem key={diff} value={diff} className="capitalize">
+                        {diff === "all" ? t('difficulty.all') : t(`difficulty.${diff.toLowerCase()}` as any) || diff}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </section>
 
-          <div>
-            <Label htmlFor="num-questions" className="mb-2 block font-medium">{t('studyMode.numQuestionsLabel')}</Label>
-            <Input 
-                id="num-questions" 
-                type="number" 
-                value={numQuestions} 
-                onChange={handleNumQuestionsChange} 
-                min="1" 
-                max="100" // Set maximum limit
-                className="shadow-inner"
-            />
-          </div>
+          <section className="space-y-4">
+            <div className="space-y-1">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t('studyMode.sections.sessionSettingsTitle')}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {t('studyMode.sections.sessionSettingsDescription')}
+              </p>
+            </div>
 
-          {displayedCategoryCountText && (
-            <p className="text-sm text-muted-foreground text-center mt-2">
-              {displayedCategoryCountText}
-            </p>
-          )}
+            <div>
+              <Label htmlFor="num-questions" className="mb-2 block font-medium">{t('studyMode.numQuestionsLabel')}</Label>
+              <Input 
+                  id="num-questions" 
+                  type="number" 
+                  value={numQuestions} 
+                  onChange={handleNumQuestionsChange} 
+                  min="1" 
+                  max="100"
+                  className="shadow-inner"
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t('studyMode.sections.numQuestionsHelper')}
+              </p>
+            </div>
+
+            {displayedCategoryCountText && (
+              <div className="flex justify-center pt-1">
+                <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1 text-xs font-medium text-primary">
+                  {displayedCategoryCountText}
+                </span>
+              </div>
+            )}
+          </section>
 
           {isLoadingQuestions && (
             <div className="flex items-center justify-center text-muted-foreground">
@@ -254,29 +260,43 @@ const StudyModeConfigurationScreen: React.FC<StudyModeConfigurationScreenProps> 
             </Alert>
           )}
         </CardContent>
-        <CardFooter>
-          <Button onClick={startSession} size="lg" className="w-full shadow-lg" disabled={isLoadingQuestions || firebaseLoading || !!firebaseError}>
-            {isLoadingQuestions ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
-            {t('studyMode.startSessionButton', { mode: getModeTitle() })}
+        <CardFooter className="px-4 sm:px-6 pb-6">
+          <Button
+            onClick={startSession}
+            size="lg"
+            className="w-full shadow-lg py-3 text-base font-semibold"
+            disabled={isLoadingQuestions || firebaseLoading || !!firebaseError}
+          >
+            {isLoadingQuestions ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                {t('loading.fetchingQuestions')}
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                {t('studyMode.startSessionButton', { mode: getModeTitle() })}
+              </>
+            )}
           </Button>
         </CardFooter>
       </Card>
       
-      <Card className="shadow-xl mt-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-primary">
+      <Card className="shadow-md mt-10 border border-primary/10 bg-muted/40">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-primary text-base">
             <ShieldAlert className="h-5 w-5" />
             {t('studyMode.reviewMistakes.title')}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm text-muted-foreground">
             {t('studyMode.reviewMistakes.description')}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           <Button 
               onClick={onStartReviewSession} 
-              size="lg" 
-              className="w-full shadow-lg" 
+              size="default" 
+              className="w-full"
               variant="secondary"
               disabled={isLoadingQuestions || firebaseLoading || !!firebaseError || isStartingReviewSession}
           >

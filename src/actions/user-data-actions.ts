@@ -4,6 +4,7 @@
 import { adminDb, adminAuth } from "@/lib/firebase-admin";
 import admin from 'firebase-admin';
 import { type FieldValue, type Timestamp, type DocumentData } from "firebase-admin/firestore";
+import { headers } from "next/headers";
 import { sendApprovalEmail } from "@/actions/email-actions";
 import type { UserProfile, IssueReport as IssueReportType, UserQuestionState, ScientificArticle } from "@/types";
 import adminEmails from '@/lib/admin-emails.json';
@@ -150,6 +151,7 @@ interface FirestoreUserData extends DocumentData {
   totalQuestionsAnsweredAllTime?: number;
   totalCorrectAnswersAllTime?: number;
   createdAt?: Timestamp;
+  registrationIp?: string | null;
 }
 
 const DETAILED_ADMIN_SDK_ERROR = "Server configuration error: The Admin SDK is not initialized.";
@@ -209,6 +211,13 @@ export async function syncUserProfile(userData: {
   if (!adminDb) return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
 
   try {
+    const hdrs = headers();
+    const forwardedFor = hdrs.get("x-forwarded-for");
+    const clientIp =
+      (forwardedFor ? forwardedFor.split(",")[0]?.trim() : null) ||
+      hdrs.get("x-real-ip") ||
+      null;
+
     const { uid, email, firstName, lastName, country, institution } = userData;
     const displayName = `${firstName} ${lastName}`.trim();
 
@@ -246,6 +255,7 @@ export async function syncUserProfile(userData: {
       institution: institution || "",
       subscriptionLevel,
       subscriptionExpiresAt,
+      registrationIp: clientIp,
       lastUpdatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
 
@@ -337,6 +347,28 @@ export async function deleteUserAndTheirData(userId: string, callerUid: string):
     await adminDb.collection("users").doc(userId).delete();
     await adminAuth.deleteUser(userId);
     return { success: true, message: "User deleted successfully." };
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+export async function blockUser(userId: string, callerUid: string): Promise<{ success: boolean; message?: string }> {
+  if (!await verifyAdminRole(callerUid)) {
+    return { success: false, message: "Unauthorized access." };
+  }
+  if (!userId || !adminDb || !adminAuth) {
+    return { success: false, message: DETAILED_ADMIN_SDK_ERROR };
+  }
+
+  try {
+    await adminDb.collection("users").doc(userId).update({
+      status: "rejected",
+      blockedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    await adminAuth.updateUser(userId, { disabled: true });
+
+    return { success: true, message: "User blocked successfully." };
   } catch (error: any) {
     return { success: false, message: error.message };
   }
@@ -467,16 +499,26 @@ export async function searchUsers(searchTerm: string, callerUid: string): Promis
       addUserToMap(userRecord);
     } catch (error: any) { }
 
-    const usersRef = firestore.collection('users');
-    const [displayNameSnapshot, firstNameSnapshot, lastNameSnapshot] = await Promise.all([
-      usersRef.where('displayName', '>=', trimmedSearchTerm).where('displayName', '<=', trimmedSearchTerm + '\uf8ff').get(),
-      usersRef.where('firstName', '>=', trimmedSearchTerm).where('firstName', '<=', trimmedSearchTerm + '\uf8ff').get(),
-      usersRef.where('lastName', '>=', trimmedSearchTerm).where('lastName', '<=', trimmedSearchTerm + '\uf8ff').get(),
-    ]);
+    // Build search variants for case-insensitive prefix match (Firestore is case-sensitive)
+    const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    const searchVariants = [trimmedSearchTerm, capitalize(trimmedSearchTerm)].filter((v, i, a) => a.indexOf(v) === i);
 
-    displayNameSnapshot.forEach(doc => usersMap.set(doc.id, { ...usersMap.get(doc.id), firestore: doc.data() as FirestoreUserData }));
-    firstNameSnapshot.forEach(doc => usersMap.set(doc.id, { ...usersMap.get(doc.id), firestore: doc.data() as FirestoreUserData }));
-    lastNameSnapshot.forEach(doc => usersMap.set(doc.id, { ...usersMap.get(doc.id), firestore: doc.data() as FirestoreUserData }));
+    const usersRef = firestore.collection('users');
+    const queryPromises: Promise<FirebaseFirestore.QuerySnapshot>[] = [];
+    for (const variant of searchVariants) {
+      const prefix = variant + '\uf8ff';
+      queryPromises.push(
+        usersRef.where('displayName', '>=', variant).where('displayName', '<=', prefix).get(),
+        usersRef.where('firstName', '>=', variant).where('firstName', '<=', prefix).get(),
+        usersRef.where('lastName', '>=', variant).where('lastName', '<=', prefix).get(),
+        usersRef.where('email', '>=', variant).where('email', '<=', prefix).get()
+      );
+    }
+    const snapshots = await Promise.all(queryPromises);
+
+    snapshots.forEach(snapshot =>
+      snapshot.forEach(doc => usersMap.set(doc.id, { ...usersMap.get(doc.id), firestore: doc.data() as FirestoreUserData }))
+    );
 
     if (usersMap.size === 0) return { success: true, users: [] };
 

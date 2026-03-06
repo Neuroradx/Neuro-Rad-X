@@ -119,29 +119,34 @@ export default function EnrichQuestionsPage() {
 
 
   return (
-    <div className="container mx-auto py-8">
-      <Button onClick={() => router.push('/admin/dashboard')} variant="outline" className="mb-6">
+    <div className="container mx-auto py-8 max-w-6xl">
+      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
         <ArrowLeft className="mr-2 h-4 w-4" />
         {t('admin.backToAdminDashboard')}
       </Button>
 
-      <div className="flex items-center gap-3 mb-4">
-        <Wand2 className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">{t('admin.enrichQuestions.title')}</h1>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Wand2 className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('admin.enrichQuestions.title')}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t('admin.enrichQuestions.description')}</p>
+        </div>
       </div>
-      <p className="text-muted-foreground mb-8">{t('admin.enrichQuestions.description')}</p>
 
-      <Card className="max-w-xl mx-auto">
+      <Card className="max-w-xl mx-auto rounded-xl border-border/80 overflow-hidden shadow-lg">
         <CardHeader>
           <CardTitle>{t('admin.enrichQuestions.statsTitle')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {isLoadingStats ? (
-            <div className="flex justify-center items-center py-10">
+            <div className="flex flex-col justify-center items-center py-16 rounded-xl border border-border/60 bg-muted/20">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <p className="mt-3 text-sm text-muted-foreground">{t('common.loading')}</p>
             </div>
           ) : error ? (
-            <Alert variant="destructive">
+            <Alert variant="destructive" className="rounded-xl">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
               <AlertDescription>{error}</AlertDescription>

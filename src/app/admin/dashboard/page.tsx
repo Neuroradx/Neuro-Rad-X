@@ -203,27 +203,36 @@ const AdminDashboardPage = () => {
         {adminSections.map((section) => {
           const SectionIcon = section.icon;
           return (
-            <Card key={section.titleKey} className="shadow-lg">
-              <CardHeader>
+            <Card key={section.titleKey} className="shadow-lg overflow-hidden transition-shadow hover:shadow-xl border-primary/20 ring-1 ring-primary/5">
+              <CardHeader className="pb-4 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5">
                 <CardTitle className="flex items-center gap-3">
-                  <SectionIcon className="h-6 w-6 text-primary" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                    <SectionIcon className="h-5 w-5" />
+                  </div>
                   {t(section.titleKey)}
                 </CardTitle>
                 {section.descriptionKey && (
-                  <CardDescription>
+                  <CardDescription className="mt-1.5">
                     {t(section.descriptionKey)}
                   </CardDescription>
                 )}
               </CardHeader>
-              <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6">
                 {section.links.map(link => {
                   const LinkIcon = link.icon;
                   const label = t(link.labelKey);
                   return (
-                    <Button asChild key={link.href} variant="outline" className="h-auto justify-start whitespace-normal text-left">
-                      <Link href={link.href} aria-label={label}>
-                        <LinkIcon className="mr-2 h-4 w-4" aria-hidden />
-                        {label}
+                    <Button
+                      asChild
+                      key={link.href}
+                      variant="outline"
+                      className="h-auto min-h-[44px] justify-start whitespace-normal text-left px-4 py-3 rounded-lg border-border/80 transition-all hover:border-primary/40 hover:bg-primary/5 group"
+                    >
+                      <Link href={link.href} aria-label={label} className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted/80 group-hover:bg-primary/10 transition-colors">
+                          <LinkIcon className="h-4 w-4 text-muted-foreground group-hover:text-primary" aria-hidden />
+                        </div>
+                        <span className="font-medium">{label}</span>
                       </Link>
                     </Button>
                   );
@@ -240,10 +249,12 @@ const AdminDashboardPage = () => {
           {adminSections.map((section) => {
             const SectionIcon = section.icon;
             return (
-              <AccordionItem key={section.titleKey} value={section.titleKey}>
-                <AccordionTrigger className="hover:no-underline">
-                  <span className="flex items-center gap-2">
-                    <SectionIcon className="h-5 w-5 text-primary" />
+              <AccordionItem key={section.titleKey} value={section.titleKey} className="border-primary/20">
+                <AccordionTrigger className="hover:no-underline py-4 bg-primary/5">
+                  <span className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                      <SectionIcon className="h-5 w-5" />
+                    </div>
                     {t(section.titleKey)}
                   </span>
                 </AccordionTrigger>
@@ -256,9 +267,9 @@ const AdminDashboardPage = () => {
                       const LinkIcon = link.icon;
                       const label = t(link.labelKey);
                       return (
-                        <Button asChild key={link.href!} variant="outline" size="sm" className="justify-start">
-                          <Link href={link.href!} aria-label={label}>
-                            <LinkIcon className="mr-2 h-4 w-4" aria-hidden />
+                        <Button asChild key={link.href!} variant="outline" size="sm" className="justify-start h-11 rounded-lg">
+                          <Link href={link.href!} aria-label={label} className="flex items-center gap-2">
+                            <LinkIcon className="h-4 w-4 shrink-0" aria-hidden />
                             {label}
                           </Link>
                         </Button>

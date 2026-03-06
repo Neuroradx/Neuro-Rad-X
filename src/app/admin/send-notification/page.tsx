@@ -222,20 +222,24 @@ function SendNotificationContent() {
 
 
   return (
-    <div className="container mx-auto py-8">
-      <Button onClick={() => router.push('/admin/dashboard')} variant="outline" className="mb-6">
+    <div className="container mx-auto py-8 max-w-2xl">
+      <Button onClick={() => router.push('/admin/dashboard')} variant="outline" size="sm" className="mb-6 border-border/80">
         <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
       </Button>
-      <div className="flex items-center gap-3 mb-6">
-        <Mail className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">{t('nav.sendNotification')}</h1>
+      <div className="flex items-center gap-3 mb-2">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <Mail className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">{t('nav.sendNotification')}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t('admin.sendNotification.description')}</p>
+        </div>
       </div>
-      <p className="text-muted-foreground mb-8">{t('admin.sendNotification.description')}</p>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-8">
+          <Card className="border-border/80 rounded-xl overflow-hidden shadow-lg">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-border/50">
               <CardTitle>{t('admin.sendNotification.formTitle')}</CardTitle>
               <Dialog open={isSearchDialogOpen} onOpenChange={setIsSearchDialogOpen}>
                 <DialogTrigger asChild>
@@ -244,7 +248,7 @@ function SendNotificationContent() {
                     {t('admin.sendNotification.searchByNameButton')}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="sm:max-w-md rounded-xl">
                   <DialogHeader>
                     <DialogTitle>{t('admin.sendNotification.searchDialog.title')}</DialogTitle>
                     <DialogDescription>{t('admin.sendNotification.searchDialog.description')}</DialogDescription>
@@ -261,7 +265,7 @@ function SendNotificationContent() {
                         {isNameSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                       </Button>
                     </div>
-                    <ScrollArea className="h-64 border rounded-md p-2">
+                    <ScrollArea className="h-64 border border-border/60 rounded-lg p-2 bg-muted/20">
                       {nameSearchResults.length === 0 && !isNameSearching ? (
                         <p className="text-center text-sm text-muted-foreground py-10">
                           {nameSearchTerm.length < 3 ? t('admin.searchUser.formLabel') : t('admin.sendNotification.searchDialog.noResults')}
@@ -271,7 +275,7 @@ function SendNotificationContent() {
                           {nameSearchResults.map((user) => (
                             <div
                               key={user.id}
-                              className="flex items-center justify-between p-2 hover:bg-muted rounded-md cursor-pointer transition-colors border"
+                              className="flex items-center justify-between p-3 hover:bg-muted/80 rounded-lg cursor-pointer transition-colors border border-border/50 hover:border-primary/30"
                               onClick={() => selectUserFromSearch(user)}
                             >
                               <div className="flex items-center gap-3">
@@ -294,7 +298,7 @@ function SendNotificationContent() {
                 </DialogContent>
               </Dialog>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 px-6 py-5">
               <FormField
                 control={form.control}
                 name="userId"
@@ -315,7 +319,7 @@ function SendNotificationContent() {
               />
 
               {fetchUserError && !isFetchingUser && (
-                <Alert variant="destructive" className="mt-2">
+                <Alert variant="destructive" className="mt-2 rounded-lg">
                   <AlertCircleIcon className="h-4 w-4" />
                   <UIAlertTitle>{t('toast.errorTitle')}</UIAlertTitle>
                   <AlertDescription>{fetchUserError}</AlertDescription>
@@ -420,8 +424,8 @@ function SendNotificationContent() {
                 )}
               />
             </CardContent>
-            <CardFooter>
-              <Button type="submit" disabled={isSending || isFetchingUser || !targetUser || !currentUser}>
+            <CardFooter className="flex flex-col gap-4 pt-6 border-t border-border/50 bg-muted/20 dark:bg-muted/10">
+              <Button type="submit" className="w-full h-11 font-semibold" disabled={isSending || isFetchingUser || !targetUser || !currentUser}>
                 {isSending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 <Send className="mr-2 h-4 w-4" /> {t('admin.sendNotification.sendButton')}
               </Button>

@@ -562,9 +562,9 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
   if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
 
   return (
-    <div className="container mx-auto py-8">
-      <Button variant="outline" className="mb-6" onClick={() => router.push('/admin/dashboard')}>
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+    <div className="container mx-auto py-8 max-w-6xl">
+      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
+        <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
       </Button>
 
       {!questionId ? (

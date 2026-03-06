@@ -109,23 +109,20 @@ export default function BookmarksPage() {
           const subtopicTranslationKey = subtopicKey ? subcategoryDisplayNames[subtopicKey] || `subtopics.${subtopicKey.toLowerCase()}` : undefined;
           const subtopicDisplay = subtopicKey && subtopicTranslationKey ? t(subtopicTranslationKey as any, {defaultValue: subtopicKey}) : undefined;
           
-          const localizationDisplay = (data.main_localization === "General" 
-            ? t('studyMode.categoryOther') 
-            : t(`topics.${data.main_localization?.toLowerCase()}` as any, {defaultValue: data.main_localization})) as QuestionLocalization;
-
           fetchedQuestions.push({
             id: questionId,
             topic: topicDisplay,
             subtopic: subtopicDisplay,
             difficulty: data.difficulty === 'Advanced' ? 'Advanced' : 'Easy',
-            type: data.type || 'mcq',
-            localization: localizationDisplay,
-            stem: langTranslations.questionText || 'No text.',
-            options: mappedOptions,
+            translations: {
+              en: {
+                questionText: langTranslations.questionText || 'Question content not available',
+                options: mappedOptions,
+                explanation: langTranslations.explanation || '',
+              },
+            },
             correctAnswerId: correctAnswerIdValue || '',
-            explanation: langTranslations.explanation || '',
             imageUrl: data.imageUrl || '',
-            isBookmarked: true,
             scientificArticle: data.scientificArticle || undefined,
             createdAt: data.createdAt || '',
             lastUpdatedAt: data.lastUpdatedAt || '',

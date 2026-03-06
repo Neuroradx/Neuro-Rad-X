@@ -1,24 +1,11 @@
 'use client';
 import React from 'react';
-import { Cell, Pie, PieChart, ResponsiveContainer, Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer, Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTranslation } from '@/hooks/use-translation';
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path, className = "text-primary" }: { path: string, className?: string }) => (
-    <svg className={`h-8 w-8 mr-3 flex-shrink-0 ${className}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -64,17 +51,17 @@ const PmlInfographic = () => {
     });
 
     return (
-        <div className="space-y-6">
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Progressive Multifocal <GradientText>Leukoencephalopathy (PML)</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">Epidemiology and Advanced Neuroimaging Characteristics</p>
+                <p className="infographic-subtitle">Epidemiology and Advanced Neuroimaging Characteristics</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -88,7 +75,7 @@ const PmlInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.654 5.654a2.652 2.652 0 01-3.752-3.752l5.654-4.654M3 3l3.59 3.59m0 0A2.652 2.652 0 019 9m7.5-3A2.652 2.652 0 0013.5 3m-3 0a2.652 2.652 0 00-3 3.59" />
@@ -102,7 +89,7 @@ const PmlInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c.497 0 .98-.032 1.453-.091M12 21a8.958 8.958 0 01-1.453-.091m6.264-6.656a8.973 8.973 0 01-1.453.091M3.284 14.253a8.973 8.973 0 001.453.091M12 3a9.004 9.004 0 00-8.716 6.747M12 3a9.004 9.004 0 018.716 6.747M12 3c-.497 0-.98.032-1.453-.091M12 3a8.958 8.958 0 00-1.453-.091m6.264 6.656a8.973 8.973 0 001.453-.091M3.284 9.747a8.973 8.973 0 011.453-.091" />
@@ -110,14 +97,14 @@ const PmlInfographic = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={incidenceConfig} className="min-h-[150px] w-full">
-                            <ResponsiveContainer width="100%" height={150}>
+                        <ChartContainer config={incidenceConfig} className="infographic-chart">
+                            <ResponsiveContainer width="100%" height={260}>
                                 <BarChart accessibilityLayer data={incidenceData}>
-                                    <CartesianGrid vertical={false} />
+                                    <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                     <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fontSize: 10 }} />
                                     <YAxis unit="%" />
                                     <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" formatter={(value, name, entry) => entry.payload.name.includes('General') ? `${value} per 100k` : `${value}%`} />} />
-                                    <Bar dataKey="value" name="Rate" radius={[4, 4, 0, 0]} barSize={40}>
+                                    <Bar dataKey="value" name="Rate" radius={[0, 8, 8, 0]} barSize={32}>
                                         {incidenceData.map((entry) => (
                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                         ))}
@@ -129,7 +116,7 @@ const PmlInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.092 1.21-.138 2.43-.138 3.662v1.562a4.006 4.006 0 003.7 3.7c1.846.053 3.695.085 5.568 0a4.006 4.006 0 003.7-3.7v-1.562z" />
@@ -138,14 +125,14 @@ const PmlInfographic = () => {
                         <CardDescription>Risk stratification is crucial, depending on JCV antibody status, duration of exposure, and prior immunosuppressant (IS) use.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={natalizumabRiskConfig} className="min-h-[250px] w-full">
-                            <ResponsiveContainer width="100%" height={250}>
+                        <ChartContainer config={natalizumabRiskConfig} className="infographic-chart">
+                            <ResponsiveContainer width="100%" height={260}>
                                 <BarChart accessibilityLayer data={natalizumabRiskData}>
-                                    <CartesianGrid vertical={false} />
+                                    <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                     <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fontSize: 9 }} angle={-30} textAnchor="end" height={70} interval={0} />
                                     <YAxis />
                                     <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" formatter={(value) => `${value}/1000`} />} />
-                                    <Bar dataKey="risk" name="Incidence" radius={[4, 4, 0, 0]} barSize={40}>
+                                    <Bar dataKey="risk" name="Incidence" radius={[0, 8, 8, 0]} barSize={32}>
                                         {natalizumabRiskData.map((entry) => (
                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                         ))}
@@ -156,7 +143,7 @@ const PmlInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M15.042 21.002a2.25 2.25 0 01-3.084 0 2.25 2.25 0 01-3.084 0M12 6.002v9.75m-3.111 2.553a.75.75 0 01-1.06 0l-3-3a.75.75 0 011.06-1.06l1.06 1.06 4.765-4.764a.75.75 0 111.06 1.06l-5.25 5.25-1.591 1.591z" />
@@ -180,7 +167,7 @@ const PmlInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -207,7 +194,7 @@ const PmlInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
@@ -256,7 +243,7 @@ const PmlInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-1.37-1.37m1.37 1.37l-1.586 1.585" />
@@ -274,20 +261,20 @@ const PmlInfographic = () => {
                                 <li><strong className="text-purple-600">Investigative:</strong> Immune Checkpoint Inhibitors (Pembrolizumab), Adoptive T-Cell Transfer.</li>
                             </ul>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>1-Year Survival Rates</CardTitle>
                                 <CardDescription>Survival heavily depends on the potential for immune reconstitution.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={survivalDataConfig} className="min-h-[150px] w-full">
-                                    <ResponsiveContainer width="100%" height={150}>
+                                <ChartContainer config={survivalDataConfig} className="infographic-chart">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <BarChart accessibilityLayer data={survivalData}>
-                                            <CartesianGrid vertical={false} />
+                                            <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis dataKey="cohort" tick={{ fontSize: 9 }} />
                                             <YAxis unit="%" />
                                             <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="survival" name="Survival (%)" radius={[4, 4, 0, 0]} barSize={40}>
+                                            <Bar dataKey="survival" name="Survival (%)" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {survivalData.map((entry) => (
                                                     <Cell key={entry.cohort} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -303,7 +290,7 @@ const PmlInfographic = () => {
                     </CardFooter>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -327,7 +314,7 @@ const PmlInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key aspects of Progressive Multifocal Leukoencephalopathy (PML) based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

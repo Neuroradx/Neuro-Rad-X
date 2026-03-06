@@ -1,22 +1,9 @@
 'use client';
 import React from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, Cell, PieChart, Pie } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, Cell, PieChart, Pie } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path, className = "text-primary" }: { path: string, className?: string }) => (
-    <svg className={`h-8 w-8 mr-3 flex-shrink-0 ${className}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -107,17 +94,17 @@ const QuantitativeAlcoholCnsInfographic = () => {
 
 
     return (
-        <div className="space-y-6">
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Quantitative Analysis: Alcohol's Effects on the <GradientText>Central Nervous System</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">Incidence, Prevalence, and Radiological Detection (CT/MRI)</p>
+                <p className="infographic-subtitle">Incidence, Prevalence, and Radiological Detection (CT/MRI)</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -131,7 +118,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M15.042 21.002a2.25 2.25 0 01-3.084 0 2.25 2.25 0 01-3.084 0M12 6.002v9.75m-3.111 2.553a.75.75 0 01-1.06 0l-3-3a.75.75 0 011.06-1.06l1.06 1.06 4.765-4.764a.75.75 0 111.06 1.06l-5.25 5.25-1.591 1.591z" />
@@ -139,18 +126,18 @@ const QuantitativeAlcoholCnsInfographic = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <ChartContainer config={wePrevalenceConfig} className="min-h-[150px] w-full">
+                        <ChartContainer config={wePrevalenceConfig} className="infographic-chart min-h-[260px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">Prevalence of WKS</CardTitle>
                                 </CardHeader>
                                 <ResponsiveContainer width="100%" height={150}>
                                     <BarChart accessibilityLayer data={wePrevalenceData}>
-                                        <CartesianGrid vertical={false} />
+                                        <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="value" name="Prevalence" radius={[4, 4, 0, 0]} barSize={40}>
+                                        <Bar dataKey="value" name="Prevalence" radius={[0, 8, 8, 0]} barSize={32}>
                                             {wePrevalenceData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -160,7 +147,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                             </>
                         </ChartContainer>
 
-                        <ChartContainer config={weDetectionConfig} className="min-h-[150px] w-full">
+                        <ChartContainer config={weDetectionConfig} className="infographic-chart min-h-[260px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">Clinical Presentation of Acute WE</CardTitle>
@@ -168,7 +155,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                 <ResponsiveContainer width="100%" height={150}>
                                     <PieChart>
                                         <Tooltip content={<ChartTooltipContent hideLabel />} />
-                                        <Pie data={weDetectionData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={50} >
+                                        <Pie data={weDetectionData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))" >
                                             {weDetectionData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -182,7 +169,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
@@ -190,18 +177,18 @@ const QuantitativeAlcoholCnsInfographic = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <ChartContainer config={mriSensitivityConfig} className="min-h-[150px] w-full">
+                        <ChartContainer config={mriSensitivityConfig} className="infographic-chart min-h-[260px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">MRI Diagnostic Accuracy for Acute WE</CardTitle>
                                 </CardHeader>
                                 <ResponsiveContainer width="100%" height={150}>
                                     <BarChart accessibilityLayer data={mriWeSensitivityData}>
-                                        <CartesianGrid vertical={false} />
+                                        <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="value" name="Percentage" radius={[4, 4, 0, 0]} barSize={40}>
+                                        <Bar dataKey="value" name="Percentage" radius={[0, 8, 8, 0]} barSize={32}>
                                             {mriWeSensitivityData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -211,7 +198,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                             </>
                         </ChartContainer>
 
-                        <ChartContainer config={mriLocationConfig} className="min-h-[200px] w-full">
+                        <ChartContainer config={mriLocationConfig} className="infographic-chart min-h-[260px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">Frequency of MRI Regional Findings</CardTitle>
@@ -222,7 +209,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={150} tick={{ fontSize: 10 }} />
                                         <XAxis dataKey="frequency" type="number" unit="%" />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="frequency" name="Frequency" radius={[0, 4, 4, 0]} barSize={30}>
+                                        <Bar dataKey="frequency" name="Frequency" radius={[0, 8, 8, 0]} barSize={32}>
                                             {mriWeLocationData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -235,7 +222,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
@@ -250,7 +237,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                         <div>
                             <h3 className="font-semibold text-foreground">Osmotic Demyelination Syndrome (ODS)</h3>
                             <p className="text-sm text-muted-foreground mt-1">Caused by rapid correction of chronic hyponatremia. AUD is a major risk factor (ORa: 15.27).</p>
-                            <ChartContainer config={odsConfig} className="min-h-[150px] w-full">
+                            <ChartContainer config={odsConfig} className="infographic-chart min-h-[260px] w-full">
                                 <>
                                     <CardHeader className="p-0 mt-2 mb-2">
                                         <CardTitle className="text-base">Association of ODS with AUD</CardTitle>
@@ -258,7 +245,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                     <ResponsiveContainer width="100%" height={150}>
                                         <PieChart>
                                             <Tooltip content={<ChartTooltipContent hideLabel />} />
-                                            <Pie data={odsAudAssociationData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={50} >
+                                            <Pie data={odsAudAssociationData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))" >
                                                 {odsAudAssociationData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -272,7 +259,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -281,18 +268,18 @@ const QuantitativeAlcoholCnsInfographic = () => {
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground mb-4">Chronic alcohol use leads to structural brain damage, primarily cerebral atrophy and white matter deficits. White matter damage is considered a defining characteristic.</p>
-                        <ChartContainer config={corpusCallosumConfig} className="min-h-[200px] w-full">
+                        <ChartContainer config={corpusCallosumConfig} className="infographic-chart min-h-[260px] w-full">
                             <>
                                 <CardHeader className="p-0 mb-2">
                                     <CardTitle className="text-base">Corpus Callosum Atrophy in AUD</CardTitle>
                                 </CardHeader>
                                 <ResponsiveContainer width="100%" height={200}>
                                     <BarChart accessibilityLayer data={corpusCallosumAtrophyData}>
-                                        <CartesianGrid vertical={false} />
+                                        <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" domain={[0, 20]} />
                                         <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                        <Bar dataKey="reduction" name="Reduction (%)" radius={[4, 4, 0, 0]} barSize={40}>
+                                        <Bar dataKey="reduction" name="Reduction (%)" radius={[0, 8, 8, 0]} barSize={32}>
                                             {corpusCallosumAtrophyData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -306,7 +293,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                 </Card>
 
                 {/* Sources */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -328,7 +315,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes quantitative findings on {infoTheme} based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

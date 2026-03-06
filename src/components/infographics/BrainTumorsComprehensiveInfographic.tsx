@@ -5,20 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path, className = "text-primary" }: { path: string, className?: string }) => (
-    <svg className={`h-8 w-8 mr-3 flex-shrink-0 ${className}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -80,17 +67,17 @@ const BrainTumorsComprehensiveInfographic = () => {
     ];
 
     return (
-        <div className="space-y-6">
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Integrated Neuro-Oncology Report: Brain Tumors & <GradientText>Metastases</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">Epidemiology, Classification, and Advanced MRI Features</p>
+                <p className="infographic-subtitle">Epidemiology, Classification, and Advanced MRI Features</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c.497 0 .98-.032 1.453-.091M12 21a8.958 8.958 0 01-1.453-.091m6.264-6.656a8.973 8.973 0 01-1.453.091M3.284 14.253a8.973 8.973 0 001.453.091M12 3a9.004 9.004 0 00-8.716 6.747M12 3a9.004 9.004 0 018.716 6.747M12 3c-.497 0-.98.032-1.453-.091M12 3a8.958 8.958 0 00-1.453-.091m6.264 6.656a8.973 8.973 0 001.453-.091M3.284 9.747a8.973 8.973 0 011.453-.091" />
@@ -105,17 +92,17 @@ const BrainTumorsComprehensiveInfographic = () => {
                                 <p><strong>Pediatrics:</strong> Metastases are rare (~1.4%); <strong className="text-primary">Primary CNS tumors dominate</strong> (e.g., Medulloblastoma, Pilocytic Astrocytoma).</p>
                                 <p><strong>PCNSL:</strong> Rare overall (0.43-0.5/100k/year), but rising in the elderly, declining in HIV+ population due to HAART.</p>
                             </div>
-                            <ChartContainer config={tumorFrequencyConfig} className="min-h-[150px] w-full">
+                            <ChartContainer config={tumorFrequencyConfig} className="infographic-chart min-h-[260px] w-full">
                                 <ResponsiveContainer width="100%" height={150}>
-                                    <BarChart accessibilityLayer data={tumorFrequencyData} layout="vertical" margin={{ left: 100 }}>
-                                        <CartesianGrid horizontal={false} />
+                                        <BarChart accessibilityLayer data={tumorFrequencyData} layout="vertical" margin={{ left: 100 }}>
+                                        <CartesianGrid horizontal={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <YAxis dataKey="type" type="category" tickLine={false} axisLine={false} width={100} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                         <XAxis dataKey="frequency" type="number" hide />
                                         <Tooltip
                                             cursor={false}
                                             content={<ChartTooltipContent indicator="dot" hideLabel className="bg-popover text-popover-foreground" />}
                                         />
-                                        <Bar dataKey="frequency" name="Relative Frequency" radius={[0, 4, 4, 0]} layout="vertical" barSize={30}>
+                                        <Bar dataKey="frequency" name="Relative Frequency" radius={[0, 8, 8, 0]} layout="vertical" barSize={32}>
                                             {tumorFrequencyData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -127,7 +114,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
@@ -170,7 +157,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
@@ -200,7 +187,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
@@ -233,13 +220,13 @@ const BrainTumorsComprehensiveInfographic = () => {
                                     <li>Often multiple, necrotic centers, irregular/ring enhancement. Mimics Toxoplasmosis.</li>
                                 </ul>
                             </div>
-                            <Card>
+                            <Card className="infographic-card-inner">
                                 <CardHeader className="p-2">
                                     <CardTitle className="text-base">PCNSL Incidence Rates</CardTitle>
                                     <CardDescription className="text-xs">Rate per 100,000 person-years by group.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="p-0">
-                                    <ChartContainer config={pcnslIncidenceConfig} className="min-h-[200px] w-full">
+                                    <ChartContainer config={pcnslIncidenceConfig} className="infographic-chart min-h-[260px] w-full">
                                         <BarChart
                                             accessibilityLayer
                                             data={pcnslIncidenceData}
@@ -258,7 +245,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                                                 cursor={false}
                                                 content={<ChartTooltipContent hideLabel />}
                                             />
-                                            <Bar dataKey="rate" layout="vertical" radius={[0, 4, 4, 0]} barSize={25}>
+                                            <Bar dataKey="rate" layout="vertical" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {pcnslIncidenceData.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={pcnslIncidenceConfig[entry.key].color} />
                                                 ))}
@@ -271,7 +258,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -315,7 +302,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.654 5.654a2.652 2.652 0 01-3.752-3.752l5.654-4.654M3 3l3.59 3.59m0 0A2.652 2.652 0 019 9m7.5-3A2.652 2.652 0 0013.5 3m-3 0a2.652 2.652 0 00-3 3.59" />
@@ -355,7 +342,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -405,7 +392,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.32h5.368a.563.563 0 01.321.988l-4.204 3.055a.563.563 0 00-.182.635l2.125 5.11a.563.563 0 01-.84.61l-4.203-3.055a.563.563 0 00-.676 0l-4.203 3.055a.563.563 0 01-.84-.61l2.125-5.11a.563.563 0 00-.182-.635l-4.204-3.055a.563.563 0 01.321-.988h5.368a.563.563 0 00.475-.32L11.48 3.5z" />
@@ -429,23 +416,23 @@ const BrainTumorsComprehensiveInfographic = () => {
                                 </ul>
                             </div>
                             {/* ----- INICIO DE LA SECCIÓN CORREGIDA ----- */}
-                            <Card>
+                            <Card className="infographic-card-inner">
                                 <CardHeader className="p-2">
                                     <CardTitle className="text-base">Pineal Tumor 5-Year Survival</CardTitle>
                                     <CardDescription className="text-xs">Survival differs significantly by lineage.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="p-0">
-                                    <ChartContainer config={pinealSurvivalConfig} className="min-h-[150px] w-full">
+                                    <ChartContainer config={pinealSurvivalConfig} className="infographic-chart min-h-[260px] w-full">
                                         <ResponsiveContainer width="100%" height={150}>
                                             <BarChart accessibilityLayer data={pinealSurvivalData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                                <CartesianGrid vertical={false} />
+                                                <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                                 <XAxis dataKey="lineage" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }} angle={-15} textAnchor="end" height={40} interval={0} />
                                                 <YAxis unit="%" domain={[0, 100]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                                 <Tooltip
                                                     cursor={false}
                                                     content={<ChartTooltipContent indicator="dot" hideLabel className="bg-popover text-popover-foreground" />}
                                                 />
-                                                <Bar dataKey="survival" name="5-Yr Survival" radius={[4, 4, 0, 0]} barSize={40}>
+                                                <Bar dataKey="survival" name="5-Yr Survival" radius={[0, 8, 8, 0]} barSize={32}>
                                                     {pinealSurvivalData.map((entry) => (
                                                         <Cell key={entry.lineage} fill={pinealSurvivalConfig[entry.key].color} />
                                                     ))}
@@ -460,7 +447,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -484,7 +471,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key aspects of {infoTheme} based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

@@ -1,22 +1,10 @@
 'use client';
 import React from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path }: { path: string }) => (
-    <svg className="h-8 w-8 text-primary mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -44,19 +32,19 @@ const malignancyAssociationConfig = {
 
 const LimbicEncephalitisInfographic = () => {
     return (
-        <div className="space-y-6">
+        <div className="infographic-layout space-y-8">
             {/* Header */}
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Diagnostic Criteria for <GradientText>Limbic Encephalitis</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">A Guide to Clinical, Imaging, and Laboratory Findings</p>
+                <p className="infographic-subtitle">A Guide to Clinical, Imaging, and Laboratory Findings</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Diagnostic Criteria */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -84,7 +72,7 @@ const LimbicEncephalitisInfographic = () => {
                 </Card>
 
                 {/* Neuroimaging: MRI Features */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
@@ -105,7 +93,7 @@ const LimbicEncephalitisInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Recommended MRI Protocol</CardTitle>
                                 <CardDescription>For optimal visualization of limbic structures.</CardDescription>
@@ -124,7 +112,7 @@ const LimbicEncephalitisInfographic = () => {
                 </Card>
 
                 {/* CSF and Antibody Testing */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -152,20 +140,20 @@ const LimbicEncephalitisInfographic = () => {
                                 <li><strong>Anti-GAD65:</strong> Tumor association is variable (~25%).</li>
                             </ul>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Malignancy Association of Key Antibodies</CardTitle>
                                 <CardDescription>Approximate percentage of cases associated with tumors.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={malignancyAssociationConfig} className="min-h-[250px] w-full">
-                                    <ResponsiveContainer width="100%" height={250}>
+                                <ChartContainer config={malignancyAssociationConfig} className="infographic-chart">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <BarChart accessibilityLayer data={malignancyAssociationData} layout="vertical">
-                                            <CartesianGrid horizontal={false} />
+                                            <CartesianGrid horizontal={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={100} />
                                             <XAxis dataKey="association" type="number" unit="%" />
-                                            <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="association" radius={[0, 4, 4, 0]} barSize={30}>
+                                            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                            <Bar dataKey="association" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {malignancyAssociationData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -179,7 +167,7 @@ const LimbicEncephalitisInfographic = () => {
                 </Card>
 
                 {/* Sources */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -203,7 +191,7 @@ const LimbicEncephalitisInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key findings on Limbic Encephalitis based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

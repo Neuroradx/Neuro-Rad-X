@@ -14,7 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Users, UserCheck, UserSearch, CreditCard, FileWarning, FileEdit, Bell, Mail, FileText, Award, LayoutGrid, Calculator, FileCheck, ClipboardCheck, Sparkles, Database, AlertCircle, ExternalLink, Search } from 'lucide-react';
+import { Users, UserCheck, UserSearch, CreditCard, FileWarning, FileEdit, Bell, Mail, FileText, Award, LayoutGrid, Calculator, FileCheck, ClipboardCheck, Sparkles, Database, AlertCircle, ExternalLink, Search, ImagePlus } from 'lucide-react';
 import { getAdminSummaryStats } from '@/actions/user-data-actions';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { PendingTasksPanel } from '@/components/admin/pending-tasks-panel';
@@ -109,6 +109,14 @@ const AdminDashboardPage = () => {
       links: [
         { href: "/admin/ecmit", labelKey: "admin.dashboard.links.ecmit", icon: Award },
         { href: "/admin/evaluators", labelKey: "admin.dashboard.links.inviteEvaluators", icon: Users },
+      ],
+    },
+    {
+      titleKey: "admin.dashboard.infographics.title",
+      descriptionKey: "admin.dashboard.infographics.description",
+      icon: ImagePlus,
+      links: [
+        { href: "/admin/add-infographic", labelKey: "admin.dashboard.links.addInfographic", icon: ImagePlus },
       ],
     },
   ];

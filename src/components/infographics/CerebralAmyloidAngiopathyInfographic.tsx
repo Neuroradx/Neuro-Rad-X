@@ -3,20 +3,7 @@ import React from 'react';
 import { Pie, PieChart, ResponsiveContainer, Tooltip, Cell, Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path }: { path: string }) => (
-    <svg className="h-8 w-8 text-primary mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -54,19 +41,19 @@ const bostonCriteriaConfig = {
 
 const CerebralAmyloidAngiopathyInfographic = () => {
     return (
-        <div className="space-y-6">
+        <div className="infographic-layout space-y-8">
             {/* Header */}
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Cerebral Amyloid <GradientText>Angiopathy (CAA)</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">A Summary of Pathophysiology, Imaging, and Clinical Concepts</p>
+                <p className="infographic-subtitle">A Summary of Pathophysiology, Imaging, and Clinical Concepts</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Pathophysiology and Core Concepts */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
@@ -81,7 +68,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 </Card>
 
                 {/* Clinical Manifestations */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M15.042 21.002a2.25 2.25 0 01-3.084 0 2.25 2.25 0 01-3.084 0M12 6.002v9.75m-3.111 2.553a.75.75 0 01-1.06 0l-3-3a.75.75 0 011.06-1.06l1.06 1.06 4.765-4.764a.75.75 0 111.06 1.06l-5.25 5.25-1.591 1.591z" />
@@ -101,7 +88,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 </Card>
 
                 {/* Diagnostic Imaging Markers */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -110,14 +97,14 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                         <CardDescription>Data from a prospective cohort study.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={imagingMarkersConfig} className="min-h-[250px] w-full">
-                            <ResponsiveContainer width="100%" height={250}>
+                        <ChartContainer config={imagingMarkersConfig} className="infographic-chart min-h-[260px] w-full">
+                            <ResponsiveContainer width="100%" height={260}>
                                 <BarChart accessibilityLayer data={imagingMarkersData} layout="vertical" margin={{ left: 150, right: 20 }}>
-                                    <CartesianGrid horizontal={false} />
+                                    <CartesianGrid horizontal={false} stroke="hsl(var(--border))" opacity={0.6} />
                                     <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={150} tick={{ fontSize: 10 }} />
                                     <XAxis dataKey="prevalence" type="number" unit="%" />
                                     <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                    <Bar dataKey="prevalence" name="Prevalence" radius={[0, 4, 4, 0]} barSize={25}>
+                                    <Bar dataKey="prevalence" name="Prevalence" radius={[0, 8, 8, 0]} barSize={32}>
                                         {imagingMarkersData.map((entry) => (
                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                         ))}
@@ -129,7 +116,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 </Card>
 
                 {/* Boston Criteria v2.0 */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
@@ -155,22 +142,22 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Boston Criteria v2.0 vs v1.5 Accuracy</CardTitle>
                                 <CardDescription>For probable CAA diagnosis (vs. non-probable).</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={bostonCriteriaConfig} className="min-h-[150px] w-full">
-                                    <ResponsiveContainer width="100%" height={150}>
+                                <ChartContainer config={bostonCriteriaConfig} className="infographic-chart min-h-[260px] w-full">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <BarChart accessibilityLayer data={bostonCriteriaData}>
-                                            <CartesianGrid vertical={false} />
+                                            <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis dataKey="version" tickLine={false} tickMargin={10} axisLine={false} />
                                             <YAxis unit="%" />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                             <Legend />
-                                            <Bar dataKey="sensitivity" fill="var(--color-sensitivity)" radius={[4, 4, 0, 0]} name="Sensitivity" />
-                                            <Bar dataKey="specificity" fill="var(--color-specificity)" radius={[4, 4, 0, 0]} name="Specificity" />
+                                            <Bar dataKey="sensitivity" fill="var(--color-sensitivity)" radius={[0, 8, 8, 0]} barSize={32} name="Sensitivity" />
+                                            <Bar dataKey="specificity" fill="var(--color-specificity)" radius={[0, 8, 8, 0]} barSize={32} name="Specificity" />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </ChartContainer>
@@ -180,7 +167,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 </Card>
 
                 {/* Risk Factors & Clinical Implications */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -198,7 +185,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 </Card>
 
                 {/* Recurrent Hemorrhage Risk */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M16.023 9.348h4.992v-.001a.75.75 0 01.75.75c0 .414-.336.75-.75.75h-4.992a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 0112 4.5v-2.25c0-.414.336-.75.75-.75s.75.336.75.75V4.5a.75.75 0 00.75.75h3.037a.75.75 0 010 1.5H13.5a.75.75 0 00-.75.75V9a2.25 2.25 0 012.273-2.25zM5.25 6.75c0-.414.336-.75.75-.75H9a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 00-.75.75v1.5c0 .414-.336.75-.75.75s-.75-.336-.75-.75v-1.5A2.25 2.25 0 015.25 9V6.75z" />
@@ -214,7 +201,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                         <div>
                             <h3 className="font-semibold text-foreground">Timeline of Risk</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                                <Card className="bg-destructive/10 border-destructive/20">
+                                <Card className="infographic-card-inner bg-destructive/10 border-destructive/20">
                                     <CardHeader className="p-3">
                                         <CardTitle className="text-base text-destructive">Early Recurrence (First 90 Days)</CardTitle>
                                     </CardHeader>
@@ -222,7 +209,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                                         <p className="text-xs text-muted-foreground mt-1">The risk is maximal in the first 3 months, often reflecting a more severe disease burden on MRI.</p>
                                     </CardContent>
                                 </Card>
-                                <Card>
+                                <Card className="infographic-card-inner">
                                     <CardHeader className="p-3">
                                         <CardTitle className="text-base text-foreground">Chronic Risk (After 90 Days)</CardTitle>
                                     </CardHeader>
@@ -244,7 +231,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 </Card>
 
                 {/* Sources */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -268,7 +255,7 @@ const CerebralAmyloidAngiopathyInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key findings on Cerebral Amyloid Angiopathy (CAA) based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

@@ -4,20 +4,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LocationsBarChart } from '@/components/charts/LocationsBarChart';
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path }: { path: string }) => (
-    <svg className="h-8 w-8 text-primary mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -42,20 +29,16 @@ const edemaChartConfig = {
 
 const PresInfographic = () => {
     return (
-        <div className="space-y-6">
-
-            {/* Header */}
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Posterior Reversible Encephalopathy Syndrome <GradientText>(PRES)</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">A Guide to Clinicoradiological Findings</p>
+                <p className="infographic-subtitle">A Guide to Clinicoradiological Findings</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* I. General MRI Characteristics & Edema Type */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.648l.21-1.05a2.25 2.25 0 00-1.58-2.618l-1.05-.21a2.25 2.25 0 00-2.618 1.58l-.21 1.05a2.25 2.25 0 001.58 2.618l1.05.21a2.25 2.25 0 002.618-1.58z" />
@@ -81,17 +64,17 @@ const PresInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Edema Composition (Study of 79 Patients)</CardTitle>
                                 <CardDescription>Percentage distribution of edema types.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={edemaChartConfig} className="min-h-[200px] w-full">
-                                    <ResponsiveContainer width="100%" height={200}>
+                                <ChartContainer config={edemaChartConfig} className="infographic-chart">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <PieChart>
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                                            <Pie data={edemaPieChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                                            <Pie data={edemaPieChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))" label>
                                                 {edemaPieChartData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -104,8 +87,7 @@ const PresInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* II. Etiologies and Risk Factors */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                      <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -135,8 +117,7 @@ const PresInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* III. Lesion Location & Distribution */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                      <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 9.75v6.75m0 0l-3-3m3 3l3-3m-8.25 6a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
@@ -162,8 +143,7 @@ const PresInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* IV. Atypical Imaging Features */}
-                <Card>
+                <Card className="infographic-card">
                      <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
@@ -187,7 +167,7 @@ const PresInfographic = () => {
                 </Card>
 
                 {/* V. Resolution and Prognosis */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.092 1.21-.138 2.43-.138 3.662v1.562a4.006 4.006 0 003.7 3.7c1.846.053 3.695.085 5.568 0a4.006 4.006 0 003.7-3.7v-1.562zM12 15.75a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
@@ -213,8 +193,7 @@ const PresInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* VI. Diagnostic Considerations & Role of DSA */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                      <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -241,7 +220,7 @@ const PresInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key clinicoradiological findings of PRES based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

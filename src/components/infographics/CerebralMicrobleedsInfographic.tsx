@@ -2,39 +2,26 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { LocationsBarChart } from '@/components/charts/LocationsBarChart';
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path, className = "text-primary" }: { path: string, className?: string }) => (
-    <svg className={`h-8 w-8 mr-3 flex-shrink-0 ${className}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Main Infographic Component ---
 
 const CerebralMicrobleedsInfographic = () => {
     return (
-        <div className="space-y-6">
+        <div className="infographic-layout space-y-8">
 
             {/* Header */}
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Cerebral Microbleeds: <GradientText>What Are They Telling Us?</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">A clinician's guide to the differential diagnosis of tiny brain bleeds based on MRI findings. 🧠</p>
+                <p className="infographic-subtitle">A clinician's guide to the differential diagnosis of tiny brain bleeds based on MRI findings. 🧠</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* What are they? */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -49,7 +36,7 @@ const CerebralMicrobleedsInfographic = () => {
                 </Card>
 
                 {/* The Golden Rule */}
-                <Card className="md:col-span-2 text-center">
+                <Card className="infographic-card md:col-span-2 text-center">
                     <CardHeader>
                         <CardTitle className="text-xl">The Golden Rule: Location is Everything</CardTitle>
                     </CardHeader>
@@ -61,7 +48,7 @@ const CerebralMicrobleedsInfographic = () => {
                 </Card>
 
                 {/* A Tale of Two Patterns */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                          <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a.75.75 0 01-1.06 0l-1-1a.75.75 0 011.06-1.06l.22.22a.75.75 0 001.06 0l.22-.22a.75.75 0 011.06 1.06l-1 1z" />
@@ -70,7 +57,7 @@ const CerebralMicrobleedsInfographic = () => {
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
                         {/* Hypertensive Arteriopathy */}
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle className="text-lg text-primary">Hypertensive Arteriopathy</CardTitle>
                                 <CardDescription>The #1 overall cause of microbleeds.</CardDescription>
@@ -88,7 +75,7 @@ const CerebralMicrobleedsInfographic = () => {
                             </CardContent>
                         </Card>
                          {/* Cerebral Amyloid Angiopathy (CAA) */}
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle className="text-lg text-secondary">Cerebral Amyloid Angiopathy (CAA)</CardTitle>
                                 <CardDescription>The #1 cause of *strictly lobar* microbleeds in the elderly.</CardDescription>
@@ -108,7 +95,7 @@ const CerebralMicrobleedsInfographic = () => {
                 </Card>
 
                 {/* Less Common Causes */}
-                 <Card className="md:col-span-2">
+                 <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -136,7 +123,7 @@ const CerebralMicrobleedsInfographic = () => {
                 </Card>
 
                 {/* At a Glance */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -170,7 +157,7 @@ const CerebralMicrobleedsInfographic = () => {
                     </CardContent>
                 </Card>
                  {/* Sources */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                            <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -189,7 +176,7 @@ const CerebralMicrobleedsInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key findings on Cerebral Microbleeds based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

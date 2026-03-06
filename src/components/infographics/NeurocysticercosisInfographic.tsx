@@ -6,19 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path }: { path: string }) => (
-    <svg className="h-8 w-8 text-primary mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -58,18 +46,18 @@ const NeurocysticercosisInfographic = () => {
 
 
     return (
-        <div className="space-y-6">
+        <div className="infographic-layout space-y-8">
             {/* Header */}
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     <GradientText>Neurocysticercosis (NCC)</GradientText>: Radiological Aspects
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">A Comprehensive Analysis Based on Recent Evidence</p>
+                <p className="infographic-subtitle">A Comprehensive Analysis Based on Recent Evidence</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -83,7 +71,7 @@ const NeurocysticercosisInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
@@ -149,7 +137,7 @@ const NeurocysticercosisInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 9.75v6.75m0 0l-3-3m3 3l3-3m-8.25 6a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
@@ -157,21 +145,21 @@ const NeurocysticercosisInfographic = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base text-primary">Intraventricular (7-20%)</CardTitle>
                             </CardHeader>
                             <CardContent className="text-sm space-y-1">
                                 <p><strong>Risk:</strong> Obstructive hydrocephalus, ependymitis.</p>
                                 <p><strong>Imaging Challenge:</strong> Cysts often isointense to CSF (invisible). Look for indirect signs (hydrocephalus) or use 3D CISS/FIESTA sequences.</p>
-                                <ChartContainer config={intraventricularLocationConfig} className="min-h-[150px] w-full mt-2">
+                                <ChartContainer config={intraventricularLocationConfig} className="infographic-chart min-h-[260px] w-full mt-2">
                                     <ResponsiveContainer width="100%" height={150}>
                                         <BarChart data={intraventricularLocationData} layout="vertical" margin={{ left: 80, right: 10 }}>
-                                            <CartesianGrid horizontal={false} />
+                                            <CartesianGrid horizontal={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} width={80} tick={{ fontSize: 9 }} />
                                             <XAxis dataKey="frequency" type="number" unit="%" />
-                                            <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="frequency" name="Frequency" radius={[0, 4, 4, 0]} barSize={30}>
+                                            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                            <Bar dataKey="frequency" name="Frequency" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {intraventricularLocationData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -182,7 +170,7 @@ const NeurocysticercosisInfographic = () => {
                                 <p className="text-xs text-center">Typical locations within ventricles.</p>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base text-secondary">Subarachnoid/Racemose</CardTitle>
                             </CardHeader>
@@ -193,7 +181,7 @@ const NeurocysticercosisInfographic = () => {
                                 <p><strong>Imaging:</strong> Cysts isointense to CSF. Intense leptomeningeal enhancement indicates arachnoiditis.</p>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-base" style={{ color: 'hsl(var(--chart-5))' }}>Spinal (1-5%, Rare)</CardTitle>
                             </CardHeader>
@@ -205,7 +193,7 @@ const NeurocysticercosisInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -220,7 +208,7 @@ const NeurocysticercosisInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -247,7 +235,7 @@ const NeurocysticercosisInfographic = () => {
                 </Card>
 
                 {/* Sources */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -269,7 +257,7 @@ const NeurocysticercosisInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes radiological aspects of {infoTheme} based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

@@ -1,10 +1,40 @@
 {
+  "notifications": {
+    "issueReportUpdateTitle": "Reporte actualizado a {{statusValue}}",
+    "issueReportUpdateBody": "Tu pregunta reportada ha sido actualizada. Estado: {{statusValue}}."
+  },
+  "notifications": {
+    "issueReportUpdateTitle": "Reporte actualizado a {{statusValue}}",
+    "issueReportUpdateBody": "Tu pregunta reportada ha sido actualizada. Nuevo estado: {{statusValue}}."
+  },
   "infographicCategories": {
     "vascular": "Vascular",
     "microangiopathy": "Microangiopatía",
     "oncology": "Oncología",
     "inflammatory_infectious_toxic": "Inflamatorio / Infeccioso / Tóxico",
     "general_technique": "General / Técnica"
+  },
+  "infographics": {
+    "pageDescription": "Explora nuestra colección de infografías detalladas sobre temas clave de neurorradiología.",
+    "searchPlaceholder": "Buscar infografías...",
+    "loading": "Cargando infografías...",
+    "noInfographicsTitle": "No se encontraron infografías",
+    "noInfographicsDescription": "Vuelve más tarde para ver nuevo contenido.",
+    "noSearchResults": "Ninguna infografía coincide con tu búsqueda. Prueba otro término.",
+    "backToList": "Volver a Infografías",
+    "notFoundTitle": "Infografía no encontrada",
+    "notFoundDescription": "No se pudo encontrar la infografía solicitada.",
+    "pcnsl": {
+      "incidenceGeneralPopulation": "Población general",
+      "incidenceHivPostHaart": "VIH+ (post-TARGA)",
+      "incidenceElderly": "Mayores (65+)",
+      "survivalImmunocompetent": "Inmunocompetente",
+      "survivalHiv": "VIH+"
+    }
+  },
+  "notifications": {
+    "issueReportUpdateTitle": "Reporte actualizado: {{statusValue}}",
+    "issueReportUpdateBody": "Tu pregunta reportada ha sido actualizada. Nuevo estado: {{statusValue}}."
   },
   "nav": {
     "dashboard": "Panel de control",
@@ -365,6 +395,10 @@
         "title": "Documentos y promociones",
         "description": "Gestionar materiales ECMIT, invitaciones y recursos promocionales."
       },
+      "infographics": {
+        "title": "Infografías",
+        "description": "Crear e integrar nuevas infografías con código React generado por IA."
+      },
       "errors": {
         "unauthorized": "No tienes permisos de administrador.",
         "adminSdkNotInit": "Error de configuración del servidor. Configura la cuenta de servicio del Admin SDK.",
@@ -414,7 +448,8 @@
         "seeNotifications": "Notificaciones",
         "sendNotification": "Enviar notificación",
         "ecmit": "Materiales ECMIT",
-        "inviteEvaluators": "Invitar evaluadores"
+        "inviteEvaluators": "Invitar evaluadores",
+        "addInfographic": "Agregar infografía"
       }
     },
     "searchUser": {
@@ -434,6 +469,41 @@
       "numQuestionsHelper": "Elige de 1 a {{max}} preguntas.",
       "useInTutor": "Usar en Tutor",
       "useInExam": "Usar en Examen"
+    },
+    "addInfographic": {
+      "title": "Agregar infografía",
+      "description": "Usa Gemini AI para generar código React de una nueva infografía, luego pégalo y adáptalo aquí.",
+      "step1Title": "Paso 1: Copiar el prompt de Gemini",
+      "step1Description": "Copia el prompt de abajo y úsalo en Gemini (u otra IA) para generar el código React. Reemplaza [INSERT YOUR TOPIC HERE] con tu tema de neurorradiología.",
+      "step1Item1": "Abre Gemini (gemini.google.com) o tu asistente IA preferido.",
+      "step1Item2": "Copia el prompt completo de abajo (clic en Copiar).",
+      "step1Item3": "Reemplaza [INSERT YOUR TOPIC HERE] con tu tema, ej. \"Esclerosis Múltiple: hallazgos en RM y criterios de McDonald\".",
+      "step1Item4": "Pega el prompt y deja que la IA genere el código del componente React.",
+      "copyPrompt": "Copiar prompt",
+      "copied": "¡Copiado!",
+      "step2Title": "Paso 2: Pegar y adaptar el código",
+      "step2Description": "Pega el código React generado abajo. Clic en \"Analizar y adaptar\" para corregir imports, colores y use client.",
+      "pastePlaceholder": "Pega aquí el código React generado por Gemini...",
+      "analyzeButton": "Analizar y adaptar",
+      "adaptedOutput": "Código adaptado (copia y guarda como archivo nuevo):",
+      "copyCode": "Copiar código",
+      "adaptedHint": "Crea un archivo en src/components/infographics/[Tema]Infographic.tsx y pega este código. Luego regístralo en infographic-registry.ts.",
+      "step3Title": "Paso 3: Integrar en la app",
+      "step3Description": "Completa la integración manualmente:",
+      "step3Item1": "Crea src/components/infographics/[TuTema]Infographic.tsx y pega el código adaptado.",
+      "step3Item2": "Importa el componente en src/lib/infographic-registry.ts.",
+      "step3Item3": "Añade una entrada en COMPONENT_INFOGRAPHICS (id, title, categoryId, isComponent: true).",
+      "step3Item4": "Añade el componente a COMPONENT_MAP. Visita /infographics como admin para sincronizar Firestore.",
+      "createTitle": "Crear e integrar",
+      "createDescription": "Crea el archivo de la infografía y regístrala en la app automáticamente.",
+      "componentNameLabel": "Nombre del componente (PascalCase)",
+      "componentNamePlaceholder": "ej. MultipleSclerosis",
+      "titleLabel": "Título de visualización",
+      "titlePlaceholder": "ej. Esclerosis múltiple: hallazgos en RM",
+      "categoryLabel": "Categoría",
+      "createButton": "Crear e integrar",
+      "creatingButton": "Creando...",
+      "viewInfographics": "Ver infografías"
     },
     "accessDenied": {
       "title": "Acceso denegado",
@@ -983,13 +1053,17 @@
   },
   "shareDialog": {
     "title": "Compartir NeuroRadX",
-    "description": "¡Ayúdanos! Comparte con tus colegas.",
-    "copyButtonText": "Copiar",
+    "description": "¡Ayúdanos a difundir! Comparte NeuroRadX con colegas y amigos.",
+    "shareTitle": "NeuroRadX – Plataforma de aprendizaje en neurorradiología",
+    "copyButtonText": "Copiar enlace",
     "copiedSuccessTitle": "¡Copiado!",
-    "copiedSuccessDescription": "Link en portapapeles.",
-    "copiedErrorTitle": "Fallo al copiar",
-    "copiedErrorDescription": "Inténtalo manualmente.",
-    "qrCodeLabel": "O escanea:"
+    "copiedSuccessDescription": "El enlace se ha copiado al portapapeles.",
+    "copiedErrorTitle": "Error al copiar",
+    "copiedErrorDescription": "No se pudo copiar. Inténtalo manualmente.",
+    "qrCodeLabel": "O escanea este código:",
+    "closeButtonText": "Cerrar",
+    "shareVia": "Compartir por",
+    "shareOn": "Compartir en"
   },
   "common": {
     "back": "Volver",

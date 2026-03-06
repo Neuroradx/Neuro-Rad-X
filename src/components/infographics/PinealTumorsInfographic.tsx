@@ -7,20 +7,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTranslation } from '@/hooks/use-translation';
 import { Separator } from '@/components/ui/separator';
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path, className = "text-primary" }: { path: string, className?: string }) => (
-    <svg className={`h-8 w-8 mr-3 flex-shrink-0 ${className}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -71,17 +58,17 @@ const PinealTumorsInfographic = () => {
 
 
     return (
-        <div className="space-y-6">
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     <GradientText>Pineal Region Tumors</GradientText>: Radiological Aspects
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">Differentiation Strategies in Pediatric and Adult Populations</p>
+                <p className="infographic-subtitle">Differentiation Strategies in Pediatric and Adult Populations</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -101,7 +88,7 @@ const PinealTumorsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c.497 0 .98-.032 1.453-.091M12 21a8.958 8.958 0 01-1.453-.091m6.264-6.656a8.973 8.973 0 01-1.453.091M3.284 14.253a8.973 8.973 0 001.453.091M12 3a9.004 9.004 0 00-8.716 6.747M12 3a9.004 9.004 0 018.716 6.747M12 3c-.497 0-.98.032-1.453-.091M12 3a8.958 8.958 0 00-1.453-.091m6.264 6.656a8.973 8.973 0 001.453-.091M3.284 9.747a8.973 8.973 0 011.453-.091" />
@@ -116,13 +103,13 @@ const PinealTumorsInfographic = () => {
                                 <li><strong>Pineoblastoma (PB):</strong> WHO Gr IV, highly aggressive, peak &lt; 20 yrs. ~45% of PPTs. High CSF spread risk.</li>
                                 <li><strong>Germinoma (GCT):</strong> Frequent in children/young adults. Malignant but highly radiosensitive/chemosensitive. Marked male predominance (up to 11.8:1).</li>
                             </ul>
-                            <h3 className="font-semibold" style={{ color: 'hsl(var(--chart-1))' }}>Adult Predominance:</h3>
+                            <h3 className="font-semibold text-[hsl(var(--chart-1))]">Adult Predominance:</h3>
                             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                                 <li><strong>Pineocytoma (PC):</strong> WHO Gr I/II, most common PPT in adults (20-60 yrs). More common in females.</li>
                                 <li><strong>PPTID:</strong> WHO Gr II/III, peak 20-70 yrs.</li>
                             </ul>
                         </div>
-                        <Card className="border-none shadow-none">
+                        <Card className="infographic-card-inner border-none shadow-none">
                             <CardHeader className="p-2">
                                 <CardTitle className="text-base">Typical Age Group by Tumor Type</CardTitle>
                             </CardHeader>
@@ -130,7 +117,7 @@ const PinealTumorsInfographic = () => {
                                 <div className="space-y-2">
                                     {ageDistributionData.map((item) => (
                                         <div key={item.name} className="flex items-center text-xs">
-                                            <div className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: ageDistributionConfig[item.key as keyof typeof ageDistributionConfig]?.color }}></div>
+                                            <div className="w-4 h-4 rounded-sm mr-2 shrink-0" style={{ backgroundColor: ageDistributionConfig[item.key as keyof typeof ageDistributionConfig]?.color }}></div>
                                             <span className="font-medium w-28 mr-2">{item.name}:</span>
                                             <span>{item.ageGroup}</span>
                                         </div>
@@ -141,7 +128,7 @@ const PinealTumorsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -206,7 +193,7 @@ const PinealTumorsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -241,7 +228,7 @@ const PinealTumorsInfographic = () => {
                                     <TableRow>
                                         <TableCell className="font-medium">Pineocytoma (Gr I/II)</TableCell>
                                         <TableCell>Variable/Low</TableCell>
-                                        <TableCell><strong style={{ color: 'hsl(var(--chart-1))' }}>Higher</strong> (Less restricted)</TableCell>
+                                        <TableCell><strong className="text-[hsl(var(--chart-1))]">Higher</strong> (Less restricted)</TableCell>
                                         <TableCell>Lower cellularity.</TableCell>
                                     </TableRow>
                                     <TableRow>
@@ -257,7 +244,7 @@ const PinealTumorsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -269,12 +256,12 @@ const PinealTumorsInfographic = () => {
                         <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                             <li><strong>Typical MRI:</strong> CSF-like signal (Low T1, High T2), often incomplete FLAIR suppression.</li>
                             <li><strong>Enhancement Pitfall:</strong> Thin peripheral rim enhancement (&lt;2mm) is common and non-specific due to lack of BBB. Delayed scans may show diffuse filling.</li>
-                            <li><strong>Definitive Feature:</strong> PCs show <strong style={{ color: 'hsl(var(--chart-1))' }}>NO restricted diffusion (High ADC)</strong>, reliably distinguishing them from cellular tumors, even if enhancement is atypical.</li>
+                            <li><strong>Definitive Feature:</strong> PCs show <strong className="text-[hsl(var(--chart-1))]">NO restricted diffusion (High ADC)</strong>, reliably distinguishing them from cellular tumors, even if enhancement is atypical.</li>
                         </ul>
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-1.37-1.37m1.37 1.37l-1.586 1.585" />
@@ -282,20 +269,20 @@ const PinealTumorsInfographic = () => {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader className="p-2">
                                 <CardTitle className="text-base">5-Year Survival by WHO Grade</CardTitle>
                                 <CardDescription className="text-xs">Illustrates the significant prognostic impact of grade.</CardDescription>
                             </CardHeader>
                             <CardContent className="p-0">
-                                <ChartContainer config={survivalConfig} className="min-h-[150px] w-full">
-                                    <ResponsiveContainer width="100%" height={150}>
+                                <ChartContainer config={survivalConfig} className="infographic-chart">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <BarChart accessibilityLayer data={survivalData}>
-                                            <CartesianGrid vertical={false} />
+                                            <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis dataKey="grade" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                             <YAxis unit="%" domain={[0, 100]} />
                                             <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="survival" name="5-Year Survival" radius={[4, 4, 0, 0]} barSize={40}>
+                                            <Bar dataKey="survival" name="5-Year Survival" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {survivalData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -314,7 +301,7 @@ const PinealTumorsInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -336,7 +323,7 @@ const PinealTumorsInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key radiological aspects of {infoTheme} based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

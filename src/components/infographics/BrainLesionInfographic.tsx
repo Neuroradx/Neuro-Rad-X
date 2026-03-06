@@ -3,20 +3,7 @@ import React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path }: { path: string }) => (
-    <svg className="h-8 w-8 text-primary mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -55,19 +42,16 @@ const tumorAccuracyConfig = {
 
 const BrainLesionInfographic = () => {
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Differentiating Brain <GradientText>Lesions</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">Tumors vs. Non-Neoplastic Conditions</p>
+                <p className="infographic-subtitle">Tumors vs. Non-Neoplastic Conditions</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* Introduction */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -81,8 +65,7 @@ const BrainLesionInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* Brain Abscesses */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -101,21 +84,21 @@ const BrainLesionInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>DWI Diagnostic Accuracy</CardTitle>
                                 <CardDescription>For differentiating abscesses from other lesions.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={abscessAccuracyConfig} className="min-h-[150px] w-full">
-                                    <ResponsiveContainer width="100%" height={150}>
+                                <ChartContainer config={abscessAccuracyConfig} className="infographic-chart">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <BarChart accessibilityLayer data={abscessAccuracyData}>
-                                            <CartesianGrid vertical={false} />
+                                            <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} />
                                             <YAxis unit="%" />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="sensitivity" fill="var(--color-sensitivity)" radius={[4, 4, 0, 0]} />
-                                            <Bar dataKey="specificity" fill="var(--color-specificity)" radius={[4, 4, 0, 0]} />
+                                            <Bar dataKey="sensitivity" fill="var(--color-sensitivity)" radius={[0, 8, 8, 0]} barSize={32} />
+                                            <Bar dataKey="specificity" fill="var(--color-specificity)" radius={[0, 8, 8, 0]} barSize={32} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </ChartContainer>
@@ -124,8 +107,7 @@ const BrainLesionInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* Brain Tumors */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 9.75v6.75m0 0l-3-3m3 3l3-3m-8.25 6a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
@@ -143,20 +125,20 @@ const BrainLesionInfographic = () => {
                                 <li>**Amino Acid PET:** Shows **higher uptake** in tumor tissue compared to treatment-related changes.</li>
                             </ul>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Advanced Imaging Accuracy</CardTitle>
                                 <CardDescription>For differentiating tumor recurrence from necrosis.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={tumorAccuracyConfig} className="min-h-[200px] w-full">
-                                    <ResponsiveContainer width="100%" height={200}>
+                                <ChartContainer config={tumorAccuracyConfig} className="infographic-chart">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <BarChart accessibilityLayer data={tumorAccuracyData} layout="vertical">
-                                            <CartesianGrid horizontal={false} />
+                                            <CartesianGrid horizontal={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={180} tick={{ fontSize: 14 }} />
                                             <XAxis dataKey="accuracy" type="number" unit="%" />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="accuracy" radius={[0, 4, 4, 0]} barSize={30}>
+                                            <Bar dataKey="accuracy" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {tumorAccuracyData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -169,8 +151,7 @@ const BrainLesionInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* Radiation Necrosis */}
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
@@ -191,8 +172,7 @@ const BrainLesionInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* Other Mimics & Diagnostic Summary */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -218,8 +198,7 @@ const BrainLesionInfographic = () => {
                     </CardContent>
                 </Card>
 
-                {/* Sources */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -243,7 +222,7 @@ const BrainLesionInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key clinicoradiological findings of Differentiating Brain Lesions based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

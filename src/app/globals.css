@@ -99,4 +99,36 @@
     opacity: 0.2; /* Adjusted to 20% */
     z-index: -1;
   }
+
+  /* Infographic layout, cards & charts */
+  .infographic-layout {
+    @apply max-w-5xl mx-auto space-y-8;
+  }
+  .infographic-card {
+    @apply rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden;
+  }
+  .infographic-card-inner {
+    @apply rounded-xl border border-border/40 bg-muted/20;
+  }
+  .infographic-header {
+    @apply text-center mb-10 pb-6 border-b border-border/40;
+  }
+  .infographic-title {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight;
+  }
+  .infographic-subtitle {
+    @apply mt-2 text-lg text-muted-foreground;
+  }
+  .infographic-footer {
+    @apply text-center mt-12 pt-8 border-t border-border/40 text-xs text-muted-foreground space-y-1;
+  }
+  .infographic-section-icon {
+    @apply h-8 w-8 mr-3 flex-shrink-0 rounded-lg bg-primary/10 p-1.5 text-primary;
+  }
+  .infographic-alert-box {
+    @apply rounded-xl border border-destructive/30 bg-destructive/10 p-4;
+  }
+  .infographic-chart {
+    @apply min-h-[260px] w-full;
+  }
 }

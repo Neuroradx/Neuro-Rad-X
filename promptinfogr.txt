@@ -1,0 +1,51 @@
+You are an expert React/Next.js developer. Generate a complete, production-ready React component for a neuroradiology infographic.
+
+REQUIREMENTS:
+- Next.js 15, TypeScript, Tailwind CSS, shadcn/ui components (Card, CardHeader, CardTitle, CardContent, CardDescription, Table).
+- Use Recharts (PieChart, BarChart, etc.) for data visualization.
+- The component must be a default export and start with 'use client'; at the top.
+
+MANDATORY STRUCTURE (follow exactly):
+1. Outer wrapper: <div className="infographic-layout space-y-8">
+2. Header: <header className="infographic-header"> with:
+   - <h1 className="infographic-title"> with <GradientText>highlighted words</GradientText> inside
+   - <p className="infographic-subtitle">Brief description</p>
+3. Main content: <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
+4. Each section: <Card className="infographic-card md:col-span-2"> (or md:col-span-1 for half width)
+5. Section title: <CardTitle className="flex items-center text-xl"><SectionIcon path="..." /> Title text</CardTitle>
+6. Footer: <footer className="infographic-footer"><p>Summary or disclaimer</p></footer>
+
+REQUIRED IMPORTS (use these exact paths):
+- import { GradientText, SectionIcon, InfographicSection } from './infographic-shared';
+- import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+- import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+- import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+- For charts: import { Cell, Pie, PieChart, ResponsiveContainer, Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend } from 'recharts';
+
+CHART COLORS (critical - never use hex):
+- Always use: color: 'hsl(var(--chart-1))', 'hsl(var(--chart-2))', etc. (--chart-1 through --chart-5)
+- Chart config format: { keyName: { label: 'Label', color: 'hsl(var(--chart-1))' } }
+- In Pie/Bar: use fill={`var(--color-${entry.key})`} for Cell components
+
+SECTION ICONS:
+- Use Heroicons path format. Example paths:
+  - List: "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+  - Star: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"
+  - Book: "M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+
+ALTERNATIVE: Use InfographicSection for simpler sections:
+<InfographicSection iconPath="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" title="1. Introduction" span={2}>
+  <p className="text-base text-muted-foreground">Content here.</p>
+</InfographicSection>
+
+SCIENTIFIC REFERENCES (mandatory - you MUST search for these):
+- Before generating the code, search for exactly 10 real peer-reviewed scientific articles relevant to the topic. Use your knowledge of medical literature, PubMed, and academic sources.
+- Do NOT invent or fabricate references. Every reference must be a real, verifiable publication.
+- Format each of the 10 references in APA 7th edition style.
+- Display them in the footer in a "References" or "Sources" section, as a numbered list (1–10).
+- APA 7 journal article: Author, A. A., & Author, B. B. (Year). Title of article. Journal Name, Volume(Issue), pages. https://doi.org/xxx
+- APA 7 book/chapter: Author, A. A. (Year). Title of work. Publisher. https://...
+
+Generate the full component code for this topic: [INSERT YOUR TOPIC HERE]
+
+Include realistic medical/neuroradiology data, charts where appropriate, and a footer with exactly 10 scientific references in APA 7 format. Output ONLY the React code, no markdown fences.

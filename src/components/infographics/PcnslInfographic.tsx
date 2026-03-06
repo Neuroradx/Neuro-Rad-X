@@ -1,24 +1,12 @@
 'use client';
 import React from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, Cell, Pie, PieChart } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTranslation } from '@/hooks/use-translation';
-import { BarChart as BarChartIcon, BrainCircuit, Droplet, Microscope, ShieldCheck, GitCompareArrows, ScanEye, Activity, Globe, ScrollText, Info } from 'lucide-react';
-
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-blue-600 dark:to-blue-400 text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ icon: Icon, className = "text-primary" }: { icon: React.ElementType, className?: string }) => (
-    <Icon className={`h-8 w-8 mr-3 flex-shrink-0 ${className}`} />
-);
+import { ScanEye, Microscope, GitCompareArrows, Activity, ScrollText, Info } from 'lucide-react';
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -66,17 +54,17 @@ const PcnslInfographic = () => {
     });
 
     return (
-        <div className="space-y-6">
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Primary CNS <GradientText>Lymphoma (PCNSL)</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">Epidemiology, Etiopathogenesis, and Advanced Diagnostic Neuroimaging</p>
+                <p className="infographic-subtitle">Epidemiology, Etiopathogenesis, and Advanced Diagnostic Neuroimaging</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={Info} />
@@ -91,20 +79,20 @@ const PcnslInfographic = () => {
                                 <p>Median age: 67 (immunocompetent), 37 (HIV+), 52 (transplant). Male predominance in immunosuppressed groups.</p>
                                 <p><strong>Key Risk Factor:</strong> Immunodeficiency (HIV/AIDS, transplant immunosuppression). EBV is crucial in these settings.</p>
                             </div>
-                            <Card>
+                            <Card className="infographic-card-inner">
                                 <CardHeader className="p-2">
                                     <CardTitle className="text-base">PCNSL Incidence Rates</CardTitle>
                                     <CardDescription className="text-xs">Rate per 100,000 person-years by group.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="p-0">
-                                    <ChartContainer config={pcnslIncidenceConfig} className="min-h-[200px] w-full">
-                                        <ResponsiveContainer width="100%" height={200}>
+                                    <ChartContainer config={pcnslIncidenceConfig} className="infographic-chart">
+                                        <ResponsiveContainer width="100%" height={260}>
                                             <BarChart accessibilityLayer data={pcnslIncidenceData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                                <CartesianGrid vertical={false} />
+                                                <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                                 <XAxis dataKey="group" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }} angle={-30} textAnchor="end" height={50} interval={0} />
                                                 <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                                 <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
-                                                <Bar dataKey="rate" name="Incidence Rate" radius={[4, 4, 0, 0]} barSize={40}>
+                                                <Bar dataKey="rate" name="Incidence Rate" radius={[0, 8, 8, 0]} barSize={32}>
                                                     {pcnslIncidenceData.map((entry) => (
                                                         <Cell key={`cell-${entry.key}`} fill={pcnslIncidenceConfig[entry.key].color} />
                                                     ))}
@@ -118,7 +106,7 @@ const PcnslInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={ScanEye} />
@@ -147,7 +135,7 @@ const PcnslInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={Microscope} />
@@ -197,7 +185,7 @@ const PcnslInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={GitCompareArrows} />
@@ -246,7 +234,7 @@ const PcnslInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={GitCompareArrows} />
@@ -295,7 +283,7 @@ const PcnslInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={Activity} />
@@ -309,20 +297,20 @@ const PcnslInfographic = () => {
                                 <p><strong>Treatment:</strong> Primarily high-dose methotrexate (HD-MTX) based chemotherapy. Surgery is generally contraindicated and harmful.</p>
                                 <p><strong>Diagnostic Impact:</strong> Differentiating PCNSL from GBM avoids unnecessary surgery. Distinguishing from Toxo in HIV+ patients guides initial anti-infective trial vs. biopsy/chemo.</p>
                             </div>
-                            <Card>
+                            <Card className="infographic-card-inner">
                                 <CardHeader className="p-2">
                                     <CardTitle className="text-base">PCNSL 5-Year Survival Rates</CardTitle>
                                     <CardDescription className="text-xs">Comparison by immune status (historical data).</CardDescription>
                                 </CardHeader>
                                 <CardContent className="p-0">
-                                    <ChartContainer config={survivalConfig} className="min-h-[150px] w-full">
-                                        <ResponsiveContainer width="100%" height={150}>
+                                    <ChartContainer config={survivalConfig} className="infographic-chart">
+                                        <ResponsiveContainer width="100%" height={260}>
                                             <BarChart accessibilityLayer data={survivalData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                                <CartesianGrid vertical={false} />
+                                                <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                                 <XAxis dataKey="group" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                                 <YAxis unit="%" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                                 <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
-                                                <Bar dataKey="survival" name="5-Yr Survival" radius={[4, 4, 0, 0]} barSize={40}>
+                                                <Bar dataKey="survival" name="5-Yr Survival" radius={[0, 8, 8, 0]} barSize={32}>
                                                     {survivalData.map((entry) => (
                                                         <Cell key={`cell-${entry.key}`} fill={survivalConfig[entry.key].color} />
                                                     ))}
@@ -339,7 +327,7 @@ const PcnslInfographic = () => {
                     </CardFooter>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <div className="flex items-center">
                             <SectionIcon icon={ScrollText} />
@@ -364,7 +352,7 @@ const PcnslInfographic = () => {
 
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key radiological characteristics of Primary CNS Lymphoma based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

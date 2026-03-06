@@ -1,28 +1,15 @@
 'use client';
 import React from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, Cell, Pie, PieChart } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Legend, Cell, Pie, PieChart } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTranslation } from '@/hooks/use-translation';
 import { Badge } from "@/components/ui/badge"; // Importación que faltaba en el código original
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path, className = "text-primary" }: { path: string, className?: string }) => (
-    <svg className={`h-8 w-8 mr-3 flex-shrink-0 ${className}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 const Section = ({ title, iconPath, children }: { title: string, iconPath: string, children: React.ReactNode }) => (
-    <Card className="shadow-lg">
+    <Card className="infographic-card shadow-lg">
         <CardHeader>
             <div className="flex items-center">
                 <svg className="h-7 w-7 mr-3 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
@@ -77,17 +64,17 @@ const OligodendrogliomaInfographic = () => {
 
 
     return (
-        <div className="space-y-6">
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+        <div className="infographic-layout space-y-8">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     IDH-Mutated, 1p/19q Codeleted <GradientText>Oligodendroglioma</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">An Expert Report on Epidemiology and Advanced Biomarkers</p>
+                <p className="infographic-subtitle">An Expert Report on Epidemiology and Advanced Biomarkers</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -101,7 +88,7 @@ const OligodendrogliomaInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c.497 0 .98-.032 1.453-.091M12 21a8.958 8.958 0 01-1.453-.091m6.264-6.656a8.973 8.973 0 01-1.453.091M3.284 14.253a8.973 8.973 0 001.453.091M12 3a9.004 9.004 0 00-8.716 6.747M12 3a9.004 9.004 0 018.716 6.747M12 3c-.497 0-.98.032-1.453-.091M12 3a8.958 8.958 0 00-1.453-.091m6.264 6.656a8.973 8.973 0 001.453-.091M3.284 9.747a8.973 8.973 0 011.453-.091" />
@@ -120,7 +107,7 @@ const OligodendrogliomaInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -169,7 +156,7 @@ const OligodendrogliomaInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -213,7 +200,7 @@ const OligodendrogliomaInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M16.023 9.348h4.992v-.001a.75.75 0 01.75.75c0 .414-.336.75-.75.75h-4.992a2.25 2.25 0 01-2.25-2.25V6.75A2.25 2.25 0 0112 4.5v-2.25c0-.414.336-.75.75-.75s.75.336.75.75V4.5a.75.75 0 00.75.75h3.037a.75.75 0 010 1.5H13.5a.75.75 0 00-.75.75V9a2.25 2.25 0 012.273-2.25zM5.25 6.75c0-.414.336-.75.75-.75H9a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 000 1.5h3a.75.75 0 010 1.5H6a.75.75 0 00-.75.75v1.5c0 .414-.336-.75-.75.75s-.75-.336-.75-.75v-1.5A2.25 2.25 0 015.25 9V6.75z" />
@@ -228,20 +215,20 @@ const OligodendrogliomaInfographic = () => {
                             <li><strong className="text-purple-600 dark:text-purple-400">Low rCBV / High ADC:</strong> Functional profile leaning towards ODG.</li>
                         </ul>
                         {/* ----- INICIO DE LA SECCIÓN CORREGIDA ----- */}
-                        <Card className="mt-4">
+                        <Card className="infographic-card-inner mt-4">
                             <CardHeader className="p-2">
                                 <CardTitle className="text-base">5-Year Survival by WHO Grade</CardTitle>
                                 <CardDescription className="text-xs">Illustrates the significant prognostic impact of grade.</CardDescription>
                             </CardHeader>
                             <CardContent className="p-0">
-                                <ChartContainer config={survivalConfig} className="min-h-[150px] w-full">
+                                <ChartContainer config={survivalConfig} className="infographic-chart min-h-[260px] w-full">
                                     <ResponsiveContainer width="100%" height={150}>
                                         <BarChart accessibilityLayer data={survivalData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                                            <CartesianGrid vertical={false} />
+                                            <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis dataKey="grade" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                             <YAxis unit="%" domain={[0, 100]} />
                                             <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="survival" name="5-Year Survival" radius={[4, 4, 0, 0]} barSize={40}>
+                                            <Bar dataKey="survival" name="5-Year Survival" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {survivalData.map((entry) => (
                                                     <Cell key={`cell-${entry.grade}`} fill={survivalConfig[entry.key].color} />
                                                 ))}
@@ -256,7 +243,7 @@ const OligodendrogliomaInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="infographic-card">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -272,7 +259,7 @@ const OligodendrogliomaInfographic = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -294,7 +281,7 @@ const OligodendrogliomaInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key findings on {infoTheme} based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

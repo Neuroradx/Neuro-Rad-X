@@ -69,6 +69,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     copiedErrorTitle: t('shareDialog.copiedErrorTitle'),
     copiedErrorDescription: t('shareDialog.copiedErrorDescription'),
     qrCodeLabel: t('shareDialog.qrCodeLabel'),
+    closeButtonText: t('shareDialog.closeButtonText'),
+    shareVia: t('shareDialog.shareVia'),
+    shareTitle: t('shareDialog.shareTitle'),
   };
 
   const navItemsWithAdmin = userRole === 'admin' ? [ADMIN_DASHBOARD_NAV_ITEM, ...NAV_ITEMS] : NAV_ITEMS;

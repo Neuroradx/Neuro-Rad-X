@@ -11,7 +11,9 @@
     "test:ui": "vitest --ui",
     "list-users": "node scripts/list-firestore-users.js",
     "list-auth-users": "node scripts/list-auth-users.js",
-    "ensure-admin": "node scripts/ensure-admin-firestore.js"
+    "ensure-admin": "node scripts/ensure-admin-firestore.js",
+    "deploy": "bash scripts/deploy.sh",
+    "deploy:local": "npm run build && firebase deploy"
   },
   "dependencies": {
     "@genkit-ai/googleai": "1.0.4",

@@ -1,14 +1,27 @@
 // src/lib/infographic-registry.ts
 /**
- * @file This file serves as the central registry for all component-based infographics.
- * To add a new infographic to the application, you only need to modify this file.
+ * @file Registry central de infografías basadas en componentes.
  *
- * Steps to add a new infographic:
- * 1. Create your infographic component in `/src/components/infographics/`.
- * 2. Import the new component at the top of this file.
- * 3. Add a new entry to the `COMPONENT_INFOGRAPHICS` array with its ID and title.
- * 4. Add a corresponding entry to the `COMPONENT_MAP` object, mapping the ID to the component.
- * 5. Important for charts: Always use theme variables for colors (e.g., `color: 'hsl(var(--chart-1))'`) in your chart configurations. Do not hardcode hex values, as this will break in dark mode.
+ * CÓMO AGREGAR UNA NUEVA INFOGRAFÍA
+ * ---------------------------------
+ * 1. Crear el componente en /src/components/infographics/[Nombre]Infographic.tsx
+ *    - Usar como base la plantilla: _InfographicTemplate.tsx (copiar y renombrar).
+ * 2. Usar siempre: GradientText, SectionIcon o InfographicSection, clases infographic-* (globals.css).
+ * 3. Gráficos: ChartContainer + config con colores hsl(var(--chart-1)) a hsl(var(--chart-5)).
+ *    No usar hex; rompe dark mode.
+ * 4. Importar el componente arriba y añadir una entrada en COMPONENT_INFOGRAPHICS y COMPONENT_MAP.
+ * 5. categoryId debe ser uno de: vascular | microangiopathy | oncology | inflammatory_infectious_toxic | general_technique | other
+ * 6. (Opcional) Traducciones en src/locales si la infografía usa useTranslation.
+ *
+ * CHECKLIST NUEVA INFOGRAFÍA
+ * --------------------------
+ * [ ] Componente creado en components/infographics/
+ * [ ] Header con infographic-title y GradientText en el título
+ * [ ] Secciones con Card + SectionIcon o InfographicSection
+ * [ ] Gráficos con ChartContainer y config con --chart-1 a --chart-5
+ * [ ] Footer con infographic-footer
+ * [ ] Registrada en COMPONENT_INFOGRAPHICS (id, title, categoryId, isComponent: true)
+ * [ ] Registrada en COMPONENT_MAP (id -> componente)
  */
 
 import type React from 'react';
@@ -32,7 +45,9 @@ import NeurocysticercosisInfographic from '@/components/infographics/Neurocystic
 import OligodendrogliomaInfographic from '@/components/infographics/OligodendrogliomaInfographic';
 import PinealTumorsInfographic from '@/components/infographics/PinealTumorsInfographic';
 import PcnslInfographic from '@/components/infographics/PcnslInfographic';
-
+import MultiplesclerosisneuroimagingInfographic from '@/components/infographics/MultiplesclerosisneuroimagingInfographic';
+import CarotidPlaqueICADInfographic from '@/components/infographics/CarotidPlaqueICADInfographic';
+import MeningiomaInfographic from '@/components/infographics/MeningiomaInfographic';
 
 // 2. Define the type for our infographic list
 type InfographicInfo = Omit<Infographic, 'createdAt' | 'htmlContent'>;
@@ -141,6 +156,25 @@ export const COMPONENT_INFOGRAPHICS: InfographicInfo[] = [
     categoryId: 'oncology',
     isComponent: true,
   },
+
+  {
+    id: 'multiplesclerosisneuroimaging_infographic_component',
+    title: 'Quantitative Neuroimaging and Diagnostic Paradigms in Multiple Sclerosis',
+    categoryId: 'inflammatory_infectious_toxic',
+    isComponent: true,
+  },
+  {
+    id: 'carotid_plaque_icad_infographic_component',
+    title: 'Vulnerable Carotid Plaque & ICAD Management',
+    categoryId: 'vascular',
+    isComponent: true,
+  },
+  {
+    id: 'meningioma_infographic_component',
+    title: 'Advanced Neuro-oncology: Meningioma Precision Profiling',
+    categoryId: 'oncology',
+    isComponent: true,
+  },
 ];
 
 // 4. Create the component map for the client-side rendering
@@ -162,4 +196,8 @@ export const COMPONENT_MAP: Record<string, React.ElementType> = {
   oligodendroglioma_infographic_component: OligodendrogliomaInfographic,
   pineal_tumors_infographic_component: PinealTumorsInfographic,
   pcnsl_infographic_component: PcnslInfographic,
+
+  multiplesclerosisneuroimaging_infographic_component: MultiplesclerosisneuroimagingInfographic,
+  carotid_plaque_icad_infographic_component: CarotidPlaqueICADInfographic,
+  meningioma_infographic_component: MeningiomaInfographic,
 };

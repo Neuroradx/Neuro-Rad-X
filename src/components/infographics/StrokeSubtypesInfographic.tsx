@@ -3,20 +3,7 @@ import React from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-
-// --- Helper Components ---
-
-const GradientText = ({ children }: { children: React.ReactNode }) => (
-    <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        {children}
-    </span>
-);
-
-const SectionIcon = ({ path }: { path: string }) => (
-    <svg className="h-8 w-8 text-primary mr-3 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-    </svg>
-);
+import { GradientText, SectionIcon } from './infographic-shared';
 
 // --- Chart Data & Config ---
 
@@ -68,19 +55,19 @@ const ischemicSubtypeConfig = {
 
 const StrokeSubtypesInfographic = () => {
     return (
-        <div className="space-y-6">
+        <div className="infographic-layout space-y-8">
             {/* Header */}
-            <header className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+            <header className="infographic-header">
+                <h1 className="infographic-title">
                     Ischemic vs. Hemorrhagic <GradientText>Stroke</GradientText>
                 </h1>
-                <p className="mt-2 text-lg text-muted-foreground">A Comparative Analysis of Demographics, Statistics, and Epidemiology</p>
+                <p className="infographic-subtitle">A Comparative Analysis of Demographics, Statistics, and Epidemiology</p>
             </header>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Introduction */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -100,7 +87,7 @@ const StrokeSubtypesInfographic = () => {
                 </Card>
 
                 {/* Incidence and Prevalence */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
@@ -118,20 +105,20 @@ const StrokeSubtypesInfographic = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Global Stroke Prevalence (2021)</CardTitle>
                                 <CardDescription>Approximate percentage of all incident strokes.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={strokePrevalenceConfig} className="min-h-[200px] w-full">
-                                    <ResponsiveContainer width="100%" height={200}>
+                                <ChartContainer config={strokePrevalenceConfig} className="infographic-chart min-h-[260px] w-full">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <PieChart>
                                             <ChartTooltip
                                                 cursor={false}
                                                 content={<ChartTooltipContent hideLabel />}
                                             />
-                                            <Pie data={strokePrevalenceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                                            <Pie data={strokePrevalenceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))" label>
                                                 {strokePrevalenceData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -145,7 +132,7 @@ const StrokeSubtypesInfographic = () => {
                 </Card>
 
                 {/* Epidemiology: Key Modifiable Risk Factors */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 9.75v6.75m0 0l-3-3m3 3l3-3m-8.25 6a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
@@ -154,20 +141,20 @@ const StrokeSubtypesInfographic = () => {
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <p className="text-base text-muted-foreground lg:col-span-2">Up to 90% of all stroke cases globally could be preventable by addressing modifiable risk factors. High systolic blood pressure is the single most important factor.</p>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Contribution to Stroke DALYs (2021)</CardTitle>
                                 <CardDescription>Percentage of Disability-Adjusted Life Years.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={riskFactorConfig} className="min-h-[250px] w-full">
-                                    <ResponsiveContainer width="100%" height={250}>
+                                <ChartContainer config={riskFactorConfig} className="infographic-chart min-h-[260px] w-full">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <BarChart data={riskFactorData} layout="vertical" margin={{ left: 10, right: 10 }}>
-                                            <CartesianGrid horizontal={false} />
+                                            <CartesianGrid horizontal={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis type="number" dataKey="value" unit="%" />
                                             <YAxis type="category" dataKey="name" width={80} tick={{ fontSize: 12 }} />
                                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                                            <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={30}>
+                                            <Bar dataKey="value" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {riskFactorData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -177,20 +164,20 @@ const StrokeSubtypesInfographic = () => {
                                 </ChartContainer>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className="infographic-card-inner">
                             <CardHeader>
                                 <CardTitle>Etiological Subtypes of Ischemic Stroke</CardTitle>
                                 <CardDescription>Approximate distribution percentage.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ChartContainer config={ischemicSubtypeConfig} className="min-h-[250px] w-full">
-                                    <ResponsiveContainer width="100%" height={250}>
+                                <ChartContainer config={ischemicSubtypeConfig} className="infographic-chart min-h-[260px] w-full">
+                                    <ResponsiveContainer width="100%" height={260}>
                                         <PieChart>
                                             <ChartTooltip
                                                 cursor={false}
                                                 content={<ChartTooltipContent hideLabel />}
                                             />
-                                            <Pie data={ischemicSubtypeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                                            <Pie data={ischemicSubtypeData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))" label>
                                                 {ischemicSubtypeData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                 ))}
@@ -204,7 +191,7 @@ const StrokeSubtypesInfographic = () => {
                 </Card>
 
                 {/* Risk Factors by Subtype */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
@@ -234,7 +221,7 @@ const StrokeSubtypesInfographic = () => {
                 </Card>
 
                 {/* Diagnostic Imaging */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
@@ -261,7 +248,7 @@ const StrokeSubtypesInfographic = () => {
                     </CardContent>
                 </Card>
                 {/* Sources */}
-                <Card className="md:col-span-2">
+                <Card className="infographic-card md:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center text-xl">
                             <SectionIcon path="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -285,7 +272,7 @@ const StrokeSubtypesInfographic = () => {
                 </Card>
             </main>
 
-            <footer className="text-center mt-10 text-xs text-muted-foreground">
+            <footer className="infographic-footer">
                 <p>This infographic summarizes key distinctions between Ischemic and Hemorrhagic Stroke based on current literature.</p>
                 <p>For educational purposes only. Not a substitute for professional medical advice.</p>
                 <p className="mt-2">

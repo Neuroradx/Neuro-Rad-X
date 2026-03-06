@@ -1,10 +1,40 @@
 {
+  "notifications": {
+    "issueReportUpdateTitle": "Meldung aktualisiert auf {{statusValue}}",
+    "issueReportUpdateBody": "Deine gemeldete Frage wurde aktualisiert. Status: {{statusValue}}."
+  },
+  "notifications": {
+    "issueReportUpdateTitle": "Meldung aktualisiert auf {{statusValue}}",
+    "issueReportUpdateBody": "Deine gemeldete Frage wurde aktualisiert. Neuer Status: {{statusValue}}."
+  },
   "infographicCategories": {
     "vascular": "Vaskulär",
     "microangiopathy": "Mikroangiopathie",
     "oncology": "Onkologie",
     "inflammatory_infectious_toxic": "Entzündlich / Infektiös / Toxisch",
     "general_technique": "Allgemein / Technik"
+  },
+  "infographics": {
+    "pageDescription": "Entdecken Sie unsere Sammlung detaillierter Infografiken zu wichtigen neuroradiologischen Themen.",
+    "searchPlaceholder": "Infografiken suchen...",
+    "loading": "Infografiken werden geladen...",
+    "noInfographicsTitle": "Keine Infografiken gefunden",
+    "noInfographicsDescription": "Schauen Sie später vorbei für neue Inhalte.",
+    "noSearchResults": "Keine Infografiken entsprechen Ihrer Suche. Versuchen Sie einen anderen Begriff.",
+    "backToList": "Zurück zur Liste",
+    "notFoundTitle": "Infografik nicht gefunden",
+    "notFoundDescription": "Die angeforderte Infografik wurde nicht gefunden oder wurde möglicherweise entfernt.",
+    "pcnsl": {
+      "incidenceGeneralPopulation": "Allgemeinbevölkerung",
+      "incidenceHivPostHaart": "HIV+ (Post-HAART)",
+      "incidenceElderly": "Ältere (65+)",
+      "survivalImmunocompetent": "Immun kompetent",
+      "survivalHiv": "HIV+"
+    }
+  },
+  "notifications": {
+    "issueReportUpdateTitle": "Meldung aktualisiert: {{statusValue}}",
+    "issueReportUpdateBody": "Deine gemeldete Frage wurde aktualisiert. Neuer Status: {{statusValue}}."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -365,6 +395,10 @@
         "title": "Dokumente & Aktionen",
         "description": "ECMIT‑Materialien, Einladungen und Promotion‑Ressourcen verwalten."
       },
+      "infographics": {
+        "title": "Infografiken",
+        "description": "Neue Infografiken mit KI-generiertem React-Code erstellen und integrieren."
+      },
       "errors": {
         "unauthorized": "Sie haben keine Administratorrechte.",
         "adminSdkNotInit": "Serverkonfigurationsfehler. Konfigurieren Sie das Firebase Admin SDK.",
@@ -409,7 +443,8 @@
         "seeNotifications": "Benachrichtigungen",
         "sendNotification": "Nachricht senden",
         "ecmit": "ECMIT-Materialien",
-        "inviteEvaluators": "Prüfer einladen"
+        "inviteEvaluators": "Prüfer einladen",
+        "addInfographic": "Infografik hinzufügen"
       }
     },
     "searchUser": {
@@ -429,6 +464,41 @@
       "numQuestionsHelper": "Wählen Sie 1 bis {{max}} Fragen.",
       "useInTutor": "Im Tutor verwenden",
       "useInExam": "In Prüfung verwenden"
+    },
+    "addInfographic": {
+      "title": "Infografik hinzufügen",
+      "description": "Nutzen Sie Gemini AI, um React-Code für eine neue Infografik zu generieren, fügen Sie ihn hier ein und passen Sie ihn an.",
+      "step1Title": "Schritt 1: Gemini-Prompt kopieren",
+      "step1Description": "Kopieren Sie den Prompt unten und verwenden Sie ihn in Gemini (oder einer anderen KI). Ersetzen Sie [INSERT YOUR TOPIC HERE] durch Ihr Neuroradiologie-Thema.",
+      "step1Item1": "Öffnen Sie Gemini (gemini.google.com) oder Ihren bevorzugten KI-Assistenten.",
+      "step1Item2": "Kopieren Sie den vollständigen Prompt unten (auf Kopieren klicken).",
+      "step1Item3": "Ersetzen Sie [INSERT YOUR TOPIC HERE] durch Ihr Thema, z. B. „Multiple Sklerose: MRT-Befunde und McDonald-Kriterien“.",
+      "step1Item4": "Fügen Sie den Prompt ein und lassen Sie die KI den React-Komponentencode generieren.",
+      "copyPrompt": "Prompt kopieren",
+      "copied": "Kopiert!",
+      "step2Title": "Schritt 2: Code einfügen und anpassen",
+      "step2Description": "Fügen Sie den generierten React-Code unten ein. Klicken Sie auf „Analysieren & Anpassen“, um Imports, Farben und use client zu korrigieren.",
+      "pastePlaceholder": "Fügen Sie hier den von Gemini generierten React-Code ein...",
+      "analyzeButton": "Analysieren & Anpassen",
+      "adaptedOutput": "Angepasster Code (kopieren und als neue Datei speichern):",
+      "copyCode": "Code kopieren",
+      "adaptedHint": "Erstellen Sie eine neue Datei in src/components/infographics/[Thema]Infographic.tsx und fügen Sie diesen Code ein. Registrieren Sie ihn dann in infographic-registry.ts.",
+      "step3Title": "Schritt 3: In die App integrieren",
+      "step3Description": "Schließen Sie die Integration manuell ab:",
+      "step3Item1": "Erstellen Sie src/components/infographics/[IhrThema]Infographic.tsx und fügen Sie den angepassten Code ein.",
+      "step3Item2": "Importieren Sie die Komponente in src/lib/infographic-registry.ts.",
+      "step3Item3": "Fügen Sie einen Eintrag in COMPONENT_INFOGRAPHICS hinzu (id, title, categoryId, isComponent: true).",
+      "step3Item4": "Fügen Sie die Komponente zu COMPONENT_MAP hinzu. Besuchen Sie /infographics als Admin, um Firestore zu synchronisieren.",
+      "createTitle": "Erstellen und integrieren",
+      "createDescription": "Erstellen Sie die Infografik-Datei und registrieren Sie sie automatisch in der App.",
+      "componentNameLabel": "Komponentenname (PascalCase)",
+      "componentNamePlaceholder": "z.B. MultipleSclerosis",
+      "titleLabel": "Anzeigetitel",
+      "titlePlaceholder": "z.B. Multiple Sklerose: MRT-Befunde",
+      "categoryLabel": "Kategorie",
+      "createButton": "Erstellen und integrieren",
+      "creatingButton": "Wird erstellt...",
+      "viewInfographics": "Infografiken anzeigen"
     },
     "accessDenied": {
       "title": "Zugriff verweigert",
@@ -978,13 +1048,17 @@
   },
   "shareDialog": {
     "title": "NeuroRadX teilen",
-    "description": "Sagen Sie es weiter! Teilen Sie NeuroRadX mit Kollegen und Freunden.",
+    "description": "Helfen Sie mit! Teilen Sie NeuroRadX mit Kollegen und Freunden.",
+    "shareTitle": "NeuroRadX – Lernplattform für Neuroradiologie",
     "copyButtonText": "Link kopieren",
     "copiedSuccessTitle": "Link kopiert!",
     "copiedSuccessDescription": "Der Link wurde in die Zwischenablage kopiert.",
     "copiedErrorTitle": "Kopieren fehlgeschlagen",
-    "copiedErrorDescription": "Konnte Link nicht kopieren. Bitte manuell versuchen.",
-    "qrCodeLabel": "Oder diesen Code scannen:"
+    "copiedErrorDescription": "Link konnte nicht kopiert werden. Bitte manuell versuchen.",
+    "qrCodeLabel": "Oder diesen Code scannen:",
+    "closeButtonText": "Schließen",
+    "shareVia": "Teilen über",
+    "shareOn": "Teilen auf"
   },
   "common": {
     "back": "Zurück",

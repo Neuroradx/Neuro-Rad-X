@@ -4,8 +4,6 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -56,9 +54,7 @@ export default function ReportedQuestionsPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [reportedIssues, setReportedIssues] = useState<IssueReportType[]>([]);
   const [isLoadingIssues, setIsLoadingIssues] = useState(true);
@@ -79,34 +75,34 @@ export default function ReportedQuestionsPage() {
 
   useEffect(() => {
     if (isDetailsDialogOpen && selectedReport && currentUser) {
-        if (selectedReport.userId === "anonymous") {
-            setReporterProfile({
-                id: 'anonymous',
-                displayName: t('admin.reportedQuestionsPage.anonymousReporter'),
-                email: selectedReport.userProvidedEmail || t('common.notAvailable'),
-                role: 'user',
-            } as UserProfile);
-            return;
-        }
+      if (selectedReport.userId === "anonymous") {
+        setReporterProfile({
+          id: 'anonymous',
+          displayName: t('admin.reportedQuestionsPage.anonymousReporter'),
+          email: selectedReport.userProvidedEmail || t('common.notAvailable'),
+          role: 'user',
+        } as UserProfile);
+        return;
+      }
 
-        const fetchReporterDetails = async () => {
-            setIsFetchingReporter(true);
-            setReporterProfile(null);
-            const result = await fetchSimpleUserDetails(selectedReport.userId, currentUser.uid);
-            if (result.success && result.user) {
-                setReporterProfile(result.user);
-            } else {
-                console.error("Failed to fetch reporter details:", result.error);
-                setReporterProfile({
-                    id: selectedReport.userId,
-                    displayName: selectedReport.reporterDisplayName || t('admin.reportedQuestionsPage.userNotFound'),
-                    email: selectedReport.userEmailFromAuth || t('common.notAvailable'),
-                    role: 'user',
-                } as UserProfile);
-            }
-            setIsFetchingReporter(false);
-        };
-        fetchReporterDetails();
+      const fetchReporterDetails = async () => {
+        setIsFetchingReporter(true);
+        setReporterProfile(null);
+        const result = await fetchSimpleUserDetails(selectedReport.userId, currentUser.uid);
+        if (result.success && result.user) {
+          setReporterProfile(result.user);
+        } else {
+          console.error("Failed to fetch reporter details:", result.error);
+          setReporterProfile({
+            id: selectedReport.userId,
+            displayName: selectedReport.reporterDisplayName || t('admin.reportedQuestionsPage.userNotFound'),
+            email: selectedReport.userEmailFromAuth || t('common.notAvailable'),
+            role: 'user',
+          } as UserProfile);
+        }
+        setIsFetchingReporter(false);
+      };
+      fetchReporterDetails();
     }
   }, [isDetailsDialogOpen, selectedReport, t, currentUser]);
 
@@ -130,97 +126,56 @@ export default function ReportedQuestionsPage() {
   }, [t]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthLoading(true);
-      if (user) {
-        setCurrentUser(user);
-        try {
-          const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-          setIsAdmin(userIsAdmin);
-          if (userIsAdmin) {
-            fetchData(currentPage, user.uid);
-          }
-        } catch (error) {
-          setIsAdmin(false);
-          setFetchError("Error verifying admin status.");
-        }
-      } else {
-        setCurrentUser(null);
-        setIsAdmin(false);
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [router, currentPage, fetchData]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser(user);
+      fetchData(currentPage, user.uid);
+    }
+  }, [currentPage, fetchData]);
 
   const openDetailsDialog = (report: IssueReportType) => {
     setSelectedReport(report);
     setIsDetailsDialogOpen(true);
   };
-  
-  const updateStatusAndNotify = async (report: IssueReportType, newStatus: IssueReportType['status'], sendNotification: boolean) => {
-    if (!isAdmin || !currentUser) return;
-    
-    const result = await updateIssueStatus(report.id, newStatus, sendNotification, {
-        userId: report.userId,
-        questionId: report.questionId,
-    }, currentUser.uid);
-    
-    if (result.success) {
-        toast({ title: t('admin.reportedQuestionsPage.statusUpdateSuccessTitle'), description: t('admin.reportedQuestionsPage.statusUpdateSuccessDesc', { status: t(`admin.reportedQuestionsPage.statusValues.${newStatus}`) }), variant: 'success' });
-        fetchData(currentPage, currentUser.uid); // Refresh data from server
 
-        if (selectedReport && selectedReport.id === report.id) {
-            setSelectedReport(prev => prev ? { ...prev, status: newStatus } : null);
-        }
+  const updateStatusAndNotify = async (report: IssueReportType, newStatus: IssueReportType['status'], sendNotification: boolean) => {
+    if (!currentUser) return;
+
+    const result = await updateIssueStatus(report.id, newStatus, sendNotification, {
+      userId: report.userId,
+      questionId: report.questionId,
+    }, currentUser.uid);
+
+    if (result.success) {
+      toast({ title: t('admin.reportedQuestionsPage.statusUpdateSuccessTitle'), description: t('admin.reportedQuestionsPage.statusUpdateSuccessDesc', { status: t(`admin.reportedQuestionsPage.statusValues.${newStatus}`) }), variant: 'success' });
+      fetchData(currentPage, currentUser.uid); // Refresh data from server
+
+      if (selectedReport && selectedReport.id === report.id) {
+        setSelectedReport(prev => prev ? { ...prev, status: newStatus } : null);
+      }
     } else {
-        console.error("Error updating report status:", result.error);
-        toast({ title: t('toast.errorTitle'), description: result.error || t('admin.reportedQuestionsPage.statusUpdateErrorDesc'), variant: 'destructive' });
+      console.error("Error updating report status:", result.error);
+      toast({ title: t('toast.errorTitle'), description: result.error || t('admin.reportedQuestionsPage.statusUpdateErrorDesc'), variant: 'destructive' });
     }
   }
 
   const handleStatusUpdate = (report: IssueReportType, newStatus: IssueReportType['status']) => {
     if (newStatus === 'resolved') {
-        setReportToResolve(report);
-        setIsResolveConfirmOpen(true);
+      setReportToResolve(report);
+      setIsResolveConfirmOpen(true);
     } else {
-        const sendNotification = newStatus === 'wont-fix';
-        updateStatusAndNotify(report, newStatus, sendNotification);
+      const sendNotification = newStatus === 'wont-fix';
+      updateStatusAndNotify(report, newStatus, sendNotification);
     }
   };
 
   const handleConfirmResolve = (sendNotification: boolean) => {
-      if (!reportToResolve) return;
-      updateStatusAndNotify(reportToResolve, 'resolved', sendNotification);
-      setIsResolveConfirmOpen(false);
-      setReportToResolve(null);
+    if (!reportToResolve) return;
+    updateStatusAndNotify(reportToResolve, 'resolved', sendNotification);
+    setIsResolveConfirmOpen(false);
+    setReportToResolve(null);
   };
 
-  if (isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin && !isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertTitle>{t('admin.accessDenied.title')}</AlertTitle>
-          <AlertDescription>{fetchError || t('admin.accessDenied.description')}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('admin.accessDenied.backToDashboard')}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -275,7 +230,7 @@ export default function ReportedQuestionsPage() {
                           {t(issue.problemType)}
                         </p>
                         <p className="text-xs text-muted-foreground font-mono">
-                           {issue.questionId}
+                          {issue.questionId}
                         </p>
                       </div>
                       <Badge
@@ -301,24 +256,24 @@ export default function ReportedQuestionsPage() {
                         <Card className="shadow-none border-dashed"><CardHeader><p className="text-sm text-muted-foreground">{t('admin.reportedQuestionsPage.anonymousReporter')}: {issue.userProvidedEmail || t('common.notAvailable')}</p></CardHeader></Card>
                       )}
                     </div>
-                     <div className="px-4 pb-4 border-t pt-4">
-                         <p className="text-sm text-muted-foreground break-words">
-                            <span className="font-medium text-foreground">{t('admin.reportedQuestionsPage.card.descriptionSnippet')}: </span>
-                            {issue.description}
-                        </p>
+                    <div className="px-4 pb-4 border-t pt-4">
+                      <p className="text-sm text-muted-foreground break-words">
+                        <span className="font-medium text-foreground">{t('admin.reportedQuestionsPage.card.descriptionSnippet')}: </span>
+                        {issue.description}
+                      </p>
                     </div>
                     <div className="flex justify-between items-center p-4 border-t bg-muted/30 rounded-b-lg">
-                        <span className="text-xs text-muted-foreground">{formatTimestamp(issue.timestamp as string)}</span>
-                        <div className="flex gap-2">
-                            <Button variant="outline" size="sm" onClick={() => openDetailsDialog(issue)} aria-label={t('admin.reportedQuestionsPage.viewDetailsAriaLabel', {id: issue.questionId})}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                {t('admin.reportedQuestionsPage.viewDetailsButton')}
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => handleStatusUpdate(issue, 'archived')} aria-label={t('admin.reportedQuestionsPage.archiveButtonAriaLabel', {id: issue.questionId})}>
-                                <Archive className="mr-2 h-4 w-4" />
-                                {t('admin.reportedQuestionsPage.archiveButton')}
-                            </Button>
-                        </div>
+                      <span className="text-xs text-muted-foreground">{formatTimestamp(issue.timestamp as string)}</span>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => openDetailsDialog(issue)} aria-label={t('admin.reportedQuestionsPage.viewDetailsAriaLabel', { id: issue.questionId })}>
+                          <Eye className="mr-2 h-4 w-4" />
+                          {t('admin.reportedQuestionsPage.viewDetailsButton')}
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleStatusUpdate(issue, 'archived')} aria-label={t('admin.reportedQuestionsPage.archiveButtonAriaLabel', { id: issue.questionId })}>
+                          <Archive className="mr-2 h-4 w-4" />
+                          {t('admin.reportedQuestionsPage.archiveButton')}
+                        </Button>
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -360,62 +315,62 @@ export default function ReportedQuestionsPage() {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-3 overflow-y-auto flex-1 pr-2">
-                {isFetchingReporter ? (
-                  <div className="flex justify-center items-center p-8">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  </div>
-                ) : reporterProfile ? (
-                    <UserInfoCard user={reporterProfile} />
-                ) : (
-                  <p>{t('admin.reportedQuestionsPage.noReporterInfo')}</p>
-                )}
+              {isFetchingReporter ? (
+                <div className="flex justify-center items-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : reporterProfile ? (
+                <UserInfoCard user={reporterProfile} />
+              ) : (
+                <p>{t('admin.reportedQuestionsPage.noReporterInfo')}</p>
+              )}
               <Card>
                 <CardHeader className="pb-2 pt-4">
-                    <CardTitle className="text-md">{t('admin.reportedQuestionsPage.detailsDialog.questionStemLabel')}</CardTitle>
+                  <CardTitle className="text-md">{t('admin.reportedQuestionsPage.detailsDialog.questionStemLabel')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground pt-0 pb-4 max-h-32 overflow-y-auto">
-                    {selectedReport.questionStem}
+                  {selectedReport.questionStem}
                 </CardContent>
               </Card>
-               <Card>
-                 <CardHeader className="pb-2 pt-4">
-                    <CardTitle className="text-md">{t('admin.reportedQuestionsPage.detailsDialog.problemTypeLabel')}</CardTitle>
-                 </CardHeader>
-                 <CardContent className="text-sm text-muted-foreground pt-0 pb-4">
-                    {t(selectedReport.problemType)}
-                 </CardContent>
+              <Card>
+                <CardHeader className="pb-2 pt-4">
+                  <CardTitle className="text-md">{t('admin.reportedQuestionsPage.detailsDialog.problemTypeLabel')}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-muted-foreground pt-0 pb-4">
+                  {t(selectedReport.problemType)}
+                </CardContent>
               </Card>
               <Card>
-                 <CardHeader className="pb-2 pt-4">
-                    <CardTitle className="text-md">{t('admin.reportedQuestionsPage.detailsDialog.descriptionLabel')}</CardTitle>
-                 </CardHeader>
-                 <CardContent className="text-sm text-muted-foreground pt-0 pb-4 max-h-40 overflow-y-auto whitespace-pre-wrap">
-                    {selectedReport.description}
-                 </CardContent>
+                <CardHeader className="pb-2 pt-4">
+                  <CardTitle className="text-md">{t('admin.reportedQuestionsPage.detailsDialog.descriptionLabel')}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-muted-foreground pt-0 pb-4 max-h-40 overflow-y-auto whitespace-pre-wrap">
+                  {selectedReport.description}
+                </CardContent>
               </Card>
-              
-               <div className="mt-4 space-y-2">
+
+              <div className="mt-4 space-y-2">
                 <Label htmlFor="report-status" className="font-semibold">{t('admin.reportedQuestionsPage.detailsDialog.updateStatusLabel')}:</Label>
-                 <div className="flex flex-wrap gap-2">
-                    {(['new', 'acknowledged', 'in-progress', 'resolved', 'wont-fix', 'archived'] as const).map(statusValue => (
-                        <Button
-                            key={statusValue}
-                            variant={selectedReport.status === statusValue ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => handleStatusUpdate(selectedReport, statusValue)}
-                            className={cn(
-                                selectedReport.status === statusValue && statusValue === 'new' && "bg-red-600 hover:bg-red-700 text-white",
-                                selectedReport.status === statusValue && statusValue === 'acknowledged' && "bg-yellow-500 hover:bg-yellow-600 text-black",
-                                selectedReport.status === statusValue && statusValue === 'in-progress' && "bg-blue-500 hover:bg-blue-600 text-white",
-                                selectedReport.status === statusValue && statusValue === 'resolved' && "bg-green-500 hover:bg-green-600 text-white",
-                                selectedReport.status === statusValue && statusValue === 'wont-fix' && "bg-gray-500 hover:bg-gray-600 text-white",
-                                selectedReport.status === statusValue && statusValue === 'archived' && "bg-slate-500 hover:bg-slate-600 text-white"
-                            )}
-                        >
-                            {t(`admin.reportedQuestionsPage.statusValues.${statusValue}`)}
-                        </Button>
-                    ))}
-                 </div>
+                <div className="flex flex-wrap gap-2">
+                  {(['new', 'acknowledged', 'in-progress', 'resolved', 'wont-fix', 'archived'] as const).map(statusValue => (
+                    <Button
+                      key={statusValue}
+                      variant={selectedReport.status === statusValue ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleStatusUpdate(selectedReport, statusValue)}
+                      className={cn(
+                        selectedReport.status === statusValue && statusValue === 'new' && "bg-red-600 hover:bg-red-700 text-white",
+                        selectedReport.status === statusValue && statusValue === 'acknowledged' && "bg-yellow-500 hover:bg-yellow-600 text-black",
+                        selectedReport.status === statusValue && statusValue === 'in-progress' && "bg-blue-500 hover:bg-blue-600 text-white",
+                        selectedReport.status === statusValue && statusValue === 'resolved' && "bg-green-500 hover:bg-green-600 text-white",
+                        selectedReport.status === statusValue && statusValue === 'wont-fix' && "bg-gray-500 hover:bg-gray-600 text-white",
+                        selectedReport.status === statusValue && statusValue === 'archived' && "bg-slate-500 hover:bg-slate-600 text-white"
+                      )}
+                    >
+                      {t(`admin.reportedQuestionsPage.statusValues.${statusValue}`)}
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
             <DialogFooter className="mt-4 sm:justify-between flex-wrap gap-2">
@@ -465,10 +420,10 @@ export default function ReportedQuestionsPage() {
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsResolveConfirmOpen(false)}>{t('common.cancel')}</AlertDialogCancel>
             <Button variant="outline" onClick={() => handleConfirmResolve(false)}>
-                {t('admin.reportedQuestionsPage.resolveDialog.confirmButtonNo')}
+              {t('admin.reportedQuestionsPage.resolveDialog.confirmButtonNo')}
             </Button>
             <Button onClick={() => handleConfirmResolve(true)}>
-                {t('admin.reportedQuestionsPage.resolveDialog.confirmButtonYes')}
+              {t('admin.reportedQuestionsPage.resolveDialog.confirmButtonYes')}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

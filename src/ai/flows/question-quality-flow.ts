@@ -8,12 +8,13 @@ import {
   type QuestionQualityOutput,
 } from '@/types/ai-schemas';
 import { getQuestionQualityPrompt } from './question-quality-prompt';
+import * as cheerio from 'cheerio';
 
 /**
- * Try to resolve a URL (DOI or http) to verify the reference is real. Returns true if fetch succeeds (2xx).
+ * Try to resolve a URL (DOI or http) and extract basic metadata (Title, Description) to verify relevance.
  */
-async function checkReferenceUrlResolves(articleReference: string | null | undefined): Promise<boolean | null> {
-  if (!articleReference?.trim()) return null;
+async function fetchReferenceMetadata(articleReference: string | null | undefined): Promise<{ resolves: boolean | null; metadata: string | null }> {
+  if (!articleReference?.trim()) return { resolves: null, metadata: null };
   const str = articleReference.trim();
   const doiMatch = str.match(/10\.\d{4,}\/[^\s)]+/);
   const urlMatch = str.match(/https?:\/\/[^\s)]+/);
@@ -22,12 +23,28 @@ async function checkReferenceUrlResolves(articleReference: string | null | undef
     : urlMatch
       ? urlMatch[0].replace(/[.,;:]+$/, '')
       : null;
-  if (!url) return null;
+  if (!url) return { resolves: null, metadata: null };
   try {
-    const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(8000) });
-    return res.ok;
+    const res = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
+      signal: AbortSignal.timeout(10000),
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+
+    if (!res.ok) return { resolves: false, metadata: null };
+
+    const html = await res.text();
+    const $ = cheerio.load(html);
+    const title = $('title').text() || $('meta[property="og:title"]').attr('content') || '';
+    const description = $('meta[name="description"]').attr('content') || $('meta[property="og:description"]').attr('content') || '';
+
+    const metadataStr = `Title: ${title.trim()} | Description: ${description.trim()}`.trim();
+    return { resolves: true, metadata: metadataStr.length > 20 ? metadataStr : null };
   } catch {
-    return false;
+    return { resolves: false, metadata: null };
   }
 }
 
@@ -38,8 +55,12 @@ export const questionQualityFlow = ai.defineFlow(
     outputSchema: QuestionQualityOutputSchema,
   },
   async (input) => {
-    const { questionStem, options, correctAnswerIndex, articleReference } = input;
-    const prompt = getQuestionQualityPrompt(questionStem, options, correctAnswerIndex, articleReference ?? undefined);
+    const { questionStem, options, correctAnswerIndex, explanation, articleReference } = input;
+
+    // 1. Fetch metadata BEFORE the LLM call to provide semantic context
+    const { resolves, metadata } = await fetchReferenceMetadata(articleReference);
+
+    const prompt = getQuestionQualityPrompt(questionStem, options, correctAnswerIndex, explanation, articleReference ?? undefined, metadata);
 
     try {
       const llmResponse = await ai.generate({
@@ -56,13 +77,13 @@ export const questionQualityFlow = ai.defineFlow(
       let referencePlausible = safe(output.referencePlausible);
       let referenceMessage = typeof output.referenceMessage === 'string' ? output.referenceMessage : undefined;
 
+      // 2. Override LLM output if the URL actually failed to resolve
       if (articleReference?.trim()) {
-        const resolves = await checkReferenceUrlResolves(articleReference);
         if (resolves === false) {
           referencePlausible = 'fail';
-          referenceMessage = (referenceMessage ? `${referenceMessage}. ` : '') + 'URL/DOI did not resolve (possible hallucination).';
+          referenceMessage = (referenceMessage ? `${referenceMessage}. ` : '') + 'URL/DOI did not resolve (possible hallucination/dead link).';
         } else if (resolves === true && referencePlausible === 'pass') {
-          referenceMessage = (referenceMessage ? `${referenceMessage}. ` : '') + 'Reference URL resolved successfully.';
+          referenceMessage = (referenceMessage ? `${referenceMessage}. ` : '') + 'Reference URL resolved and content matched successfully.';
         }
       }
 
@@ -73,8 +94,11 @@ export const questionQualityFlow = ai.defineFlow(
         optionsMessage: typeof output.optionsMessage === 'string' ? output.optionsMessage : undefined,
         correctAnswerValid: safe(output.correctAnswerValid),
         correctAnswerMessage: typeof output.correctAnswerMessage === 'string' ? output.correctAnswerMessage : undefined,
+        explanationClarity: safe(output.explanationClarity),
+        explanationMessage: typeof output.explanationMessage === 'string' ? output.explanationMessage : undefined,
         referencePlausible,
         referenceMessage,
+        evidenceLevel: typeof output.evidenceLevel === 'string' ? output.evidenceLevel : undefined,
         overallReasoning: typeof output.overallReasoning === 'string' ? output.overallReasoning : undefined,
       };
       return result;
@@ -86,10 +110,12 @@ export const questionQualityFlow = ai.defineFlow(
         questionMessage: `Analysis failed: ${message}`,
         optionsCoherent: 'warning',
         correctAnswerValid: 'warning',
+        explanationClarity: 'warning',
         referencePlausible: 'warning',
         referenceMessage: `Analysis failed: ${message}`,
+        evidenceLevel: 'Unknown',
         overallReasoning: 'Quality check could not be completed.',
-      };
+      } as QuestionQualityOutput;
     }
   }
 );

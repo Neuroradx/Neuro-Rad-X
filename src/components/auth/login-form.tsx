@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
-import Link from "next/link"; 
+import Link from "next/link";
 import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useTranslation } from "@/hooks/use-translation"; 
+import { useTranslation } from "@/hooks/use-translation";
 import { fetchUserNotifications } from "@/actions/notification-actions";
 import { ToastAction } from "@/components/ui/toast";
 
@@ -31,14 +31,14 @@ type LoginFormValues = z.infer<ReturnType<typeof getLoginFormSchema>>;
 export function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
 
   const loginFormSchema = useMemo(() => getLoginFormSchema(t), [t]);
 
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema), 
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -80,22 +80,30 @@ export function LoginForm() {
         const userData = userDocSnap.data();
 
         if (userData?.status === 'pending') {
-            router.push('/pending-approval');
-            return;
+          router.push('/pending-approval');
+          return;
         }
 
         if (userData?.status !== 'approved') {
-          // Fallback: admins in allowlist bypass status check (single-admin setup)
-          const isAdminByEmail = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-          if (!isAdminByEmail) {
-            setFirebaseError(t('auth.accountStatusError'));
-            await auth.signOut();
-            setIsLoading(false);
-            return;
+          // Force refresh to get latest claims
+          const tokenResult = await user.getIdTokenResult(true);
+          const isAdminByClaim = !!tokenResult.claims.admin;
+
+          if (!isAdminByClaim) {
+            // Also check email allowlist as second fallback
+            const isAdminByEmail = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
+            if (!isAdminByEmail) {
+              setFirebaseError(t('auth.accountStatusError'));
+              await auth.signOut();
+              setIsLoading(false);
+              return;
+            }
           }
         }
 
-        const isAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
+        // Use custom claims as the source of truth for the redirect
+        const tokenResultForRedirect = await user.getIdTokenResult();
+        const isAdmin = !!tokenResultForRedirect.claims.admin;
         const redirectPath = isAdmin ? "/admin/dashboard" : "/dashboard";
 
         toast({
@@ -132,13 +140,13 @@ export function LoginForm() {
     } catch (error) {
       const authError = error as AuthError;
       let errorMessage = t('loginForm.errorUnexpected');
-      
+
       if (authError.code === "auth/user-not-found" || authError.code === "auth/wrong-password" || authError.code === "auth/invalid-credential") {
         errorMessage = t('loginForm.errorInvalidCredentials');
       } else {
         console.error("Unexpected login error:", authError);
       }
-      
+
       setFirebaseError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -187,7 +195,7 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-             <div className="text-right">
+            <div className="text-right">
               <Button variant="link" size="sm" className="text-xs text-muted-foreground px-0" asChild>
                 <Link href="/auth/forgot-password">
                   {t('loginForm.forgotPasswordLink')}

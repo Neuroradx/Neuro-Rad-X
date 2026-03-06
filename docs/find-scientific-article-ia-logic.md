@@ -7,9 +7,10 @@ Documento que describe el flujo completo de **"Find Source with AI"**: desde la 
 ## 1. Objetivo
 
 - **Validar** si la respuesta correcta marcada por el editor es médicamente correcta.
-- **Generar** una query de búsqueda optimizada para PubMed (MeSH, filtros de evidencia y de fecha).
+- **Generar** una query de búsqueda optimizada para PubMed (basada en [tiab] o [tw], regla de los 3-ANDs y últimos 10 años).
 - **Ejecutar** esa query en la API de PubMed y devolver el **primer artículo** encontrado (título, URL y, si aplica, snippet).
-- **Rellenar** en el formulario la referencia científica y mostrar en un log la query, conceptos, fuentes de evidencia y mensajes de “sin resultados” o “respuesta incorrecta”.
+- **Hacer un Fallback** automático con una query amplia si la primera estrategia no retorna resultados.
+- **Rellenar** en el formulario la referencia científica y mostrar en un log la query, uso de fallback, conceptos y mensajes de validez.
 
 ---
 
@@ -24,15 +25,17 @@ Documento que describe el flujo completo de **"Find Source with AI"**: desde la 
          ▼
 [Genkit Flow: findScientificArticleFlow]
          │
-         ├──► [LLM: Gemini 1.5 Flash] + prompt "Gold Standard"
-         │         └── JSON: isValid, pubmed_query, original_concepts, reasoning, evidence_sources, ...
+         ├──► [LLM: Gemini 1.5 Flash] + prompt de optimización NLM
+         │         └── JSON: isValid, pubmed_query, broad_pubmed_query, original_concepts, reasoning, ...
          │
          └──► [PubMed E-utilities: esearch + esummary]
-                   └── primer artículo → articleTitle, articleUrl, snippet
+                   └── primer artículo de pubmed_query
+                   └── si falla → buscar primer artículo de broad_pubmed_query
+                   └── articleTitle, articleUrl, snippet
 ```
 
 - **Entrada:** pregunta, opciones y respuesta correcta sugerida.
-- **Salida:** validación (isValid), query PubMed, conceptos, razonamiento, fuentes de evidencia, y —si la búsqueda devuelve algo— título, URL y snippet del primer artículo; además un flag `search_returned_zero_results` cuando PubMed no devuelve resultados.
+- **Salida:** validación (isValid), query PubMed (y su broad fallback), conceptos, razonamiento, y —si la búsqueda devuelve algo— título, URL y snippet del primer artículo; además unos flags `search_returned_zero_results` y `used_broad_query` si PubMed falló la primera / devuelve resultados con respaldo.
 
 ---
 
@@ -56,9 +59,10 @@ Ubicación: `src/ai/flows/find-scientific-article-flow.ts`.
 
 1. **Construcción del prompt**  
    Se llama a `getPrompt(questionStem, options, correctAnswer)` (definido en `find-scientific-article-prompt.ts`). El prompt incluye:
-   - Rol: "Gold Standard" Scientific Validation Engineer.
-   - Filtro temporal obligatorio (últimos 10 años).
-   - Listas de revistas: Priority 1 (evidencia: Cochrane, JBI, BMJ EBM, Syst Rev, Campbell) y lista dorada (Radiology, AJNR, Lancet Neurol, etc.).
+   - Rol: Experto en la National Library of Medicine.
+   - Filtro temporal obligatorio (últimos 10 años: `"last 10 years"[dp]`).
+   - Instrucciones orientadas a utilizar etiquetas `[tiab]` en lugar de MeSH restrictivos, eliminar filtros de nombres de revistas en la query (esos se filtran a posteriori o simplemente se prioriza frecura) y respetar la "regla de los 3 ANDs".
+   - Mandato para generar un plan de contingencia: `broad_pubmed_query` combinando a simple vista "(Enfermedad OR sinónimos) AND (Concepto clave)".
    - Instrucciones para devolver un **único JSON** con los campos del schema de salida.
 
 2. **Llamada al LLM**  
@@ -73,33 +77,30 @@ Ubicación: `src/ai/flows/find-scientific-article-flow.ts`.
 4. **Ejecución en PubMed**  
    - Si `pubmed_query` no está vacío:
      - Se llama a `findFirstPubMedArticle(pubmed_query)` (`src/ai/lib/pubmed-api.ts`).
-     - Internamente: **esearch** (hasta 3 PMIDs) → **esummary** (detalle del primero).
-   - Si hay artículo: se rellenan `articleTitle`, `articleUrl` y `snippet` (primeros 500 caracteres del abstract si existe).
-   - Si no hay artículo o hay error de red/API: se marca `search_returned_zero_results: true`.
+   - Si no hay artículo (o 0 resultados) y existe un `broad_pubmed_query`, se vuelve a llamar a `findFirstPubMedArticle` usando la query amplia y se marca `used_broad_query: true`.
+   - Si hay artículo (tras cualquiera de los 2 intentos): se rellenan `articleTitle`, `articleUrl` y `snippet`.
+   - Si no hay artículo tras ambos intentos: se marca `search_returned_zero_results: true`.
 
 5. **Respuesta del flow**  
-   Se devuelve un objeto que cumple `FindScientificArticleOutputSchema`, con todos los campos normalizados (incl. `search_returned_zero_results` y `evidence_sources` opcionales).
+   Se devuelve un objeto que cumple `FindScientificArticleOutputSchema`, con todos los campos normalizados (incluyendo banderas de validación y de fallback).
 
 6. **Manejo de errores**  
    Si el LLM o el parseo fallan, el flow devuelve `isValid: false`, `reasoning: "Error: ..."`, y no se ejecuta PubMed.
 
 ---
 
-## 5. Prompt (Gold Standard)
+## 5. Prompt (Estrategia Menos-Es-Más)
 
 Ubicación: `src/ai/flows/find-scientific-article-prompt.ts`.
 
-- **Rol:** Experto en Recuperación de Información Biomédica; transforma pregunta + respuesta en una búsqueda PubMed de alta evidencia.
-- **Filtro de fecha:** Obligatorio en toda query:  
-  `("2016/01/01"[Date - Publication] : "3000"[Date - Publication])`.
-- **Estructura de la query:**  
-  `(Conceptos MeSH / términos) AND (revistas preferidas en OR) AND (filtro de fecha)`.
-- **Revistas:**  
-  - Priority 1: Cochrane Database Syst Rev, JBI Evid Synth, Campbell Syst Rev, BMJ Evid Based Med, Syst Rev (abreviaturas NLM).  
-  - Lista dorada: Radiology, Radiol Artif Intell, Lancet Digit Health, Radiographics, Eur Radiol, Invest Radiol, AJR Am J Roentgenol, y el resto definido en `GOLDEN_JOURNALS_SPECIALTY` (todas con sufijo `[Journal]`).
+- **Rol:** Experto en Recuperación de Información de la NLM.
+- **Filtro de fecha:** Obligatorio en toda query: `"last 10 years"[dp]`.
+- **Regla de los 3 ANDs:** La consulta optimizada se divide como máximo en 3~4 conjuntos AND, priorizando el tag `[tiab]` para lograr mayor frescura sobre los MeSH y evitando filtrar revistas por su nombre (para no generar conjuntos vacíos).
+- **Ejemplo radiológico estructurado:** `"Enfermedad" AND "Hallazgo" AND "MRI"`.
+- **Query Auxiliar:** `broad_pubmed_query` que obvia ramificaciones menores enfocándose exclusívamente en 1 o 2 conceptos madre.
 - **Salida esperada (JSON):**
-  - `isValid`, `pubmed_query`, `original_concepts`, `reasoning`, `validated_correct_answer` (opcional), `evidence_sources` (opcional).
-- **Restricciones:** No inventar artículos; la IA solo genera la query; el sistema es quien ejecuta PubMed.
+  - `isValid`, `pubmed_query`, `broad_pubmed_query`, `original_concepts`, `reasoning`, `validated_correct_answer` (opcional), `evidence_sources` (opcional).
+- **Restricciones:** No inventar artículos; la IA solo genera las queries; el sistema es quien ejecuta PubMed.
 
 ---
 
@@ -117,7 +118,7 @@ Ubicación: `src/ai/lib/pubmed-api.ts`.
 - **findFirstPubMedArticle(query)**  
   - Ejecuta `searchPubMed(query, 3)` y luego `fetchPubMedArticles(ids)`; devuelve el primer artículo o `null`.
 
-Si la query es muy restrictiva (10 años + revistas de alto impacto) y PubMed devuelve 0 resultados, el flow no rellena artículo y pone `search_returned_zero_results: true`.
+Si la query es muy restrictiva y PubMed devuelve 0 resultados, se intenta usar de respaldo la `broad_pubmed_query`. Si a pesar del fallback no hay resultados, se marca `search_returned_zero_results: true`.
 
 ---
 
@@ -128,15 +129,17 @@ Definida en `FindScientificArticleOutputSchema`:
 | Campo                      | Tipo     | Descripción breve                                                                 |
 |----------------------------|----------|-----------------------------------------------------------------------------------|
 | `isValid`                  | boolean  | Si la respuesta correcta sugerida es médicamente adecuada.                        |
-| `pubmed_query`             | string   | Query completa enviada a PubMed (con filtro de fecha y revistas).                 |
+| `pubmed_query`             | string   | Query completa enviada a PubMed (estructurada con tags [tiab] y filtro de fechas).|
+| `broad_pubmed_query`       | string?  | Fallback con query amplia (1-2 ANDs).                                             |
 | `original_concepts`       | string[] | Conceptos clave en inglés.                                                       |
 | `reasoning`                | string   | Justificación de la validación y de la estrategia de búsqueda.                   |
 | `validated_correct_answer` | string?  | Si `isValid === false`, opción que la IA considera correcta.                      |
-| `evidence_sources`        | string[]?| Revistas o tipos de fuente incluidos en la búsqueda.                              |
-| `articleTitle`             | string?  | Título del primer artículo devuelto por PubMed (rellenado por el flow).          |
-| `articleUrl`               | string?  | URL del artículo (PubMed o DOI) (rellenado por el flow).                         |
-| `snippet`                  | string?  | Fragmento del abstract (rellenado por el flow, máx. 500 caracteres).              |
-| `search_returned_zero_results` | boolean? | `true` si la query se ejecutó pero PubMed no devolvió ningún artículo.       |
+| `evidence_sources`        | string[]?| Tipo de evidencia a la cual la IA apunta de forma heurística.                     |
+| `articleTitle`             | string?  | Título del primer artículo devuelto por PubMed.                                  |
+| `articleUrl`               | string?  | URL del artículo.                                                                |
+| `snippet`                  | string?  | Fragmento del abstract (máx. 500 caracteres).                                     |
+| `search_returned_zero_results` | boolean? | `true` si todas las queries probadas retornaron 0 resultados.               |
+| `used_broad_query`         | boolean? | `true` si la query estructural falló y se requirió buscar el broad query.         |
 
 ---
 

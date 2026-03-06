@@ -42,6 +42,7 @@ export type FindScientificArticleInput = z.infer<typeof FindScientificArticleInp
 export const FindScientificArticleOutputSchema = z.object({
   isValid: z.boolean().describe("Whether the provided correctAnswer is medically accurate."),
   pubmed_query: z.string().describe("PubMed-optimized search query using MeSH/Boolean and date filter, ready for the API."),
+  broad_pubmed_query: z.string().optional().describe("A broader, less restrictive PubMed query to use as a fallback if the main query returns 0 results."),
   original_concepts: z.array(z.string()).describe("Key clinical/imaging concepts in English (key_concepts_en)."),
   reasoning: z.string().describe("Brief validation rationale and search logic (evidence filters applied)."),
   validated_correct_answer: z.string().optional().describe("If the original correctAnswer is incorrect, the correct option from the provided options."),
@@ -50,6 +51,7 @@ export const FindScientificArticleOutputSchema = z.object({
   articleUrl: z.string().optional().describe("URL to the article (PubMed or DOI)."),
   snippet: z.string().optional().describe("Relevant excerpt from the article abstract."),
   search_returned_zero_results: z.boolean().optional().describe("True when the PubMed API returned no articles for the query (high-evidence gap)."),
+  used_broad_query: z.boolean().optional().describe("True if the system fell back to using the broad_pubmed_query."),
 });
 
 /**
@@ -67,19 +69,23 @@ export const QuestionQualityInputSchema = z.object({
   questionStem: z.string(),
   options: z.array(z.string()),
   correctAnswerIndex: z.number(),
+  explanation: z.string().optional().nullable(),
   articleReference: z.string().optional().nullable(),
 });
 
 /** Output: one status + message per dimension. */
 export const QuestionQualityOutputSchema = z.object({
   questionWellFormed: QualityStatusSchema,
-  questionMessage: z.string().optional(),
+  questionMessage: z.string().optional().describe("Feedback and suggested correction if warning/fail"),
   optionsCoherent: QualityStatusSchema,
-  optionsMessage: z.string().optional(),
+  optionsMessage: z.string().optional().describe("Feedback and suggested correction if warning/fail"),
   correctAnswerValid: QualityStatusSchema,
-  correctAnswerMessage: z.string().optional(),
+  correctAnswerMessage: z.string().optional().describe("Feedback and suggested correction if warning/fail"),
+  explanationClarity: QualityStatusSchema,
+  explanationMessage: z.string().optional().describe("Feedback and suggested correction if warning/fail"),
   referencePlausible: QualityStatusSchema,
-  referenceMessage: z.string().optional(),
+  referenceMessage: z.string().optional().describe("Feedback on reference validity"),
+  evidenceLevel: z.string().optional().describe("e.g. 'Low (Case Report)', 'High (Systematic Review)'"),
   overallReasoning: z.string().optional(),
 });
 

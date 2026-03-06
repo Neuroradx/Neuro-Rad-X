@@ -45,9 +45,19 @@ export const findScientificArticleFlow = ai.defineFlow(
       const evidenceSources = Array.isArray(output.evidence_sources) ? output.evidence_sources : [];
 
       let searchReturnedZeroResults = false;
+      let usedBroadQuery = false;
       if (pubmedQuery) {
         try {
-          const article = await findFirstPubMedArticle(pubmedQuery);
+          let article = await findFirstPubMedArticle(pubmedQuery);
+
+          if (!article && typeof output.broad_pubmed_query === 'string' && output.broad_pubmed_query.trim()) {
+            console.log("[findScientificArticleFlow] Main query returned 0 results, trying broad_pubmed_query:", output.broad_pubmed_query);
+            article = await findFirstPubMedArticle(output.broad_pubmed_query);
+            if (article) {
+              usedBroadQuery = true;
+            }
+          }
+
           if (article) {
             output.articleTitle = article.title;
             output.articleUrl = article.url;
@@ -72,6 +82,8 @@ export const findScientificArticleFlow = ai.defineFlow(
         articleUrl: typeof output.articleUrl === 'string' ? output.articleUrl : undefined,
         snippet: typeof output.snippet === 'string' ? output.snippet : undefined,
         search_returned_zero_results: searchReturnedZeroResults || undefined,
+        used_broad_query: usedBroadQuery || undefined,
+        broad_pubmed_query: typeof output.broad_pubmed_query === 'string' ? output.broad_pubmed_query : undefined,
       };
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);

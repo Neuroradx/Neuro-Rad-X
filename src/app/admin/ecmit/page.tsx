@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,58 +13,17 @@ import { QRCodeSVG } from 'qrcode.react';
 export default function AdminEcmitPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const ecmintUrl = "https://www.neuroradx.com/auth/register?coupon=ECMINT25";
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthLoading(true);
-      if (user) {
-        try {
-          const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-          setIsAdmin(userIsAdmin);
-          if (!userIsAdmin) {
-            setError(t('admin.accessDenied.description'));
-          }
-        } catch (err) {
-          console.error("Error verifying admin status:", err);
-          setIsAdmin(false);
-          setError(t('admin.accessDenied.description'));
-        }
-      } else {
-        setIsAdmin(false);
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
+  // AdminLayout guarantees auth and admin status
 
-    return () => unsubscribe();
-  }, [router, t]);
-
-  if (isAuthLoading) {
-    return <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertTitle>{t('admin.accessDenied.title')}</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">{t('admin.accessDenied.backToDashboard')}</Button>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto py-8 max-w-2xl">
       <Button variant="outline" className="mb-6" onClick={() => router.push('/admin/dashboard')}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
+        <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
       </Button>
       <div className="flex items-center gap-3 mb-4">
         <Award className="h-8 w-8 text-primary" />
@@ -82,10 +39,10 @@ export default function AdminEcmitPage() {
           <p className="text-lg">{t('admin.ecmit.p1')}</p>
           <p className="text-muted-foreground">{t('admin.ecmit.p2')}</p>
           <p className="text-muted-foreground">{t('admin.ecmit.p3')}</p>
-          
+
           <div className="flex justify-center py-4">
             <div className="p-4 border rounded-lg bg-white">
-               <QRCodeSVG value={ecmintUrl} size={192} />
+              <QRCodeSVG value={ecmintUrl} size={192} />
             </div>
           </div>
 

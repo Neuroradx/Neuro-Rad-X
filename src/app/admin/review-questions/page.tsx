@@ -3,9 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -26,9 +24,7 @@ const CATEGORY_KEYS = Object.keys(MENU_DATA.main_localization) as string[];
 export default function ReviewQuestionsPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [category, setCategory] = useState<string>('');
   const [subcategory, setSubcategory] = useState<string>('__all__');
 
@@ -38,18 +34,11 @@ export default function ReviewQuestionsPage() {
   }, [category]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-        setIsAdmin(userIsAdmin);
-        setCurrentUser(user);
-      } else {
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-    return () => unsubscribe();
-  }, [router]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
 
   useEffect(() => {
     if (category) setSubcategory('__all__');
@@ -63,30 +52,6 @@ export default function ReviewQuestionsPage() {
     router.push(`/admin/review-questions/session?${params.toString()}`);
   };
 
-  if (isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8">
-        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-6 rounded-xl border bg-card p-12">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="text-muted-foreground">{t('admin.reviewQuestions.loadingShort')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="container mx-auto py-12">
-        <Alert variant="destructive">
-          <AlertTitle>{t('admin.reviewQuestions.accessDenied')}</AlertTitle>
-          <AlertDescription>{t('admin.reviewQuestions.adminRequired')}</AlertDescription>
-        </Alert>
-        <Button asChild className="mt-4">
-          <Link href="/dashboard">{t('admin.reviewQuestions.backToHome')}</Link>
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto py-8">

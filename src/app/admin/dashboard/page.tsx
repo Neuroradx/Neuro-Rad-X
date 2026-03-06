@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,8 +16,6 @@ import { AlgoliaSearchBar } from '@/components/questions/AlgoliaSearchBar';
 
 const AdminDashboardPage = () => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [summaryStats, setSummaryStats] = useState<any>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
 
@@ -36,7 +33,6 @@ const AdminDashboardPage = () => {
         setIsLoadingStats(false);
       });
     }
-    setIsAuthLoading(false);
   }, []);
 
   const adminSections = [

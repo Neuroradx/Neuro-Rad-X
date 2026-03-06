@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,8 +14,6 @@ import { fetchLastReviewedQuestions, type LastReviewedQuestionItem } from '@/act
 export default function LastReviewedQuestionsPage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [questions, setQuestions] = useState<LastReviewedQuestionItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
@@ -48,24 +44,11 @@ export default function LastReviewedQuestionsPage() {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthLoading(true);
-      if (user) {
-        try {
-          const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-          setIsAdmin(userIsAdmin);
-          if (userIsAdmin) loadPage();
-        } catch {
-          setIsAdmin(false);
-        }
-      } else {
-        setIsAdmin(false);
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-    return () => unsubscribe();
-  }, [router]);
+    const user = auth.currentUser;
+    if (user) {
+      loadPage();
+    }
+  }, []);
 
   const handleNext = () => {
     if (nextPageDocId) loadPage(nextPageDocId, undefined);
@@ -79,27 +62,6 @@ export default function LastReviewedQuestionsPage() {
     window.open(`/admin/edit-question?id=${questionId}`, '_blank', 'noopener,noreferrer');
   };
 
-  if (isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive">
-          <AlertTitle>{t('admin.accessDenied.title')}</AlertTitle>
-          <AlertDescription>{t('admin.accessDenied.description')}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">
-          {t('admin.accessDenied.backToDashboard')}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto py-8">
@@ -162,7 +124,7 @@ export default function LastReviewedQuestionsPage() {
 
               <div className="flex items-center justify-between mt-4 px-1">
                 <p className="text-sm text-muted-foreground">
-                  {t('admin.lastReviewedQuestions.showingTotal', { total: totalCount })}
+                  {t('admin.lastReviewedQuestions.showingTotal', { total: totalCount.toString() })}
                 </p>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={handlePrev} disabled={!hasPrevPage || isLoading}>

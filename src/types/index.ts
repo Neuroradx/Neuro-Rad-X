@@ -33,6 +33,9 @@ export interface Question {
   scientificArticle?: ScientificArticle;
   createdAt: FieldValue | Date | string;
   lastUpdatedAt: FieldValue | Date | string;
+  main_localization?: string;
+  sub_main_location?: string;
+  correctAnswerIndex?: number;
   Question_revised?: string;
   Question_revised_by?: string;
   Question_revised_at?: FieldValue | Date | string;

@@ -7,12 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { getQuestionById, updateQuestion, deleteQuestionById } from '@/actions/question-actions';
 import { getSubcategoriesAction, registerSubcategoryAction } from '@/actions/subcategory-actions';
 import { findScientificArticleAction } from '@/actions/enrichment-actions';
+import { markQuestionAsReviewed } from '@/actions/user-data-actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -32,7 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, ArrowLeft, Save, Trash2, PlusCircle, Wand2, Search, Tag, CheckCircle2, FileEdit, FileText, Lightbulb, Sparkles, ExternalLink, ExternalLinkIcon, Eraser } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Trash2, PlusCircle, Wand2, Search, Tag, CheckCircle2, ShieldCheck, FileEdit, FileText, Lightbulb, Sparkles, ExternalLink, ExternalLinkIcon, Eraser } from 'lucide-react';
 import { ArticleReferenceDisplay } from '@/components/article-reference-display';
 import { stripCitationsFromText } from '@/lib/citations';
 import type { Question } from '@/types';
@@ -77,13 +77,12 @@ function EditQuestionPageContent() {
   const questionId = searchParams.get('id');
 
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isFindingArticle, setIsFindingArticle] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const closeAfterSaveRef = useRef(false);
+  const approveAfterSaveRef = useRef(false);
   const [aiLog, setAiLog] = useState<{ type: 'info' | 'success' | 'warning' | 'error'; text: string }[]>([]);
 
   // Dynamic subcategories fetched from Firestore
@@ -135,17 +134,11 @@ function EditQuestionPageContent() {
   };
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setIsAdmin(await checkIsAdmin({ uid: user.uid, email: user.email ?? null }));
-        setCurrentUser(user);
-      } else {
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-    return () => unsub();
-  }, [router]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
 
   /** Fetch custom subcategories from Firestore for the given main category */
   const fetchDynamicSubcats = useCallback(async (mainCategory: string) => {
@@ -162,10 +155,10 @@ function EditQuestionPageContent() {
   }, [currentUser?.uid]);
 
   useEffect(() => {
-    if (questionId && !isAuthLoading && isAdmin && currentUser) {
+    if (questionId && currentUser) {
       loadQuestionData(questionId);
     }
-  }, [questionId, isAuthLoading, isAdmin, currentUser]);
+  }, [questionId, currentUser]);
 
   const loadedQuestionRef = useRef<Question | null>(null);
 
@@ -176,7 +169,7 @@ function EditQuestionPageContent() {
       const q = result.question;
       loadedQuestionRef.current = q;
       const mainCat = q.main_localization || q.topic || 'Head';
-      const raw = q as Record<string, unknown>;
+      const raw = q as unknown as Record<string, unknown>;
       const tr = (raw.translations ?? {}) as Record<string, { questionText?: string; explanation?: string; options?: Array<{ text?: string } | string> }>;
       const getLocale = (locale: string) => tr[locale] ?? tr[locale.toUpperCase()] ?? tr[locale.toLowerCase()];
       const normOpt = (o: { text?: string } | string): { text: string } => (typeof o === 'string' ? { text: o } : { text: (o?.text ?? '') as string });
@@ -282,6 +275,19 @@ function EditQuestionPageContent() {
       // Set the subtopic to the new one so badge updates
       if (finalSubcategory) form.setValue('subtopic', finalSubcategory);
       toast({ title: "Success", description: "Question updated successfully", variant: "success" });
+
+      if (approveAfterSaveRef.current) {
+        approveAfterSaveRef.current = false;
+        const approveResult = await markQuestionAsReviewed(questionId, currentUser.uid);
+        if (approveResult.success) {
+          toast({ title: "Approved", description: "Question marked as reviewed", variant: "success" });
+          router.push('/admin/dashboard');
+          return; // Skip the closeAfterSave check if we're already redirecting
+        } else {
+          toast({ title: "Approval Error", description: approveResult.error, variant: "destructive" });
+        }
+      }
+
       if (closeAfterSaveRef.current) {
         closeAfterSaveRef.current = false;
         router.push('/admin/dashboard');
@@ -413,6 +419,9 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
     if (data.pubmed_query) {
       logs.push({ type: 'info', text: `PubMed query: ${data.pubmed_query}` });
     }
+    if (data.used_broad_query && data.broad_pubmed_query) {
+      logs.push({ type: 'warning', text: `Main query returned 0 results. Used broad fallback query: ${data.broad_pubmed_query}` });
+    }
     if (Array.isArray(data.original_concepts) && data.original_concepts.length > 0) {
       logs.push({ type: 'info', text: `Concepts: ${data.original_concepts.join(', ')}` });
     }
@@ -422,7 +431,7 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
 
     if (data.isValid) {
       if (data.search_returned_zero_results) {
-        logs.push({ type: 'warning', text: 'No high-impact evidence found in the last 15 years that validates this answer. Query ran but PubMed returned no articles.' });
+        logs.push({ type: 'warning', text: 'No high-impact evidence found in the last 10 years that validates this answer. Both structural and broad queries ran but PubMed returned no articles.' });
       }
       // Fill the article reference field
       if (data.articleTitle && data.articleUrl) {
@@ -468,7 +477,7 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
       form.setValue(`translations.en.options.${i}.text`, opt.text);
     });
 
-    const translations: Record<string, { questionText: string; explanation: string; options: { id?: string; text: string }[] }> = { en: strippedEn };
+    const translations: any = { en: strippedEn };
     const esForm = values.translations?.es;
     if (esForm) {
       translations.es = {
@@ -495,12 +504,12 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
       if (translations.es) {
         form.setValue('translations.es.questionText', translations.es.questionText);
         form.setValue('translations.es.explanation', translations.es.explanation);
-        translations.es.options.forEach((opt, i) => form.setValue(`translations.es.options.${i}.text`, opt.text));
+        translations.es.options.forEach((opt: { text: string }, i: number) => form.setValue(`translations.es.options.${i}.text`, opt.text));
       }
       if (translations.de) {
         form.setValue('translations.de.questionText', translations.de.questionText);
         form.setValue('translations.de.explanation', translations.de.explanation);
-        translations.de.options.forEach((opt, i) => form.setValue(`translations.de.options.${i}.text`, opt.text));
+        translations.de.options.forEach((opt: { text: string }, i: number) => form.setValue(`translations.de.options.${i}.text`, opt.text));
       }
     }
     toast({ title: t('admin.editQuestion.removeCitationsButton'), description: 'Citations removed from question, options, and explanation (all languages).', variant: 'default' });
@@ -520,18 +529,6 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
     return merged.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
   };
 
-  if (isAuthLoading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
-  if (!isAdmin && currentUser) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>Admin privileges required.</AlertDescription>
-        </Alert>
-        <Button className="mt-4" onClick={() => router.push('/dashboard')}>Back to Dashboard</Button>
-      </div>
-    );
-  }
   if (isLoading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
 
   return (
@@ -867,7 +864,7 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
                     </div>
                     {form.watch('scientificArticle.article_reference') && (
                       <div>
-                        <Label className="text-muted-foreground text-xs uppercase tracking-wide">Reference (APA 7 style; links clickable)</Label>
+                        <Label className="text-muted-foreground text-xs uppercase tracking-wide">Reference</Label>
                         <div className="mt-2">
                           <ArticleReferenceDisplay
                             articleReference={form.watch('scientificArticle.article_reference')}
@@ -970,6 +967,18 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
                   >
                     {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     <Save className="mr-2 h-4 w-4" /> Save and Close
+                  </Button>
+                  <Button
+                    type="button"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    disabled={isSaving}
+                    onClick={() => {
+                      approveAfterSaveRef.current = true;
+                      form.handleSubmit(onSubmit)();
+                    }}
+                  >
+                    {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    <ShieldCheck className="mr-2 h-4 w-4" /> Save and Approve
                   </Button>
                 </div>
               </CardFooter>

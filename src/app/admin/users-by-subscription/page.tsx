@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { format } from 'date-fns';
 
@@ -44,8 +43,6 @@ export default function UsersBySubscriptionPage() {
   const router = useRouter();
 
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,28 +52,14 @@ export default function UsersBySubscriptionPage() {
   const [selectedSubscription, setSelectedSubscription] = useState<UserProfile['subscriptionLevel']>('Trial');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthLoading(true);
-      if (user) {
-        setCurrentUser(user);
-        try {
-          setIsAdmin(await checkIsAdmin({ uid: user.uid, email: user.email ?? null }));
-        } catch (error) {
-          console.error("Error verifying admin status:", error);
-          setIsAdmin(false);
-          setFetchError("Could not verify admin permissions.");
-        }
-      } else {
-        setIsAdmin(false);
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-    return () => unsubscribe();
-  }, [router]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
 
   const fetchUsers = useCallback(async (subscription: UserProfile['subscriptionLevel'], page: number) => {
-    if (!isAdmin || !subscription || !auth.currentUser) return;
+    if (!subscription || !auth.currentUser) return;
     setIsLoading(true);
     setFetchError(null);
     try {
@@ -94,28 +77,16 @@ export default function UsersBySubscriptionPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [isAdmin, t]);
+  }, [t]);
 
   useEffect(() => {
-    if (!isAuthLoading && isAdmin) {
+    if (currentUser) {
       fetchUsers(selectedSubscription, currentPage);
     }
-  }, [isAdmin, isAuthLoading, currentPage, selectedSubscription, fetchUsers]);
+  }, [currentUser, currentPage, selectedSubscription, fetchUsers]);
 
   const totalPages = Math.ceil(totalCount / USERS_PER_PAGE);
 
-  if (isAuthLoading) {
-    return <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  }
-
-  if (!isAdmin && !isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive"><ShieldAlert className="h-4 w-4" /><AlertTitle>{t('admin.accessDenied.title')}</AlertTitle><AlertDescription>{t('admin.accessDenied.description')}</AlertDescription></Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">{t('admin.accessDenied.backToDashboard')}</Button>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto py-8">

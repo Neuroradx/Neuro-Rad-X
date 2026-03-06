@@ -8,9 +8,8 @@ import * as z from 'zod';
 import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { searchUsers, resetUserStatistics, deleteUserAndTheirData, updateUserSubscription } from '@/actions/user-data-actions';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
+import { type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import type { UserProfile } from '@/types';
 import { UserInfoCard } from '@/components/admin/UserInfoCard';
 import { Button } from '@/components/ui/button';
@@ -44,9 +43,7 @@ export default function SearchUserPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(auth.currentUser);
 
   const [searchResults, setSearchResults] = useState<UserSearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,26 +61,11 @@ export default function SearchUserPage() {
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsAuthLoading(true);
-      if (user) {
-        setCurrentUser(user);
-        try {
-          setIsAdmin(await checkIsAdmin({ uid: user.uid, email: user.email ?? null }));
-        } catch (error) {
-          console.error("Error verifying admin status:", error);
-          setIsAdmin(false);
-          setError("Could not verify admin permissions.");
-        }
-      } else {
-        setIsAdmin(false);
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [router]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
 
   const handleSearch = async (data: SearchFormValues) => {
     if (!currentUser) return;
@@ -98,7 +80,7 @@ export default function SearchUserPage() {
     }
     setIsLoading(false);
   };
-  
+
   const handleReset = async () => {
     if (!selectedUser || dialogAction !== 'reset' || !currentUser) return;
     setIsActionLoading(true);
@@ -113,7 +95,7 @@ export default function SearchUserPage() {
     setDialogAction(null);
     setSelectedUser(null);
   };
-  
+
   const handleDelete = async () => {
     if (!selectedUser || dialogAction !== 'delete' || !currentUser) return;
     setIsActionLoading(true);
@@ -144,25 +126,6 @@ export default function SearchUserPage() {
     setSelectedUser(null);
   };
 
-  if (isAuthLoading) {
-    return <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertTitle>{t('admin.accessDenied.title')}</AlertTitle>
-          <AlertDescription>{error || t('admin.accessDenied.description')}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('admin.accessDenied.backToDashboard')}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -217,24 +180,24 @@ export default function SearchUserPage() {
           {searchResults.map(user => (
             <UserInfoCard key={user.id} user={user}>
               <Button variant="outline" size="sm" onClick={() => router.push(`/admin/sent-notifications/${user.id}`)}>
-                  <Bell className="mr-2 h-4 w-4"/>
-                  {t('admin.activeUsers.actions.notifications', {count: user.notificationCount ?? 0})}
+                <Bell className="mr-2 h-4 w-4" />
+                {t('admin.activeUsers.actions.notifications', { count: user.notificationCount ?? 0 })}
               </Button>
-              <Button variant="outline" size="sm" onClick={() => router.push(`/admin/send-notification?userId=${user.id}`)}><Mail className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.notify')}</Button>
-              <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setNewSubscriptionLevel(user.subscriptionLevel || 'free'); setDialogAction('subscription'); }}><CreditCard className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.subscription')}</Button>
-              <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('reset'); }}><DatabaseZap className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.resetStats')}</Button>
-              <Button variant="destructive" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('delete'); }}><Trash2 className="mr-2 h-4 w-4"/>{t('admin.activeUsers.actions.deleteData')}</Button>
+              <Button variant="outline" size="sm" onClick={() => router.push(`/admin/send-notification?userId=${user.id}`)}><Mail className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.notify')}</Button>
+              <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setNewSubscriptionLevel(user.subscriptionLevel || 'free'); setDialogAction('subscription'); }}><CreditCard className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.subscription')}</Button>
+              <Button variant="outline" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('reset'); }}><DatabaseZap className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.resetStats')}</Button>
+              <Button variant="destructive" size="sm" onClick={() => { setSelectedUser(user); setDialogAction('delete'); }}><Trash2 className="mr-2 h-4 w-4" />{t('admin.activeUsers.actions.deleteData')}</Button>
             </UserInfoCard>
           ))}
         </div>
       </div>
-      
+
       <AlertDialog open={dialogAction === 'reset' || dialogAction === 'delete'} onOpenChange={(open) => !open && setDialogAction(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{dialogAction === 'reset' ? t('admin.activeUsers.dialogs.resetTitle') : t('admin.activeUsers.dialogs.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {dialogAction === 'reset' 
+              {dialogAction === 'reset'
                 ? t('admin.activeUsers.dialogs.resetDescription', { name: selectedUser?.displayName })
                 : t('admin.activeUsers.dialogs.deleteDescription', { name: selectedUser?.displayName })
               }
@@ -242,8 +205,8 @@ export default function SearchUserPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isActionLoading}>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={dialogAction === 'reset' ? handleReset : handleDelete} 
+            <AlertDialogAction
+              onClick={dialogAction === 'reset' ? handleReset : handleDelete}
               disabled={isActionLoading}
               className={dialogAction === 'delete' ? 'bg-destructive hover:bg-destructive/90' : ''}
             >
@@ -280,7 +243,7 @@ export default function SearchUserPage() {
             </Select>
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isActionLoading} onClick={() => {setDialogAction(null); setSelectedUser(null);}}>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isActionLoading} onClick={() => { setDialogAction(null); setSelectedUser(null); }}>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleUpdateSubscription}
               disabled={isActionLoading}

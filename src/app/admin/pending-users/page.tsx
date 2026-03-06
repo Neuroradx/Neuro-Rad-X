@@ -3,8 +3,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -34,9 +32,7 @@ export default function PendingUsersPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [pendingUsers, setPendingUsers] = useState<UserProfile[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
@@ -80,13 +76,9 @@ export default function PendingUsersPage() {
     const user = auth.currentUser;
     if (user) {
       setCurrentUser(user);
-      setIsAdmin(true); // Parent AdminLayout guarantees this
       fetchUsers(currentPage, user.uid);
-    } else {
-      router.push('/auth/login');
     }
-    setIsAuthLoading(false);
-  }, [router, currentPage, fetchUsers]);
+  }, [currentPage, fetchUsers]);
 
   const handleApprove = async () => {
     if (!selectedUser || !selectedUser.email || !selectedUser.id || !currentUser) return;
@@ -140,28 +132,6 @@ export default function PendingUsersPage() {
   };
 
 
-  if (isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!isAdmin && !isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertTitle>{t('admin.accessDenied.title')}</AlertTitle>
-          <AlertDescription>{fetchError || t('admin.accessDenied.description')}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">
-          {t('admin.accessDenied.backToDashboard')}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <>

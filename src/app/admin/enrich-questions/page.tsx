@@ -2,9 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { getQuestionEnrichmentStats, enrichQuestionsWithSources } from '@/actions/enrichment-actions';
 import { Button } from '@/components/ui/button';
@@ -20,7 +18,6 @@ export default function EnrichQuestionsPage() {
   const router = useRouter();
 
   const [currentUserUid, setCurrentUserUid] = useState<string | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [stats, setStats] = useState<{ total: number; enriched: number } | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [isEnriching, setIsEnriching] = useState(false);
@@ -49,19 +46,11 @@ export default function EnrichQuestionsPage() {
   }, []);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const isAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-        if (isAdmin) setCurrentUserUid(user.uid);
-        else setCurrentUserUid(null);
-        if (!isAdmin) router.push('/admin/dashboard');
-      } else {
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-    return () => unsub();
-  }, [router]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUserUid(user.uid);
+    }
+  }, []);
 
   useEffect(() => {
     if (!currentUserUid) return;
@@ -92,18 +81,18 @@ export default function EnrichQuestionsPage() {
     while (isRunningRef.current) {
       try {
         const result = await enrichQuestionsWithSources(BATCH_SIZE, lastScannedDocIdRef.current, currentUserUid!);
-        
+
         if (result.success) {
-          lastScannedDocIdRef.current = result.nextCursor;
-          setLastRunResult({ processed: result.processed, updated: result.updated });
+          lastScannedDocIdRef.current = result.nextCursor ?? null;
+          setLastRunResult({ processed: result.processed || 0, updated: result.updated || 0 });
           setSessionUpdatedCount(prev => prev + (result.updated || 0));
         } else {
           throw new Error(result.error || "A batch failed during auto-enrichment.");
         }
-        
+
         // After a successful batch, refresh the overall stats for the UI
         await fetchStats(currentUserUid);
-        
+
         // If there's no next cursor, the collection has been fully scanned.
         if (!lastScannedDocIdRef.current) {
           console.log("Enrichment process reached the end of the collection.");
@@ -124,17 +113,10 @@ export default function EnrichQuestionsPage() {
     setIsEnriching(false);
     await fetchStats(currentUserUid); // Final stats refresh
   };
-  
+
   const enrichmentPercentage = stats ? (stats.total > 0 ? (stats.enriched / stats.total) * 100 : 100) : 0;
   const isComplete = stats ? stats.enriched >= stats.total : false;
 
-  if (isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8 flex justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto py-8">
@@ -181,8 +163,8 @@ export default function EnrichQuestionsPage() {
         <CardFooter className="flex flex-col gap-4 items-center">
           {isComplete && !isLoadingStats && (
             <Alert variant="default" className="w-full bg-green-500/10 border-green-500/50">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertTitle className="text-green-700 font-bold">{t('admin.enrichQuestions.noMoreToEnrich')}</AlertTitle>
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertTitle className="text-green-700 font-bold">{t('admin.enrichQuestions.noMoreToEnrich')}</AlertTitle>
             </Alert>
           )}
 
@@ -210,17 +192,17 @@ export default function EnrichQuestionsPage() {
 
           {isEnriching && (
             <div className="text-sm text-muted-foreground animate-pulse">
-                {t('admin.enrichQuestions.autoRunningStatus')}
+              {t('admin.enrichQuestions.autoRunningStatus')}
             </div>
           )}
 
           {sessionUpdatedCount > 0 && (
-             <Alert className="w-full">
-                <Wand2 className="h-4 w-4" />
-                <AlertTitle>{t('admin.enrichQuestions.sessionUpdatedLabel')}</AlertTitle>
-                <AlertDescription>
-                    {t('admin.enrichQuestions.sessionUpdatedCount', { count: sessionUpdatedCount.toString() })}
-                </AlertDescription>
+            <Alert className="w-full">
+              <Wand2 className="h-4 w-4" />
+              <AlertTitle>{t('admin.enrichQuestions.sessionUpdatedLabel')}</AlertTitle>
+              <AlertDescription>
+                {t('admin.enrichQuestions.sessionUpdatedCount', { count: sessionUpdatedCount.toString() })}
+              </AlertDescription>
             </Alert>
           )}
         </CardFooter>

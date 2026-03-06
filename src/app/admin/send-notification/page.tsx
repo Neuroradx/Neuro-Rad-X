@@ -7,8 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { checkIsAdmin } from '@/lib/admin-check';
+import { type User as FirebaseUser } from 'firebase/auth';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,9 +78,7 @@ function SendNotificationContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(auth.currentUser);
   const [isSending, setIsSending] = useState(false);
 
   const [targetUser, setTargetUser] = useState<UserProfile | null>(null);
@@ -109,32 +106,11 @@ function SendNotificationContent() {
 
   const watchedUserId = form.watch('userId');
 
-  const fetchAdminStatus = useCallback(async (user: FirebaseUser) => {
-    setIsAuthLoading(true);
-    try {
-      setIsAdmin(await checkIsAdmin({ uid: user.uid, email: user.email ?? null }));
-    } catch (error) {
-      console.error("Error fetching admin status:", error);
-      setIsAdmin(false);
-    } finally {
-      setIsAuthLoading(false);
+  useEffect(() => {
+    if (auth.currentUser) {
+      setCurrentUser(auth.currentUser);
     }
   }, []);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-        fetchAdminStatus(user);
-      } else {
-        setCurrentUser(null);
-        setIsAdmin(false);
-        setIsAuthLoading(false);
-        router.push('/auth/login');
-      }
-    });
-    return () => unsubscribe();
-  }, [router, fetchAdminStatus]);
 
   useEffect(() => {
     const userIdFromQuery = searchParams.get('userId');
@@ -197,7 +173,7 @@ function SendNotificationContent() {
   };
 
   const onSubmit = async (data: SendNotificationFormValues) => {
-    if (!currentUser || !isAdmin) {
+    if (!currentUser) {
       toast({ variant: "destructive", title: t('toast.errorTitle'), description: t('admin.accessDenied.description') });
       return;
     }
@@ -244,25 +220,6 @@ function SendNotificationContent() {
     }
   };
 
-  if (isAuthLoading) {
-    return <div className="container mx-auto py-8 flex justify-center items-center min-h-[60vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  }
-
-  if (!isAdmin && !isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8">
-        <Alert variant="destructive">
-          <ShieldAlert className="h-4 w-4" />
-          <UIAlertTitle>{t('admin.accessDenied.title')}</UIAlertTitle>
-          <AlertDescription>{t('admin.accessDenied.description')}</AlertDescription>
-        </Alert>
-        <Button onClick={() => router.push('/dashboard')} className="mt-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {t('admin.accessDenied.backToDashboard')}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto py-8">
@@ -464,7 +421,7 @@ function SendNotificationContent() {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={isSending || isFetchingUser || !targetUser || !currentUser || !isAdmin}>
+              <Button type="submit" disabled={isSending || isFetchingUser || !targetUser || !currentUser}>
                 {isSending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 <Send className="mr-2 h-4 w-4" /> {t('admin.sendNotification.sendButton')}
               </Button>

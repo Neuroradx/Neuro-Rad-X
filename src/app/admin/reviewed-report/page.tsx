@@ -2,9 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
 import { useTranslation } from '@/hooks/use-translation';
 import { fetchReviewerStats } from '@/actions/user-data-actions';
 import { Button } from '@/components/ui/button';
@@ -17,13 +15,13 @@ import { Loader2, ArrowLeft, ClipboardCheck, AlertCircle } from 'lucide-react';
 import type { UserProfile } from '@/types';
 
 type ReviewerStat = {
-    id: string;
-    displayName: string;
-    email: string;
-    subscriptionLevel: string;
-    avatarUrl?: string;
-    reviewedCount: number;
-    editedCount: number;
+  id: string;
+  displayName: string;
+  email: string;
+  subscriptionLevel: string;
+  avatarUrl?: string;
+  reviewedCount: number;
+  editedCount: number;
 };
 
 export default function ReviewedReportPage() {
@@ -31,7 +29,6 @@ export default function ReviewedReportPage() {
   const router = useRouter();
 
   const [currentUserUid, setCurrentUserUid] = useState<string | null>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [stats, setStats] = useState<ReviewerStat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,22 +52,12 @@ export default function ReviewedReportPage() {
   }, []);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const isAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-        if (isAdmin) {
-          setCurrentUserUid(user.uid);
-          fetchStats(user.uid);
-        } else {
-          router.push('/admin/dashboard');
-        }
-      } else {
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-    return () => unsub();
-  }, [router, fetchStats]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUserUid(user.uid);
+      fetchStats(user.uid);
+    }
+  }, [fetchStats]);
 
   const getAvatarFallback = (name: string, email: string) => {
     if (name && name.trim()) {
@@ -84,13 +71,6 @@ export default function ReviewedReportPage() {
     return 'U';
   };
 
-  if (isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8 flex justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto py-8">

@@ -64,6 +64,16 @@ export async function GET(request: Request) {
             return NextResponse.json(status);
         }
 
+        // Privacy Guard: Only allow admins to see infrastructure details
+        if (decodedToken.admin !== true) {
+            return NextResponse.json({
+                error: 'Unauthorized. Infrastructure diagnostic information is restricted to administrators.',
+                uid: status.uid,
+                email: status.email,
+                isAdmin: false
+            }, { status: 403 });
+        }
+
         // Check custom claims
         try {
             const userRecord = await adminAuth.getUser(decodedToken.uid);

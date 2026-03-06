@@ -3,9 +3,8 @@
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { checkIsAdmin } from '@/lib/admin-check';
+import { type User as FirebaseUser } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -55,9 +54,7 @@ function ReviewSessionContent() {
   const subcategory = searchParams.get('subcategory');
   const idFromUrl = searchParams.get('id');
 
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(auth.currentUser);
   const [queue, setQueue] = useState<string[]>([]);
   const [reviewedCount, setReviewedCount] = useState<number>(0);
   const [totalCount, setTotalCount] = useState<number>(0);
@@ -114,19 +111,12 @@ function ReviewSessionContent() {
   );
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userIsAdmin = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-        setIsAdmin(userIsAdmin);
-        setCurrentUser(user);
-        await fetchList(user.uid, idFromUrl);
-      } else {
-        router.push('/auth/login');
-      }
-      setIsAuthLoading(false);
-    });
-    return () => unsubscribe();
-  }, [router, idFromUrl, fetchList]);
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser(user);
+      fetchList(user.uid, idFromUrl);
+    }
+  }, [idFromUrl, fetchList]);
 
   const currentId = queue[currentIndex] ?? null;
 
@@ -259,17 +249,17 @@ function ReviewSessionContent() {
       setCurrentQuestion((prev) =>
         prev
           ? {
-              ...prev,
-              translations: {
-                ...prev.translations,
-                en: {
-                  questionText: inlineQuestionText,
-                  options: inlineOptions,
-                  explanation: inlineExplanation,
-                },
+            ...prev,
+            translations: {
+              ...prev.translations,
+              en: {
+                questionText: inlineQuestionText,
+                options: inlineOptions,
+                explanation: inlineExplanation,
               },
-              scientificArticle: { article_reference: inlineReference || null },
-            }
+            },
+            scientificArticle: { article_reference: inlineReference || null },
+          }
           : null
       );
       setIsEditing(false);
@@ -302,6 +292,9 @@ function ReviewSessionContent() {
     if (result.success && result.data) {
       const data = result.data;
       const logs: { type: 'info' | 'success' | 'warning' | 'error'; text: string }[] = [];
+      if (data.used_broad_query) {
+        logs.push({ type: 'warning', text: 'Main query returned 0 results. Used broad fallback query.' });
+      }
       if (data.articleTitle && data.articleUrl) {
         const refText = `${data.articleTitle}. Available at: ${data.articleUrl}`;
         setInlineReference(refText);
@@ -336,6 +329,7 @@ function ReviewSessionContent() {
         questionStem: currentQuestion.translations?.en?.questionText ?? '',
         options: options.map((o) => o.text),
         correctAnswerIndex: correctIdx,
+        explanation: currentQuestion.translations?.en?.explanation ?? null,
         articleReference: currentQuestion.scientificArticle?.article_reference ?? null,
       },
       currentUser.uid
@@ -366,30 +360,7 @@ function ReviewSessionContent() {
   const showEmpty = !isListLoading && queue.length === 0 && !currentQuestion;
   const showQuestion = currentQuestion && !isLoadingQuestion;
 
-  if (isAuthLoading) {
-    return (
-      <div className="container mx-auto py-8">
-        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-6 rounded-xl border bg-card p-12">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="text-muted-foreground">{t('admin.reviewQuestions.loadingShort')}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!currentUser || !isAdmin) {
-    return (
-      <div className="container mx-auto py-12">
-        <Alert variant="destructive">
-          <AlertTitle>{t('admin.reviewQuestions.accessDenied')}</AlertTitle>
-          <AlertDescription>{t('admin.reviewQuestions.adminRequired')}</AlertDescription>
-        </Alert>
-        <Button asChild className="mt-4">
-          <Link href="/dashboard">{t('admin.reviewQuestions.backToHome')}</Link>
-        </Button>
-      </div>
-    );
-  }
+  if (!currentUser) return null;
 
   return (
     <div className="container mx-auto py-8">
@@ -419,15 +390,15 @@ function ReviewSessionContent() {
           <CardTitle className="text-lg">{t('admin.reviewQuestions.reviewProgressTitle')}</CardTitle>
           <CardDescription>
             {t('admin.reviewQuestions.counter', {
-              reviewed: reviewedCount,
-              total: totalCount,
-              pending: pendingCount,
+              reviewed: reviewedCount.toString(),
+              total: totalCount.toString(),
+              pending: pendingCount.toString(),
             })}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            {t('admin.reviewQuestions.queueInSession', { count: queue.length })}
+            {t('admin.reviewQuestions.queueInSession', { count: queue.length.toString() })}
             {category && (
               <span className="ml-2">
                 {t('admin.reviewQuestions.filterLabel', { category, subcategory: subcategory ? ` / ${subcategory}` : '' })}
@@ -652,8 +623,8 @@ function ReviewSessionContent() {
           {/* Quality card */}
           <Card className="border-primary/10">
             <CardHeader className="pb-2">
-<CardTitle className="text-base">{t('admin.reviewQuestions.qualityCheckTitle')}</CardTitle>
-            <CardDescription>{t('admin.reviewQuestions.qualityCheckDescription')}</CardDescription>
+              <CardTitle className="text-base">{t('admin.reviewQuestions.qualityCheckTitle')}</CardTitle>
+              <CardDescription>{t('admin.reviewQuestions.qualityCheckDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button variant="outline" size="sm" onClick={handleQualityCheck} disabled={isQualityChecking}>
@@ -684,12 +655,25 @@ function ReviewSessionContent() {
                     {qualityResult.correctAnswerMessage && <p className="mt-1 text-muted-foreground">{qualityResult.correctAnswerMessage}</p>}
                   </div>
                   <div className="p-2 rounded border">
+                    <span className="font-medium">{t('admin.reviewQuestions.explanationLabel') ?? 'Explanation Clarity'}: </span>
+                    <span className={qualityResult.explanationClarity === 'pass' ? 'text-green-600' : qualityResult.explanationClarity === 'fail' ? 'text-destructive' : 'text-amber-600'}>
+                      {qualityResult.explanationClarity}
+                    </span>
+                    {qualityResult.explanationMessage && <p className="mt-1 text-muted-foreground">{qualityResult.explanationMessage}</p>}
+                  </div>
+                  <div className="p-2 rounded border">
                     <span className="font-medium">{t('admin.reviewQuestions.qualityReference')}: </span>
                     <span className={qualityResult.referencePlausible === 'pass' ? 'text-green-600' : qualityResult.referencePlausible === 'fail' ? 'text-destructive' : 'text-amber-600'}>
                       {qualityResult.referencePlausible}
                     </span>
                     {qualityResult.referenceMessage && <p className="mt-1 text-muted-foreground">{qualityResult.referenceMessage}</p>}
                   </div>
+                  {qualityResult.evidenceLevel && qualityResult.evidenceLevel !== 'Unknown' && (
+                    <div className="p-2 rounded border col-span-1 sm:col-span-2 bg-muted/20">
+                      <span className="font-medium">Evidence Level / Context: </span>
+                      <span className="text-primary font-semibold">{qualityResult.evidenceLevel}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

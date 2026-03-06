@@ -41,7 +41,7 @@ Este directorio utiliza el paradigma del App Router de Next.js. La lógica para 
 -   **`layout.tsx`**: El layout raíz. Contiene la lógica para determinar si se debe mostrar el `AppShell` (el layout principal de la aplicación con barra lateral) o un diseño simple para las páginas públicas y de autenticación.
 -   **`globals.css`**: Estilos globales y configuración del tema de Tailwind CSS.
 -   **`dashboard/page.tsx`**: El panel de control principal del usuario.
--   **`study/[mode]/page.tsx`**: Página dinámica para los diferentes modos de estudio (Tutor, Examen, Tarjetas de memoria).
+-   **`study/[mode]/page.tsx`**: Página dinámica para los diferentes modos de estudio (Tutor, Examen, Tarjetas de memoria). Soporta el parámetro de URL `?ids=id1,id2,...` para cargar preguntas concretas (p. ej. desde Search Question).
 -   **`progress/page.tsx`**: Página para que los usuarios vean su progreso de aprendizaje.
 -   **`bookmarks/page.tsx`**: Muestra las preguntas que el usuario ha marcado.
 -   **`my-notes/page.tsx`**: Página para gestionar las notas del usuario sobre las preguntas.
@@ -59,6 +59,7 @@ Este directorio utiliza el paradigma del App Router de Next.js. La lógica para 
     -   `pending-users/page.tsx`: Aprobar nuevos registros de usuarios.
     -   `active-users/page.tsx`: Ver y gestionar todos los usuarios.
     -   `search-user/page.tsx`: Buscar un usuario concreto por ID o correo.
+    -   `search-question/page.tsx`: Buscar preguntas por texto (Algolia). Muestra hasta 10 resultados en tarjetas; permite elegir cuántas usar y lanzar sesiones de Tutor o Examen con ellas.
     -   `users-by-subscription/page.tsx`: Listado de usuarios agrupados por tipo de suscripción.
     -   `reported-questions/page.tsx`: Revisar los informes de problemas enviados por los usuarios.
     -   `review-questions/page.tsx`: Entrada al flujo de revisión de preguntas (filtros por categoría/subcategoría).

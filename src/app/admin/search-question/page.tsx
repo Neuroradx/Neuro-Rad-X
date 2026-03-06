@@ -12,25 +12,30 @@ export default function SearchQuestionPage() {
 
   return (
     <div className="container mx-auto py-8 max-w-2xl">
-      <Button asChild variant="ghost" className="mb-6">
+      <Button asChild variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg">
         <Link href="/admin/dashboard" className="flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" />
           {t("admin.backToAdminDashboard")}
         </Link>
       </Button>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-6 w-6 text-primary" />
-            {t("admin.searchQuestion.title")}
-          </CardTitle>
-          <CardDescription>
-            {t("admin.searchQuestion.description")}
-          </CardDescription>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Search className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("admin.searchQuestion.title")}</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("admin.searchQuestion.description")}</p>
+        </div>
+      </div>
+
+      <Card className="rounded-xl border-border/80 shadow-lg">
+        <CardHeader className="border-b border-border/50 bg-muted/10">
+          <CardTitle>{t("admin.searchQuestion.title")}</CardTitle>
+          <CardDescription>{t("admin.searchQuestion.description")}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <AlgoliaSearchBar />
+        <CardContent className="overflow-visible">
+          <AlgoliaSearchBar variant="inline" />
         </CardContent>
       </Card>
     </div>

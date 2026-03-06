@@ -429,7 +429,11 @@
     "searchQuestion": {
       "title": "Buscar pregunta",
       "description": "Busca preguntas por texto para encontrarlas y editarlas.",
-      "resultsCount": "{{count}} pregunta(s) encontrada(s)"
+      "resultsCount": "{{count}} pregunta(s) encontrada(s)",
+      "numQuestionsLabel": "Número de preguntas para la sesión",
+      "numQuestionsHelper": "Elige de 1 a {{max}} preguntas.",
+      "useInTutor": "Usar en Tutor",
+      "useInExam": "Usar en Examen"
     },
     "accessDenied": {
       "title": "Acceso denegado",
@@ -446,6 +450,7 @@
     "userInfoCard": {
       "userId": "ID de usuario",
       "role": "Rol",
+      "ipAddress": "IP",
       "joined": "Unido",
       "lastLogin": "Último acceso",
       "statsAnswered": "Respondidas",
@@ -494,6 +499,8 @@
       "noPendingTitle": "Sin usuarios pendientes",
       "noPendingDesc": "Todos los registros han sido procesados.",
       "approveButton": "Aprobar",
+      "blockButton": "Bloquear",
+      "deleteButton": "Eliminar",
       "refreshButton": "Actualizar",
       "approveSuccessTitle": "Usuario aprobado",
       "approveSuccessDesc": "{{email}} ya puede entrar.",
@@ -501,8 +508,17 @@
       "dialogs": {
         "approveTitle": "¿Aprobar usuario?",
         "approveDescription": "Confirmar aprobación para {{email}}.",
-        "approveConfirm": "Aprobar"
-      }
+        "approveConfirm": "Aprobar",
+        "deleteTitle": "¿Eliminar usuario?",
+        "deleteDescription": "Esto eliminará permanentemente a {{email}} y todos sus datos.",
+        "deleteConfirm": "Eliminar",
+        "blockTitle": "¿Bloquear usuario?",
+        "blockDescription": "Bloquear a {{email}} para que no pueda acceder a NeuroRadX sin borrar sus datos.",
+        "blockConfirm": "Bloquear"
+      },
+      "blockSuccessTitle": "Usuario bloqueado",
+      "blockSuccessDesc": "El usuario {{email}} ha sido bloqueado.",
+      "blockErrorDesc": "Error al bloquear usuario."
     },
     "reportedQuestionsPage": {
       "description": "Gestionar problemas reportados por usuarios.",
@@ -792,6 +808,15 @@
     }
   },
   "studyMode": {
+    "stepLabel": "Configura tu sesión",
+    "sections": {
+      "questionPoolTitle": "Banco de preguntas",
+      "questionPoolDescription": "Elige qué temas y dificultades quieres practicar.",
+      "questionPoolAllHelper": "Incluye todos los temas.",
+      "sessionSettingsTitle": "Configuración de la sesión",
+      "sessionSettingsDescription": "Decide cuántas preguntas quieres responder.",
+      "numQuestionsHelper": "Entre 1 y 100 preguntas por sesión."
+    },
     "categoryLabel": "Categoría",
     "subcategoryLabel": "Subcategoría",
     "difficultyLabel": "Dificultad",
@@ -884,9 +909,14 @@
     "errorEmailInUse": "El email ya existe.",
     "errorWeakPassword": "Contraseña débil.",
     "errorTooManyRequests": "Demasiados intentos.",
+    "errorCaptcha": "Completa la verificación CAPTCHA.",
+    "errorUnexpected": "Error inesperado. Inténtalo de nuevo.",
     "errorGenericWithMessage": "Error: {{message}}",
+    "countryLabel": "País (Opcional)",
+    "institutionLabel": "Institución (Opcional)",
     "couponLabel": "Código cupón (Opcional)",
-    "couponPlaceholder": "Introduce código"
+    "couponPlaceholder": "Introduce código",
+    "captchaLabel": "Completa la verificación debajo"
   },
   "loginForm": {
     "title": "Bienvenido",

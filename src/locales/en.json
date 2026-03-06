@@ -414,7 +414,11 @@
     "searchQuestion": {
       "title": "Search Question",
       "description": "Search questions by text to find and edit them.",
-      "resultsCount": "{{count}} question(s) found"
+      "resultsCount": "{{count}} question(s) found",
+      "numQuestionsLabel": "Number of questions for the session",
+      "numQuestionsHelper": "Choose 1 to {{max}} questions.",
+      "useInTutor": "Use in Tutor",
+      "useInExam": "Use in Exam"
     },
     "searchUser": {
       "title": "Search User",
@@ -451,6 +455,7 @@
     "userInfoCard": {
       "userId": "User ID",
       "role": "Role",
+      "ipAddress": "IP Address",
       "joined": "Joined",
       "lastLogin": "Last Login",
       "statsAnswered": "Answered",
@@ -499,6 +504,8 @@
       "noPendingTitle": "No Pending Users",
       "noPendingDesc": "All new registrations have been processed.",
       "approveButton": "Approve",
+      "blockButton": "Block",
+      "deleteButton": "Delete",
       "refreshButton": "Refresh",
       "approveSuccessTitle": "User Approved",
       "approveSuccessDesc": "User {{email}} can now log in.",
@@ -506,8 +513,17 @@
       "dialogs": {
         "approveTitle": "Approve User?",
         "approveDescription": "Confirm approval for {{email}}.",
-        "approveConfirm": "Approve"
-      }
+        "approveConfirm": "Approve",
+        "deleteTitle": "Delete User?",
+        "deleteDescription": "This will permanently delete {{email}} and all associated data.",
+        "deleteConfirm": "Delete",
+        "blockTitle": "Block User?",
+        "blockDescription": "Block {{email}} from accessing NeuroRadX without deleting their data.",
+        "blockConfirm": "Block"
+      },
+      "blockSuccessTitle": "User Blocked",
+      "blockSuccessDesc": "User {{email}} has been blocked.",
+      "blockErrorDesc": "Failed to block user."
     },
     "reportedQuestionsPage": {
       "description": "Review and manage issues reported by users.",
@@ -799,7 +815,7 @@
   "studyModes": {
     "tutor": {
       "name": "Tutor",
-      "description": "Get instant feedback and detailed explanations as you go."
+      "description": "Configure your practice session and get instant feedback."
     },
     "exam": {
       "name": "Exam",
@@ -811,6 +827,15 @@
     }
   },
   "studyMode": {
+    "stepLabel": "Configure your session",
+    "sections": {
+      "questionPoolTitle": "Question pool",
+      "questionPoolDescription": "Choose which topics and difficulties you want to practice.",
+      "questionPoolAllHelper": "Includes all topics.",
+      "sessionSettingsTitle": "Session settings",
+      "sessionSettingsDescription": "Decide how many questions you want to answer.",
+      "numQuestionsHelper": "Between 1 and 100 questions per session."
+    },
     "categoryLabel": "Category",
     "subcategoryLabel": "Subcategory",
     "difficultyLabel": "Difficulty",
@@ -903,9 +928,14 @@
     "errorEmailInUse": "This email is already registered.",
     "errorWeakPassword": "Password is too weak.",
     "errorTooManyRequests": "Too many attempts. Please try again later.",
+    "errorCaptcha": "Please complete the CAPTCHA verification.",
+    "errorUnexpected": "An unexpected error occurred. Please try again.",
     "errorGenericWithMessage": "Registration error: {{message}}",
+    "countryLabel": "Country (Optional)",
+    "institutionLabel": "Institution (Optional)",
     "couponLabel": "Coupon Code (Optional)",
-    "couponPlaceholder": "Enter code"
+    "couponPlaceholder": "Enter code",
+    "captchaLabel": "Complete the verification below"
   },
   "loginForm": {
     "title": "Welcome Back",

@@ -3,8 +3,8 @@
 
 // src/app/study/[mode]/page.tsx
 
-import { Suspense, useEffect, useState, useCallback, useMemo } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { Suspense, useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import {
@@ -54,6 +54,7 @@ const CATEGORIES_FOR_FILTER = Object.keys(MENU_DATA.main_localization);
 export default function StudyPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const { t, language } = useTranslation();
   const { toast } = useToast();
 
@@ -232,6 +233,43 @@ export default function StudyPage() {
     }
   }, [currentQuestionIndex, questions, firebaseUser, isBookmarked, t, toast]);
 
+  const handleSaveNotes = useCallback(async () => {
+    const q = questions[currentQuestionIndex];
+    if (!q?.id) return;
+
+    if (!firebaseUser || firebaseUser.isAnonymous) {
+      toast({
+        title: t('toast.loginRequiredTitle'),
+        description: t('toast.loginRequiredNotes'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const noteRef = doc(db, 'users', firebaseUser.uid, 'questionNotes', q.id);
+      await setDoc(
+        noteRef,
+        {
+          notes: userNotes,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+      toast({
+        title: t('toast.notesSavedTitle'),
+        description: t('toast.notesSavedDescription'),
+      });
+    } catch (e) {
+      console.error('Error saving note from study mode:', e);
+      toast({
+        title: t('toast.errorTitle'),
+        description: t('toast.notesError'),
+        variant: 'destructive',
+      });
+    }
+  }, [questions, currentQuestionIndex, firebaseUser, userNotes, t, toast]);
+
   const fetchAndSetQuestions = async (questionIds: string[]) => {
     try {
       const questionDocs = await Promise.all(questionIds.map(id => getDoc(doc(db, 'questions', id))));
@@ -283,6 +321,19 @@ export default function StudyPage() {
       setIsStartingReviewSession(false);
     }
   };
+
+  // When ?ids= is present (e.g. from Search Question), load those questions and start session
+  const idsProcessedRef = useRef(false);
+  useEffect(() => {
+    const idsParam = searchParams.get('ids');
+    if (!idsParam || idsProcessedRef.current) return;
+    idsProcessedRef.current = true;
+    const ids = idsParam.split(',').map((s) => s.trim()).filter(Boolean);
+    if (ids.length === 0) return;
+    setIsLoadingQuestions(true);
+    setQuestionFetchError(null);
+    fetchAndSetQuestions(ids);
+  }, [searchParams]);
   
   const startSession = async () => {
     setIsLoadingQuestions(true);
@@ -545,7 +596,7 @@ export default function StudyPage() {
                 handleNextQuestion={handleNextQuestion}
                 handlePreviousQuestion={handlePreviousQuestion}
                 handleBookmarkToggle={handleBookmarkToggle}
-                handleSaveNotes={async () => {}}
+                handleSaveNotes={handleSaveNotes}
                 setUserNotes={setUserNotes}
                 handleRequestExamExit={() => setIsConfigScreen(true)}
                 firebaseUser={firebaseUser}

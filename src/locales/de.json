@@ -424,7 +424,11 @@
     "searchQuestion": {
       "title": "Frage suchen",
       "description": "Suchen Sie Fragen nach Text, um sie zu finden und zu bearbeiten.",
-      "resultsCount": "{{count}} Frage(n) gefunden"
+      "resultsCount": "{{count}} Frage(n) gefunden",
+      "numQuestionsLabel": "Anzahl der Fragen für die Sitzung",
+      "numQuestionsHelper": "Wählen Sie 1 bis {{max}} Fragen.",
+      "useInTutor": "Im Tutor verwenden",
+      "useInExam": "In Prüfung verwenden"
     },
     "accessDenied": {
       "title": "Zugriff verweigert",
@@ -441,6 +445,7 @@
     "userInfoCard": {
       "userId": "Benutzer-ID",
       "role": "Rolle",
+      "ipAddress": "IP-Adresse",
       "joined": "Beigetreten",
       "lastLogin": "Letzter Login",
       "statsAnswered": "Beantwortet",
@@ -489,6 +494,8 @@
       "noPendingTitle": "Keine ausstehenden Benutzer",
       "noPendingDesc": "Alle Registrierungen wurden bearbeitet.",
       "approveButton": "Genehmigen",
+      "blockButton": "Blockieren",
+      "deleteButton": "Löschen",
       "refreshButton": "Aktualisieren",
       "approveSuccessTitle": "Benutzer genehmigt",
       "approveSuccessDesc": "Benutzer {{email}} kann sich jetzt anmelden.",
@@ -496,8 +503,17 @@
       "dialogs": {
         "approveTitle": "Benutzer genehmigen?",
         "approveDescription": "Bestätigen Sie die Genehmigung für {{email}}.",
-        "approveConfirm": "Genehmigen"
-      }
+        "approveConfirm": "Genehmigen",
+        "deleteTitle": "Benutzer löschen?",
+        "deleteDescription": "Dies löscht {{email}} und alle zugehörigen Daten dauerhaft.",
+        "deleteConfirm": "Löschen",
+        "blockTitle": "Benutzer blockieren?",
+        "blockDescription": "Blockieren Sie {{email}} für den Zugriff auf NeuroRadX, ohne seine Daten zu löschen.",
+        "blockConfirm": "Blockieren"
+      },
+      "blockSuccessTitle": "Benutzer blockiert",
+      "blockSuccessDesc": "Benutzer {{email}} wurde blockiert.",
+      "blockErrorDesc": "Benutzer konnte nicht blockiert werden."
     },
     "reportedQuestionsPage": {
       "description": "Von Benutzern gemeldete Probleme verwalten.",
@@ -787,6 +803,15 @@
     }
   },
   "studyMode": {
+    "stepLabel": "Sitzung konfigurieren",
+    "sections": {
+      "questionPoolTitle": "Fragenpool",
+      "questionPoolDescription": "Wählen Sie, welche Themen und Schwierigkeitsgrade Sie üben möchten.",
+      "questionPoolAllHelper": "Beinhaltet alle Themen.",
+      "sessionSettingsTitle": "Sitzungseinstellungen",
+      "sessionSettingsDescription": "Legen Sie fest, wie viele Fragen Sie beantworten möchten.",
+      "numQuestionsHelper": "Zwischen 1 und 100 Fragen pro Sitzung."
+    },
     "categoryLabel": "Kategorie",
     "subcategoryLabel": "Unterkategorie",
     "difficultyLabel": "Schwierigkeit",
@@ -879,9 +904,14 @@
     "errorEmailInUse": "Diese E-Mail ist bereits registriert.",
     "errorWeakPassword": "Das Passwort ist zu schwach.",
     "errorTooManyRequests": "Zu viele Versuche. Bitte später versuchen.",
+    "errorCaptcha": "Bitte schließen Sie die CAPTCHA-Überprüfung ab.",
+    "errorUnexpected": "Unerwarteter Fehler. Bitte erneut versuchen.",
     "errorGenericWithMessage": "Registrierungsfehler: {{message}}",
+    "countryLabel": "Land (Optional)",
+    "institutionLabel": "Institution (Optional)",
     "couponLabel": "Gutscheincode (Optional)",
-    "couponPlaceholder": "Code eingeben"
+    "couponPlaceholder": "Code eingeben",
+    "captchaLabel": "Schließen Sie die Überprüfung unten ab"
   },
   "loginForm": {
     "title": "Willkommen zurück",

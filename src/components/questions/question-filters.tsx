@@ -12,7 +12,7 @@ import { MAIN_CATEGORIES, DIFFICULTY_FILTER_OPTIONS } from "@/lib/constants";
 import { getTopicDisplayName } from "@/lib/formatting";
 
 // "Other" in UI maps to "General" in Firestore data typically.
-const localizationsListForDropdown: Array<'all' | QuestionLocalization> = ["all", ...MAIN_CATEGORIES, "Other"];
+const localizationsListForDropdown: Array<'all' | QuestionLocalization | 'Other'> = ["all", ...MAIN_CATEGORIES, "Other"];
 
 
 interface QuestionFiltersProps {

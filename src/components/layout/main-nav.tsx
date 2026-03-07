@@ -81,7 +81,7 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
   const renderNavItem = (item: NavItem, isSubItem = false) => {
     const IconComponent = item.icon ? iconMap[item.icon] : null;
     const isActive = item.exactMatch ? pathname === item.href : (item.href ? pathname.startsWith(item.href) : false);
-    const translatedTitle = t(item.title);
+    const translatedTitle = t(item.title ?? '');
     
     const buttonContent = (
       <>
@@ -130,8 +130,8 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
         );
       }
       return (
-        <Accordion type="single" collapsible className="w-full" key={item.title}>
-          <AccordionItem value={item.title} className="border-b-0">
+        <Accordion type="single" collapsible className="w-full" key={item.title ?? item.href ?? 'nav-item'}>
+          <AccordionItem value={item.title ?? item.href ?? 'nav-item'} className="border-b-0">
             <AccordionTrigger
               className={cn(
                 "flex items-center justify-between rounded-lg px-3 py-2.5 text-[1.125rem] font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:no-underline transition-colors",
@@ -149,9 +149,9 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
               <SidebarMenuSub>
                 {item.subItems.map((subItem) => {
                   const SubIconComponent = subItem.icon ? iconMap[subItem.icon] : null;
-                  const translatedSubItemTitle = t(subItem.title);
+                  const translatedSubItemTitle = t(subItem.title ?? '');
                   return (
-                    <SidebarMenuSubItem key={subItem.title}>
+                    <SidebarMenuSubItem key={subItem.title ?? subItem.href ?? 'sub'}>
                       <Link href={subItem.href || "#"} legacyBehavior passHref>
                         <SidebarMenuSubButton
                           isActive={pathname === subItem.href}

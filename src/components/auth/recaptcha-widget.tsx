@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState, forwardRef, useImperativeHandle } from "react";
+import { publicEnv } from "@/lib/env";
 
 const SCRIPT_V2 = "https://www.google.com/recaptcha/api.js?render=explicit";
 
@@ -34,7 +35,7 @@ export interface ReCaptchaHandle {
 
 export const ReCaptchaWidget = forwardRef<ReCaptchaHandle, ReCaptchaWidgetProps>(
   function ReCaptchaWidget({ siteKey, onTokenChange, theme = "light", className = "", version }, ref) {
-    const versionToUse = version ?? (process.env.NEXT_PUBLIC_RECAPTCHA_VERSION as "2" | "3") ?? "2";
+    const versionToUse = version ?? publicEnv.RECAPTCHA_VERSION;
     const [mountKey] = useState(() => ++recaptchaMountCounter);
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<number | null>(null);

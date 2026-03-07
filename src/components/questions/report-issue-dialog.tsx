@@ -131,15 +131,15 @@ export function ReportIssueDialog({ questionId, questionStem, isOpen, onOpenChan
     }}>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>{t('reportIssueDialog.title')}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle id="report-issue-dialog-title">{t('reportIssueDialog.title')}</DialogTitle>
+          <DialogDescription id="report-issue-dialog-description">
             {t('reportIssueDialog.description')}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <p className="text-sm font-medium">{t('reportIssueDialog.questionStemLabel')}:</p>
-            <p className="text-sm text-muted-foreground border p-2 rounded-md max-h-24 overflow-y-auto">{questionStem}</p>
+            <p className="text-sm font-medium" id="report-issue-question-label">{t('reportIssueDialog.questionStemLabel')}:</p>
+            <p className="text-sm text-muted-foreground border p-2 rounded-md max-h-24 overflow-y-auto" aria-describedby="report-issue-question-label">{questionStem}</p>
           </div>
 
           <div className="space-y-1">
@@ -149,7 +149,11 @@ export function ReportIssueDialog({ questionId, questionStem, isOpen, onOpenChan
               control={form.control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger id="problemType">
+                  <SelectTrigger
+                    id="problemType"
+                    aria-invalid={!!form.formState.errors.problemType}
+                    aria-describedby={form.formState.errors.problemType ? 'problemType-error' : undefined}
+                  >
                     <SelectValue placeholder={t('reportIssueDialog.problemTypePlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -163,7 +167,9 @@ export function ReportIssueDialog({ questionId, questionStem, isOpen, onOpenChan
               )}
             />
             {form.formState.errors.problemType && (
-              <p className="text-xs text-destructive">{form.formState.errors.problemType.message}</p>
+              <p id="problemType-error" className="text-xs text-destructive" role="alert">
+                {form.formState.errors.problemType.message}
+              </p>
             )}
           </div>
 
@@ -174,9 +180,13 @@ export function ReportIssueDialog({ questionId, questionStem, isOpen, onOpenChan
               placeholder={t('reportIssueDialog.descriptionPlaceholder')}
               {...form.register("description")}
               rows={4}
+              aria-invalid={!!form.formState.errors.description}
+              aria-describedby={form.formState.errors.description ? 'description-error' : undefined}
             />
             {form.formState.errors.description && (
-              <p className="text-xs text-destructive">{form.formState.errors.description.message}</p>
+              <p id="description-error" className="text-xs text-destructive" role="alert">
+                {form.formState.errors.description.message}
+              </p>
             )}
           </div>
 
@@ -189,9 +199,13 @@ export function ReportIssueDialog({ questionId, questionStem, isOpen, onOpenChan
               {...form.register("userEmail")}
               disabled={isEmailFieldDisabled}
               className={isEmailFieldDisabled ? "bg-muted/50 cursor-not-allowed" : ""}
+              aria-invalid={!!form.formState.errors.userEmail}
+              aria-describedby={form.formState.errors.userEmail ? 'userEmail-error' : undefined}
             />
              {form.formState.errors.userEmail && (
-              <p className="text-xs text-destructive">{form.formState.errors.userEmail.message}</p>
+              <p id="userEmail-error" className="text-xs text-destructive" role="alert">
+                {form.formState.errors.userEmail.message}
+              </p>
             )}
           </div>
         

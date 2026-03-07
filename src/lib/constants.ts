@@ -49,10 +49,14 @@ export const SETTINGS_NAV_ITEM: NavItem = { title: "nav.settings", href: "/setti
 
 
 export const MOCK_USER: UserProfile = {
-  name: "Dr. Alex Radiologist",
+  uid: "mock-uid",
+  firstName: "Alex",
+  lastName: "Radiologist",
+  displayName: "Dr. Alex Radiologist",
   email: "alex.rad@neuroradx.com",
+  status: "approved",
+  role: "user",
   avatarUrl: "https://placehold.co/100x100.png",
-  role: "specialist",
   subscriptionLevel: "premium",
 };
 

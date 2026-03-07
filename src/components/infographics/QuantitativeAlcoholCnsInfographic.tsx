@@ -136,7 +136,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" />
-                                        <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                         <Bar dataKey="value" name="Prevalence" radius={[0, 8, 8, 0]} barSize={32}>
                                             {wePrevalenceData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
@@ -154,7 +154,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                 </CardHeader>
                                 <ResponsiveContainer width="100%" height={150}>
                                     <PieChart>
-                                        <Tooltip content={<ChartTooltipContent hideLabel />} />
+                                        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                                         <Pie data={weDetectionData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))" >
                                             {weDetectionData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
@@ -187,7 +187,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" />
-                                        <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                         <Bar dataKey="value" name="Percentage" radius={[0, 8, 8, 0]} barSize={32}>
                                             {mriWeSensitivityData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
@@ -208,7 +208,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <CartesianGrid horizontal={false} />
                                         <YAxis dataKey="name" type="category" tickLine={false} tickMargin={10} axisLine={false} width={150} tick={{ fontSize: 10 }} />
                                         <XAxis dataKey="frequency" type="number" unit="%" />
-                                        <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                         <Bar dataKey="frequency" name="Frequency" radius={[0, 8, 8, 0]} barSize={32}>
                                             {mriWeLocationData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
@@ -244,7 +244,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                     </CardHeader>
                                     <ResponsiveContainer width="100%" height={150}>
                                         <PieChart>
-                                            <Tooltip content={<ChartTooltipContent hideLabel />} />
+                                            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                                             <Pie data={odsAudAssociationData} dataKey="value" nameKey="name" innerRadius={30} outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))" >
                                                 {odsAudAssociationData.map((entry) => (
                                                     <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
@@ -278,7 +278,7 @@ const QuantitativeAlcoholCnsInfographic = () => {
                                         <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                         <YAxis unit="%" domain={[0, 20]} />
-                                        <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                         <Bar dataKey="reduction" name="Reduction (%)" radius={[0, 8, 8, 0]} barSize={32}>
                                             {corpusCallosumAtrophyData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />

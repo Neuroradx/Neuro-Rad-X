@@ -53,19 +53,19 @@ export function adaptInfographicCode(code: string): string {
 
   // 6. Remove local component definitions (GradientText, SectionIcon, InfographicSection, ChartTooltipContent)
   adapted = adapted.replace(
-    /const\s+GradientText\s*=\s*\([^)]*\)\s*=>\s*\([^)]*<span[^>]*>[^<]*<\/span>[^)]*\)[^;]*;/gs,
+    /const\s+GradientText\s*=\s*\([^)]*\)\s*=>\s*\([^)]*<span[^>]*>[^<]*<\/span>[^)]*\)[^;]*;/g,
     ''
   );
   adapted = adapted.replace(
-    /const\s+SectionIcon\s*=\s*\([^)]*\)\s*=>\s*\([^)]*<svg[^>]*>[\s\S]*?<\/svg>[^)]*\)[^;]*;/gs,
+    /const\s+SectionIcon\s*=\s*\([^)]*\)\s*=>\s*\([^)]*<svg[^>]*>[\s\S]*?<\/svg>[^)]*\)[^;]*;/g,
     ''
   );
   adapted = adapted.replace(
-    /const\s+InfographicSection\s*=\s*\([^)]*\)\s*=>\s*\([^)]*<Card[\s\S]*?<\/Card>[^)]*\)[^;]*;/gs,
+    /const\s+InfographicSection\s*=\s*\([^)]*\)\s*=>\s*\([^)]*<Card[\s\S]*?<\/Card>[^)]*\)[^;]*;/g,
     ''
   );
   adapted = adapted.replace(
-    /const\s+ChartTooltipContent\s*=\s*\([^)]*\)\s*=>\s*\{[\s\S]*?return\s+null;?\s*\}[^;]*;/gs,
+    /const\s+ChartTooltipContent\s*=\s*\([^)]*\)\s*=>\s*\{[\s\S]*?return\s+null;?\s*\}[^;]*;/g,
     ''
   );
 

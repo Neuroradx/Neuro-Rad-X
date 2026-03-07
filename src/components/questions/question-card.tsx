@@ -9,10 +9,9 @@ import { useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/hooks/use-translation";
 
-const ReportIssueDialog = dynamic(() => import("./report-issue-dialog").then(mod => mod.ReportIssueDialog), {
-  suspense: true,
-});
+const ReportIssueDialog = dynamic(() => import("./report-issue-dialog").then(mod => mod.ReportIssueDialog));
 
 interface QuestionCardProps {
   question: Question;
@@ -21,6 +20,7 @@ interface QuestionCardProps {
 
 export function QuestionCard({ question, onBookmarkToggle }: QuestionCardProps) {
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleBookmarkClick = async () => {
     if (onBookmarkToggle) {
@@ -49,7 +49,7 @@ export function QuestionCard({ question, onBookmarkToggle }: QuestionCardProps) 
             </div>
             <div className="flex justify-between items-start">
               <CardTitle className="text-lg leading-tight flex-grow mr-2">
-                Question Details
+                {t('questionCard.title', { defaultValue: 'Question Details' })}
               </CardTitle>
               <div className="text-right text-xs whitespace-nowrap shrink-0">
                 <span className="block capitalize text-primary font-semibold">
@@ -77,6 +77,7 @@ export function QuestionCard({ question, onBookmarkToggle }: QuestionCardProps) 
               variant="ghost" 
               size="icon" 
               className="h-8 w-8" 
+              aria-label={t('studyMode.addBookmarkAria')}
               onClick={handleBookmarkClick}
             >
               <Bookmark className={`h-5 w-5 ${question.correctAnswerId ? "text-primary" : "text-muted-foreground"}`} />
@@ -85,7 +86,7 @@ export function QuestionCard({ question, onBookmarkToggle }: QuestionCardProps) 
         </CardContent>
         <CardFooter className="bg-muted/50 p-3 mt-auto">
           <Button asChild variant="outline" size="sm" className="w-full">
-            <Link href={`/questions/${question.id}`}>
+            <Link href={`/questions/${question.id}`} aria-label={t('questionCard.viewFullQuestionAria', { defaultValue: 'View full question' })}>
               View Full Question <ChevronRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>

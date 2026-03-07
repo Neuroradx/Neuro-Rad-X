@@ -60,7 +60,7 @@ const DailyFactCard = ({ fact }: { fact: string | null }) => {
       </CardHeader>
       <CardContent className="px-5 pb-5 pt-0">
         <p className="text-sm italic text-muted-foreground leading-relaxed">
-          "{fact}"
+          &quot;{fact}&quot;
         </p>
       </CardContent>
     </Card>
@@ -104,12 +104,12 @@ export default function DashboardPage() {
             const uniqueDays = new Set<string>();
 
             sessions.forEach(session => {
-                totalCorrect += session.correctAnswers;
-                totalAnswered += session.actualNumberOfQuestions;
+                totalCorrect += session.correctAnswers ?? 0;
+                totalAnswered += session.actualNumberOfQuestions ?? 0;
                 if (session.quizConfig?.mainLocalization) {
                   uniqueTopics.add(session.quizConfig.mainLocalization);
                 }
-                uniqueDays.add(format(session.quizDate, 'yyyy-MM-dd'));
+                uniqueDays.add(format(session.quizDate instanceof Date ? session.quizDate : new Date(String(session.quizDate)), 'yyyy-MM-dd'));
             });
 
             const overallAccuracy = totalAnswered > 0 ? (totalCorrect / totalAnswered) * 100 : 0;

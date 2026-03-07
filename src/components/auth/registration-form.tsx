@@ -24,6 +24,7 @@ import Link from "next/link";
 import { syncUserProfile } from "@/actions/user-data-actions";
 import { verifyRecaptchaToken } from "@/actions/recaptcha-actions";
 import { ReCaptchaWidget, type ReCaptchaHandle } from "@/components/auth/recaptcha-widget";
+import { publicEnv } from "@/lib/env";
 
 const getRegistrationFormSchema = (t: (key: string) => string) => z.object({
   firstName: z.string()
@@ -54,8 +55,8 @@ export function RegistrationForm() {
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const recaptchaRef = React.useRef<ReCaptchaHandle>(null);
-  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-  const recaptchaVersion = (process.env.NEXT_PUBLIC_RECAPTCHA_VERSION as "2" | "3") ?? "2";
+  const siteKey = publicEnv.RECAPTCHA_SITE_KEY;
+  const recaptchaVersion = publicEnv.RECAPTCHA_VERSION;
 
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(getRegistrationFormSchema(t)),
@@ -180,7 +181,7 @@ export function RegistrationForm() {
               </AlertDescription>
             </Alert>
             {firebaseError && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" role="alert" aria-live="assertive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>{t('registrationForm.errorTitle')}</AlertTitle>
                 <AlertDescription>{firebaseError}</AlertDescription>
@@ -335,14 +336,14 @@ export function RegistrationForm() {
               {t('registrationForm.agreeTo')}{" "}
               <Link
                 href="/terms-of-use"
-                className="underline underline-offset-4 hover:text-primary"
+                className="text-primary underline underline-offset-4 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
               >
                 {t('registrationForm.termsOfUse')}
               </Link>
               {t('registrationForm.andPrivacyPolicy')}{" "}
               <Link
                 href="/privacy-policy"
-                className="underline underline-offset-4 hover:text-primary"
+                className="text-primary underline underline-offset-4 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
               >
                 {t('registrationForm.privacyPolicy')}
               </Link>

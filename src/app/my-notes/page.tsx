@@ -144,9 +144,9 @@ export default function MyNotesPage() {
                     localization: getTopicDisplayName(data.main_localization ?? undefined, t) as any,
                     stem: langTranslations.questionText || 'No stem available.',
                     options: mappedOptions,
-                    correctAnswerId: correctAnswerIdValue,
+                    correctAnswerId: correctAnswerIdValue ?? '',
                     explanation: langTranslations.explanation || undefined,
-                };
+                } as unknown as Question;
             }
             fetchedNotesWithData.push({ note: noteMeta, question: questionData });
         }
@@ -194,9 +194,16 @@ export default function MyNotesPage() {
       await setDoc(noteDocRef, { notes: noteText, updatedAt: serverTimestamp() }, { merge: true });
       toast({ title: t('toast.notesSavedTitle'), description: t('toast.notesSavedDescription')});
       
-       const updatedAllNotesMeta = allNotesMeta
+      const getUpdatedTime = (n: UserNote) => {
+        const u = n.updatedAt;
+        if (u instanceof Date) return u.getTime();
+        if (typeof u === 'object' && u !== null && 'toDate' in u && typeof (u as { toDate(): Date }).toDate === 'function')
+          return (u as { toDate(): Date }).toDate().getTime();
+        return new Date(String(u)).getTime();
+      };
+      const updatedAllNotesMeta = allNotesMeta
         .map(n => n.id === questionId ? {...n, notes: noteText, updatedAt: { toDate: () => new Date() } as Timestamp } : n)
-        .sort((a, b) => b.updatedAt.toDate().getTime() - a.updatedAt.toDate().getTime());
+        .sort((a, b) => getUpdatedTime(b) - getUpdatedTime(a));
        setAllNotesMeta(updatedAllNotesMeta);
        fetchPageOfNotesWithQuestions(currentPage, updatedAllNotesMeta, language);
 

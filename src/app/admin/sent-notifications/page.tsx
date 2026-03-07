@@ -180,12 +180,12 @@ export default function SentNotificationsPage() {
                   }
                 }
 
-                let translatedTitle = t(notification.titleKey, params);
-                let translatedMessage = t(notification.messageKey, params);
-                if (translatedTitle.includes('.') && translatedTitle === notification.titleKey) {
+                let translatedTitle = t(notification.titleKey ?? notification.title, params);
+                let translatedMessage = t(notification.messageKey ?? notification.message, params);
+                if (translatedTitle.includes('.') && translatedTitle === (notification.titleKey ?? notification.title)) {
                   translatedTitle = t('admin.sentNotifications.fallbackTitle');
                 }
-                if (translatedMessage.includes('.') && translatedMessage === notification.messageKey) {
+                if (translatedMessage.includes('.') && translatedMessage === (notification.messageKey ?? notification.message)) {
                   translatedMessage = t('admin.sentNotifications.fallbackMessage');
                 }
 

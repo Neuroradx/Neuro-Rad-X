@@ -8,7 +8,7 @@ export default function NotFound() {
       <FileQuestion className="h-24 w-24 text-primary mb-6 animate-pulse" />
       <h1 className="text-4xl font-bold mb-2">404 - Page Not Found</h1>
       <p className="text-muted-foreground mb-8 max-w-md">
-        Oops! The page you are looking for doesn't exist or has been moved. 
+        Oops! The page you are looking for doesn&apos;t exist or has been moved. 
         Maybe the neuro-pathway was blocked?
       </p>
       <Button asChild size="lg">

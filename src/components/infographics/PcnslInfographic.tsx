@@ -91,7 +91,7 @@ const PcnslInfographic = () => {
                                                 <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                                 <XAxis dataKey="group" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }} angle={-30} textAnchor="end" height={50} interval={0} />
                                                 <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
-                                                <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
+                                                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
                                                 <Bar dataKey="rate" name="Incidence Rate" radius={[0, 8, 8, 0]} barSize={32}>
                                                     {pcnslIncidenceData.map((entry) => (
                                                         <Cell key={`cell-${entry.key}`} fill={pcnslIncidenceConfig[entry.key].color} />
@@ -309,7 +309,7 @@ const PcnslInfographic = () => {
                                                 <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                                 <XAxis dataKey="group" tickLine={false} axisLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                                 <YAxis unit="%" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
-                                                <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
+                                                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" hideLabel />} />
                                                 <Bar dataKey="survival" name="5-Yr Survival" radius={[0, 8, 8, 0]} barSize={32}>
                                                     {survivalData.map((entry) => (
                                                         <Cell key={`cell-${entry.key}`} fill={survivalConfig[entry.key].color} />

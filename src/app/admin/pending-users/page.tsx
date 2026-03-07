@@ -152,7 +152,7 @@ export default function PendingUsersPage() {
       if (result.success) {
         toast({
           title: t('admin.pendingUsers.blockSuccessTitle'),
-          description: t('admin.pendingUsers.blockSuccessDesc', { email: selectedUser.email || selectedUser.id }),
+          description: t('admin.pendingUsers.blockSuccessDesc', { email: selectedUser.email ?? selectedUser.id }),
           variant: 'success',
         });
         fetchUsers(currentPage, currentUser.uid);

@@ -1,7 +1,17 @@
 "use client";
 
+import React from "react";
 import { usePathname } from "next/navigation";
-import { AppShell } from "@/components/layout/app-shell";
+import dynamic from "next/dynamic";
+import { EnvSetupMessage } from "@/components/layout/env-setup-message";
+import { hasFirebaseConfig } from "@/lib/env";
+
+const AppShell = hasFirebaseConfig
+  ? (dynamic(
+      () => import("@/components/layout/app-shell").then((m) => m.AppShell),
+      { ssr: true }
+    ) as React.ComponentType<{ children: React.ReactNode }>)
+  : null;
 
 const simpleLayoutRoutes = [
   "/auth",
@@ -19,5 +29,10 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
     simpleLayoutRoutes.some((prefix) => pathname.startsWith(prefix));
   const useAppShell = !isSimpleRoute;
 
-  return useAppShell ? <AppShell>{children}</AppShell> : <>{children}</>;
+  if (!hasFirebaseConfig) {
+    return <EnvSetupMessage />;
+  }
+
+  const Shell = AppShell;
+  return useAppShell && Shell != null ? <Shell>{children}</Shell> : <>{children}</>;
 }

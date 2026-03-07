@@ -303,7 +303,7 @@ export default function StudyPage() {
             explanation: langTranslations.explanation || '',
             imageUrl: data.imageUrl,
             scientificArticle: data.scientificArticle,
-          } as Question;
+          } as unknown as Question;
         });
 
       if (fetchedQuestions.length === 0) {
@@ -445,7 +445,7 @@ export default function StudyPage() {
     let selectedIdx = -1;
 
     if (mode === 'tutor' || mode === 'exam') {
-      if (selectedOptionId) {
+      if (selectedOptionId && currentQuestion.options) {
         selectedIdx = currentQuestion.options.findIndex(opt => opt.id === selectedOptionId);
         isCorrect = selectedOptionId === currentQuestion.correctAnswerId;
       }
@@ -548,7 +548,7 @@ export default function StudyPage() {
             firebaseLoading={firebaseLoading}
             firebaseError={firebaseError}
             availableCategories={availableCategories}
-            difficultiesForFilter={DIFFICULTY_FILTER_OPTIONS}
+            difficultiesForFilter={[...DIFFICULTY_FILTER_OPTIONS]}
             getModeTitle={getModeTitle}
             getModeDescription={getModeDescription}
             getModeIcon={getModeIcon}

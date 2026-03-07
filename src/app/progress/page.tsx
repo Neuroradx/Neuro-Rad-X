@@ -6,7 +6,6 @@ import { BarChart as LayersIcon, CheckCheck, TrendingUp, Loader2, AlertCircle, B
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, ComposedChart, Line, Legend, ResponsiveContainer, Cell } from "recharts";
-import type { TooltipProps } from "recharts";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -103,7 +102,7 @@ interface ChartDataItem {
   date: Date;
 }
 
-const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ dataKey?: string; value?: number }>; label?: string }) => {
   const { t } = useTranslation();
   if (active && payload && payload.length) {
     const correct = payload.find(p => p.dataKey === 'correct')?.value ?? 0;
@@ -211,13 +210,15 @@ export default function ProgressPage() {
       return;
     }
 
+    const toDate = (d: QuizSession['quizDate']): Date =>
+      d instanceof Date ? d : typeof d === 'string' ? new Date(d) : (d as unknown as { toDate(): Date }).toDate();
     const filteredSessions = allSessions.filter(session => {
-      if (activePeriod === 'total') return true; // Ignore date range for "Total" view
+      if (activePeriod === 'total') return true;
       if (!dateRange?.from) return true;
-      const sessionDate = session.quizDate;
+      const sessionDate = toDate(session.quizDate);
       const fromDate = dateRange.from;
-      const toDate = dateRange.to ? addDays(dateRange.to, 1) : addDays(new Date(), 1);
-      return sessionDate >= fromDate && sessionDate < toDate;
+      const toDateEnd = dateRange.to ? addDays(dateRange.to, 1) : addDays(new Date(), 1);
+      return sessionDate >= fromDate && sessionDate < toDateEnd;
     });
 
     if (filteredSessions.length === 0) {
@@ -245,8 +246,8 @@ export default function ProgressPage() {
       periodFormat = "yyyy"; // Overall year or custom label
     }
 
-    const firstSessionDate = filteredSessions[0].quizDate;
-    const lastSessionDate = filteredSessions[filteredSessions.length - 1].quizDate;
+    const firstSessionDate = toDate(filteredSessions[0].quizDate);
+    const lastSessionDate = toDate(filteredSessions[filteredSessions.length - 1].quizDate);
     const periodsInRange = intervalFunction({ start: firstSessionDate, end: lastSessionDate });
 
     periodsInRange.forEach(periodStart => {
@@ -255,13 +256,14 @@ export default function ProgressPage() {
     });
 
     filteredSessions.forEach(session => {
+      const sessionDate = toDate(session.quizDate);
       let periodKey: string;
       if (activePeriod === 'daily') {
-        periodKey = format(session.quizDate, periodFormat, { locale: currentLocale });
+        periodKey = format(sessionDate, periodFormat, { locale: currentLocale });
       } else if (activePeriod === 'weekly') {
-        periodKey = format(startOfWeek(session.quizDate, { weekStartsOn: 1 }), periodFormat, { locale: currentLocale });
+        periodKey = format(startOfWeek(sessionDate, { weekStartsOn: 1 }), periodFormat, { locale: currentLocale });
       } else if (activePeriod === 'monthly') {
-        periodKey = format(startOfMonth(session.quizDate), periodFormat, { locale: currentLocale });
+        periodKey = format(startOfMonth(sessionDate), periodFormat, { locale: currentLocale });
       } else {
         periodKey = t('progressPage.buttons.total', { defaultValue: 'All Time' });
       }
@@ -301,9 +303,10 @@ export default function ProgressPage() {
 
     const dailyAggForKpi: Record<string, { correct: number; attempted: number; date: Date }> = {};
     filteredSessions.forEach(session => {
-      const dayKey = format(session.quizDate, "yyyy-MM-dd");
+      const sessionDate = toDate(session.quizDate);
+      const dayKey = format(sessionDate, "yyyy-MM-dd");
       if (!dailyAggForKpi[dayKey]) {
-        dailyAggForKpi[dayKey] = { correct: 0, attempted: 0, date: session.quizDate };
+        dailyAggForKpi[dayKey] = { correct: 0, attempted: 0, date: sessionDate };
       }
       dailyAggForKpi[dayKey].correct += session.correctAnswers || 0;
       dailyAggForKpi[dayKey].attempted += session.actualNumberOfQuestions || 0;

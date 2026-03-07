@@ -142,6 +142,10 @@
     "errorLoading": "Error al cargar la pregunta.",
     "optionsLabel": "Opciones"
   },
+  "questionCard": {
+    "title": "Detalles de la pregunta",
+    "viewFullQuestionAria": "Ver pregunta completa"
+  },
   "reportIssueDialog": {
     "title": "Reportar problema",
     "description": "Ayúdanos a mejorar reportando errores, contenido poco claro u otros problemas con esta pregunta.",
@@ -356,6 +360,18 @@
       "contactSupport": "Si tienes dudas, contacta con support@neuroradx.com",
       "logoutButton": "Salir"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Restablecer contraseña",
+    "description": "Introduce tu email y te enviaremos un enlace para restablecer la contraseña.",
+    "submitButton": "Enviar enlace",
+    "backToLogin": "Volver al inicio de sesión",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "toastSuccessTitle": "Email enviado",
+    "successMessage": "Revisa tu bandeja de entrada para el enlace.",
+    "errorUnexpected": "Algo ha fallado. Inténtalo de nuevo.",
+    "errorTitle": "Error"
   },
   "loading": {
     "auth": "Comprobando autenticación...",
@@ -1079,9 +1095,14 @@
     "explanationTitle": "Explicación",
     "close": "Cerrar",
     "note": "Nota",
+    "loading": "Cargando...",
+    "errorTitle": "Error",
+    "searchPlaceholder": "Buscar preguntas...",
+    "noResultsFound": "No se encontraron preguntas.",
     "approxQuestionsForFilterCombination": "~{{count}} preguntas para {{path}}"
   },
   "userNav": {
+    "openUserMenu": "Abrir menú de usuario",
     "logIn": "Entrar",
     "register": "Registro",
     "logOut": "Salir",

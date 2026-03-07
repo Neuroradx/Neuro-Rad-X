@@ -142,6 +142,10 @@
     "errorLoading": "Fehler beim Laden der Frage.",
     "optionsLabel": "Optionen"
   },
+  "questionCard": {
+    "title": "Fragendetails",
+    "viewFullQuestionAria": "Vollständige Frage anzeigen"
+  },
   "reportIssueDialog": {
     "title": "Problem melden",
     "description": "Helfen Sie uns zu verbessern, indem Sie Fehler, unklares Material oder andere Probleme mit dieser Frage melden.",
@@ -356,6 +360,18 @@
       "contactSupport": "Bei Fragen kontaktieren Sie bitte support@neuroradx.com",
       "logoutButton": "Abmelden"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Passwort zurücksetzen",
+    "description": "E-Mail eingeben – wir senden Ihnen einen Link zum Zurücksetzen.",
+    "submitButton": "Link senden",
+    "backToLogin": "Zurück zur Anmeldung",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "ihre@email.de",
+    "toastSuccessTitle": "E-Mail gesendet",
+    "successMessage": "Prüfen Sie Ihren Posteingang für den Link.",
+    "errorUnexpected": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "errorTitle": "Fehler"
   },
   "loading": {
     "auth": "Authentifizierung wird geprüft...",
@@ -1074,9 +1090,14 @@
     "explanationTitle": "Erklärung",
     "close": "Schließen",
     "note": "Hinweis",
+    "loading": "Laden...",
+    "errorTitle": "Fehler",
+    "searchPlaceholder": "Fragen suchen...",
+    "noResultsFound": "Keine Fragen gefunden.",
     "approxQuestionsForFilterCombination": "~{{count}} Fragen verfügbar für {{path}}"
   },
   "userNav": {
+    "openUserMenu": "Benutzermenü öffnen",
     "logIn": "Anmelden",
     "register": "Registrieren",
     "logOut": "Abmelden",

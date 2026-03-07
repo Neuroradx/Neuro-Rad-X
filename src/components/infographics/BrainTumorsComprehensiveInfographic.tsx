@@ -98,11 +98,11 @@ const BrainTumorsComprehensiveInfographic = () => {
                                         <CartesianGrid horizontal={false} stroke="hsl(var(--border))" opacity={0.6} />
                                         <YAxis dataKey="type" type="category" tickLine={false} axisLine={false} width={100} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                                         <XAxis dataKey="frequency" type="number" hide />
-                                        <Tooltip
+                                        <ChartTooltip
                                             cursor={false}
                                             content={<ChartTooltipContent indicator="dot" hideLabel className="bg-popover text-popover-foreground" />}
                                         />
-                                        <Bar dataKey="frequency" name="Relative Frequency" radius={[0, 8, 8, 0]} layout="vertical" barSize={32}>
+                                        <Bar dataKey="frequency" name="Relative Frequency" radius={[0, 8, 8, 0]} barSize={32}>
                                             {tumorFrequencyData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                             ))}
@@ -245,7 +245,7 @@ const BrainTumorsComprehensiveInfographic = () => {
                                                 cursor={false}
                                                 content={<ChartTooltipContent hideLabel />}
                                             />
-                                            <Bar dataKey="rate" layout="vertical" radius={[0, 8, 8, 0]} barSize={32}>
+                                            <Bar dataKey="rate" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {pcnslIncidenceData.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={pcnslIncidenceConfig[entry.key].color} />
                                                 ))}

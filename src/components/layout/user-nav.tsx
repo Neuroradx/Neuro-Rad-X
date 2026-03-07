@@ -55,7 +55,7 @@ export function UserNav() {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+          <Button variant="ghost" className="relative h-9 w-9 rounded-full" aria-label={t('userNav.openUserMenu')}>
             <UserCircle className="h-6 w-6" />
           </Button>
         </DropdownMenuTrigger>
@@ -111,7 +111,7 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+        <Button variant="ghost" className="relative h-9 w-9 rounded-full" aria-label={t('userNav.openUserMenu')}>
           <Avatar className="h-9 w-9">
             {photoURL && !isAnonymous ? (
               <AvatarImage src={photoURL} alt={displayName || "User"} data-ai-hint="profile avatar" />

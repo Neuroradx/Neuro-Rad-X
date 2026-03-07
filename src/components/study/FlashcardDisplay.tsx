@@ -18,9 +18,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArticleReferenceDisplay } from '@/components/article-reference-display';
 
 
-const ReportIssueDialog = dynamic(() => import('@/components/questions/report-issue-dialog').then(mod => mod.ReportIssueDialog), {
-  suspense: true,
-});
+const ReportIssueDialog = dynamic(() => import('@/components/questions/report-issue-dialog').then(mod => mod.ReportIssueDialog));
 
 
 interface FlashcardDisplayProps {
@@ -91,12 +89,12 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({
       </CardHeader>
       <CardContent className="space-y-6 relative pb-12 min-h-[300px] flex flex-col items-center justify-center text-center">
         {currentQuestion.imageUrl && !showFlashcardAnswer && (
-          <ImageDisplay src={currentQuestion.imageUrl} alt={t('common.imageFor', { topic: displayTopic })} dataAiHint={`${currentQuestion.localization || displayTopic} diagnostic`} initialWidth={400} initialHeight={300}/>
+          <ImageDisplay src={currentQuestion.imageUrl} alt={t('common.imageFor', { topic: displayTopic })} dataAiHint={`${currentQuestion.main_localization || displayTopic} diagnostic`} initialWidth={400} initialHeight={300}/>
         )}
         <p className={`text-xl leading-relaxed ${showFlashcardAnswer ? 'mb-4' : 'font-semibold'}`}>
           {showFlashcardAnswer ? currentQuestion.explanation : currentQuestion.stem}
         </p>
-        {showFlashcardAnswer && currentQuestion.options && currentQuestion.options.length > 0 && currentQuestion.type === 'mcq' && (
+        {showFlashcardAnswer && currentQuestion.options && currentQuestion.options.length > 0 && (
           <div className="text-left w-full mt-4 p-4 bg-muted/50 rounded-md">
             <p className="font-semibold mb-2">{t('studyMode.correctAnswerOption')}:</p>
             <ul className="list-disc pl-5 space-y-1">

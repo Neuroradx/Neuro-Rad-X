@@ -109,9 +109,9 @@ const IntracranialHemorrhageInfographic = () => {
                                         <ChartContainer config={ichEtiologyConfig} className="infographic-chart">
                                             <ResponsiveContainer width="100%" height={260}>
                                                 <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-                                                    <Tooltip cursor={{ fill: 'transparent' }} content={<ChartTooltipContent />} />
+                                                    <ChartTooltip cursor={{ fill: 'transparent' }} content={<ChartTooltipContent />} />
                                                     <Legend layout="horizontal" verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ paddingTop: '10px' }} />
-                                                    <Pie data={spontaneousIchData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={105} labelLine={false} label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))">
+                                                    <Pie data={spontaneousIchData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={105} labelLine={false} label={({ name, percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))">
                                                         {spontaneousIchData.map((entry) => (
                                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
                                                         ))}
@@ -138,7 +138,7 @@ const IntracranialHemorrhageInfographic = () => {
                         <ChartContainer config={sahEtiologyConfig} className="infographic-chart">
                             <ResponsiveContainer width="100%" height={260}>
                                 <PieChart>
-                                    <Tooltip cursor={{ fill: 'transparent' }} content={<ChartTooltipContent />} />
+                                    <ChartTooltip cursor={{ fill: 'transparent' }} content={<ChartTooltipContent />} />
                                     <Legend iconType="circle" />
                                     <Pie data={spontaneousSahData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={105} paddingAngle={4} strokeWidth={2.5} stroke="hsl(var(--background))">
                                         {spontaneousSahData.map((entry) => (
@@ -168,7 +168,7 @@ const IntracranialHemorrhageInfographic = () => {
                                         <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.6} />
                                         <XAxis type="number" unit="%" tickLine={false} tickMargin={10} axisLine={false} />
                                         <YAxis dataKey="name" type="category" tickLine={false} width={150} tick={{ fontSize: 12 }} />
-                                        <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
+                                        <ChartTooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
                                         <Bar dataKey="rate" radius={[0, 8, 8, 0]} barSize={32}>
                                             {sahRiskRateData.map((entry) => (
                                                 <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />

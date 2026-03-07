@@ -159,7 +159,7 @@ export function LoginForm() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-5 px-6 py-5">
             {firebaseError && (
-              <Alert variant="destructive" className="rounded-lg">
+              <Alert variant="destructive" className="rounded-lg" role="alert" aria-live="assertive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>{t('loginForm.errorTitle')}</AlertTitle>
                 <AlertDescription>{firebaseError}</AlertDescription>
@@ -210,14 +210,14 @@ export function LoginForm() {
             <p className="px-4 text-center text-xs text-muted-foreground leading-relaxed">
               <Link
                 href="/terms-of-use"
-                className="underline underline-offset-4 hover:text-primary"
+                className="text-primary underline underline-offset-4 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
               >
                 {t('registrationForm.termsOfUse')}
               </Link>{" "}
               {t('registrationForm.andPrivacyPolicy')}{" "}
               <Link
                 href="/privacy-policy"
-                className="underline underline-offset-4 hover:text-primary"
+                className="text-primary underline underline-offset-4 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded"
               >
                 {t('registrationForm.privacyPolicy')}
               </Link>

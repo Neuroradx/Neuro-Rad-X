@@ -211,7 +211,7 @@ export async function syncUserProfile(userData: {
   if (!adminDb) return { success: false, error: DETAILED_ADMIN_SDK_ERROR };
 
   try {
-    const hdrs = headers();
+    const hdrs = await headers();
     const forwardedFor = hdrs.get("x-forwarded-for");
     const clientIp =
       (forwardedFor ? forwardedFor.split(",")[0]?.trim() : null) ||

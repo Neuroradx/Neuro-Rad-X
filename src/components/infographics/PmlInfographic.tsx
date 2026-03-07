@@ -103,7 +103,7 @@ const PmlInfographic = () => {
                                     <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                     <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fontSize: 10 }} />
                                     <YAxis unit="%" />
-                                    <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" formatter={(value, name, entry) => entry.payload.name.includes('General') ? `${value} per 100k` : `${value}%`} />} />
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" formatter={(value, name, entry) => (entry as { payload?: { name?: string } })?.payload?.name?.includes('General') ? `${value} per 100k` : `${value}%`} />} />
                                     <Bar dataKey="value" name="Rate" radius={[0, 8, 8, 0]} barSize={32}>
                                         {incidenceData.map((entry) => (
                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
@@ -131,7 +131,7 @@ const PmlInfographic = () => {
                                     <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                     <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} tick={{ fontSize: 9 }} angle={-30} textAnchor="end" height={70} interval={0} />
                                     <YAxis />
-                                    <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" formatter={(value) => `${value}/1000`} />} />
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" formatter={(value) => `${value}/1000`} />} />
                                     <Bar dataKey="risk" name="Incidence" radius={[0, 8, 8, 0]} barSize={32}>
                                         {natalizumabRiskData.map((entry) => (
                                             <Cell key={`cell-${entry.key}`} fill={`var(--color-${entry.key})`} />
@@ -273,7 +273,7 @@ const PmlInfographic = () => {
                                             <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis dataKey="cohort" tick={{ fontSize: 9 }} />
                                             <YAxis unit="%" />
-                                            <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                             <Bar dataKey="survival" name="Survival (%)" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {survivalData.map((entry) => (
                                                     <Cell key={entry.cohort} fill={`var(--color-${entry.key})`} />

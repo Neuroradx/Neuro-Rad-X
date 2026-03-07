@@ -124,7 +124,7 @@ export default function UserNotificationsHistoryClientPage({ userId }: { userId:
                 <CardHeader>
                   <div className="flex justify-between items-start">
                       <CardTitle className="text-lg font-semibold break-all">
-                          {t(notification.titleKey, notification.messageParams)}
+                          {t(notification.titleKey ?? notification.title, notification.messageParams)}
                       </CardTitle>
                       <Badge variant={notification.status === 'read' ? 'secondary' : 'default'}>
                           {notification.status}
@@ -135,7 +135,7 @@ export default function UserNotificationsHistoryClientPage({ userId }: { userId:
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">{t(notification.messageKey, notification.messageParams)}</p>
+                  <p className="text-sm text-muted-foreground">{t(notification.messageKey ?? notification.message, notification.messageParams)}</p>
                 </CardContent>
               </Card>
             ))

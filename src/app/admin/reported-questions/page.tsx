@@ -228,7 +228,7 @@ export default function ReportedQuestionsPage() {
                     <div className="flex justify-between items-center w-full gap-4">
                       <div className="text-left flex-1">
                         <p className="text-lg font-semibold text-primary break-words">
-                          {t(issue.problemType)}
+                          {t(issue.problemType ?? issue.issueType)}
                         </p>
                         <p className="text-xs text-muted-foreground font-mono">
                           {issue.questionId}
@@ -338,7 +338,7 @@ export default function ReportedQuestionsPage() {
                   <CardTitle className="text-md">{t('admin.reportedQuestionsPage.detailsDialog.problemTypeLabel')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground pt-0 pb-4">
-                  {t(selectedReport.problemType)}
+                  {t(selectedReport.problemType ?? selectedReport.issueType)}
                 </CardContent>
               </Card>
               <Card>

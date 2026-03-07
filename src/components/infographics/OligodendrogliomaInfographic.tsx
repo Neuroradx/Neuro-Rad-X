@@ -227,7 +227,7 @@ const OligodendrogliomaInfographic = () => {
                                             <CartesianGrid vertical={false} stroke="hsl(var(--border))" opacity={0.6} />
                                             <XAxis dataKey="grade" tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                                             <YAxis unit="%" domain={[0, 100]} />
-                                            <Tooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                             <Bar dataKey="survival" name="5-Year Survival" radius={[0, 8, 8, 0]} barSize={32}>
                                                 {survivalData.map((entry) => (
                                                     <Cell key={`cell-${entry.grade}`} fill={survivalConfig[entry.key].color} />

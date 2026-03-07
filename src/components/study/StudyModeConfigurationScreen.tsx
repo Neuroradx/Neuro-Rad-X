@@ -36,7 +36,7 @@ interface StudyModeConfigurationScreenProps {
   difficultiesForFilter: string[];
   getModeTitle: () => string;
   getModeDescription: () => string;
-  getModeIcon: () => JSX.Element;
+  getModeIcon: () => React.ReactNode;
   routerPush: (path: string) => void;
   displayedCategoryCountText: string | null;
   userProfile: UserProfile | null;

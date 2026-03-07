@@ -131,6 +131,10 @@
     "optionNotFound": "Option not found",
     "correctAnswerNotFound": "Correct answer not found"
   },
+  "questionCard": {
+    "title": "Question Details",
+    "viewFullQuestionAria": "View full question"
+  },
   "reportIssueDialog": {
     "title": "Report Issue",
     "description": "Help us improve by reporting errors, unclear content, or other problems with this question.",
@@ -346,6 +350,18 @@
       "contactSupport": "If you have any questions, please contact support@neuroradx.com",
       "logoutButton": "Sign Out"
     }
+  },
+  "forgotPasswordPage": {
+    "title": "Reset password",
+    "description": "Enter your email and we'll send you a link to reset your password.",
+    "submitButton": "Send reset link",
+    "backToLogin": "Back to login",
+    "emailLabel": "Email",
+    "emailPlaceholder": "your@email.com",
+    "toastSuccessTitle": "Email sent",
+    "successMessage": "Check your inbox for the password reset link.",
+    "errorUnexpected": "Something went wrong. Please try again.",
+    "errorTitle": "Error"
   },
   "loading": {
     "auth": "Checking authentication...",
@@ -1093,9 +1109,14 @@
     "explanationTitle": "Explanation",
     "close": "Close",
     "note": "Note",
+    "loading": "Loading...",
+    "errorTitle": "Error",
+    "searchPlaceholder": "Search questions...",
+    "noResultsFound": "No questions found.",
     "approxQuestionsForFilterCombination": "~{{count}} questions available for {{path}}"
   },
   "userNav": {
+    "openUserMenu": "Open user menu",
     "logIn": "Sign In",
     "register": "Register",
     "logOut": "Sign Out",

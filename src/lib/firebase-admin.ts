@@ -1,22 +1,21 @@
 import * as admin from 'firebase-admin';
+import { serverEnv } from '@/lib/env';
 
-const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || process.env.GCLOUD_PROJECT || 'neuroradx-jovto';
+const PROJECT_ID = serverEnv.FIREBASE_PROJECT_ID;
 
 function initializeAdmin() {
   if (admin.apps.length > 0) return admin.apps[0]!;
 
-  const serviceAccountVar = process.env.ADMIN_SERVICE_ACCOUNT;
+  const serviceAccountVar = serverEnv.ADMIN_SERVICE_ACCOUNT;
 
   try {
     if (serviceAccountVar) {
-      // Si el secreto existe, lo usamos. Es lo más seguro.
       const serviceAccount = JSON.parse(serviceAccountVar);
       return admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         projectId: PROJECT_ID
       });
     } else {
-      // Si no hay secreto, usamos la identidad del servidor (ADC)
       return admin.initializeApp({
         credential: admin.credential.applicationDefault(),
         projectId: PROJECT_ID

@@ -1,11 +1,13 @@
 "use server";
 
+import { serverEnv } from "@/lib/env";
+
 /**
  * Verifies a reCAPTCHA v2 token with Google's API.
  * Returns success: true if the token is valid, false otherwise.
  */
 export async function verifyRecaptchaToken(token: string): Promise<{ success: boolean; error?: string }> {
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const secretKey = serverEnv.RECAPTCHA_SECRET_KEY;
   if (!secretKey) {
     return { success: false, error: "reCAPTCHA is not configured." };
   }

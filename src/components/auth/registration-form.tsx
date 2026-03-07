@@ -8,7 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification, type AuthError, type ActionCodeSettings } from "firebase/auth";
-import { auth } from "@/lib/firebase"; 
+import { auth } from "@/lib/firebase";
+import { getAuthErrorMessage } from "@/lib/auth-error-messages"; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -150,18 +151,7 @@ export function RegistrationForm() {
 
     } catch (error) {
       const authError = error as AuthError;
-      let errorMessage = t('registrationForm.errorUnexpected');
-
-      if (authError.code === "auth/email-already-in-use") {
-        errorMessage = t('registrationForm.errorEmailInUse');
-      } else if (authError.code === "auth/weak-password") {
-        errorMessage = t('registrationForm.errorWeakPassword');
-      } else if (authError.code === 'auth/too-many-requests') {
-        errorMessage = t('registrationForm.errorTooManyRequests');
-      } else {
-        errorMessage = error instanceof Error ? error.message : t('registrationForm.errorGenericWithMessage', { message: authError.message || "" });
-      }
-
+      const errorMessage = getAuthErrorMessage(authError, t, "register");
       setFirebaseError(errorMessage);
       toast({
         title: t('registrationForm.errorTitle'),

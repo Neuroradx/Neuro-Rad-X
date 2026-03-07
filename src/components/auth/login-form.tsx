@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
+import { getAuthErrorMessage } from "@/lib/auth-error-messages";
 import { doc, getDoc } from "firebase/firestore";
-import { checkIsAdmin } from "@/lib/admin-check";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,9 +58,11 @@ export function LoginForm() {
         const userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
-          // Fallback: if email is in admin allowlist, allow login and redirect to admin
-          const isAdminByEmail = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-          if (isAdminByEmail) {
+          // Server-side admin check (includes allowlist) without exposing allowlist to client
+          const token = await user.getIdToken();
+          const meRes = await fetch('/api/admin/me', { headers: { Authorization: `Bearer ${token}` } });
+          const meData = meRes.ok ? await meRes.json() : { isAdmin: false };
+          if (meData.isAdmin) {
             toast({ title: t('toast.loginSuccessTitle'), description: t('toast.loginSuccessDescription') });
             router.push("/admin/dashboard");
             setIsLoading(false);
@@ -90,9 +92,11 @@ export function LoginForm() {
           const isAdminByClaim = !!tokenResult.claims.admin;
 
           if (!isAdminByClaim) {
-            // Also check email allowlist as second fallback
-            const isAdminByEmail = await checkIsAdmin({ uid: user.uid, email: user.email ?? null });
-            if (!isAdminByEmail) {
+            // Server-side check (includes allowlist) without exposing allowlist to client
+            const token = await user.getIdToken();
+            const meRes = await fetch('/api/admin/me', { headers: { Authorization: `Bearer ${token}` } });
+            const meData = meRes.ok ? await meRes.json() : { isAdmin: false };
+            if (!meData.isAdmin) {
               setFirebaseError(t('auth.accountStatusError'));
               await auth.signOut();
               setIsLoading(false);
@@ -139,17 +143,7 @@ export function LoginForm() {
 
     } catch (error) {
       const authError = error as AuthError;
-      let errorMessage = t('loginForm.errorUnexpected');
-
-      if (authError.code === "auth/user-not-found" || authError.code === "auth/wrong-password" || authError.code === "auth/invalid-credential") {
-        errorMessage = t('loginForm.errorInvalidCredentials');
-      } else if (authError.code === "auth/too-many-requests") {
-        errorMessage = t('loginForm.errorTooManyRequests');
-      } else {
-        console.error("Unexpected login error:", authError);
-      }
-
-      setFirebaseError(errorMessage);
+      setFirebaseError(getAuthErrorMessage(authError, t, "login"));
     } finally {
       setIsLoading(false);
     }

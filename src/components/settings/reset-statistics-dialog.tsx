@@ -22,6 +22,7 @@ import { onAuthStateChanged, type User as FirebaseUser, type Unsubscribe } from 
 import { Loader2, AlertTriangle } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { resetUserStatistics } from "@/actions/user-data-actions";
+import { showErrorToast } from "@/lib/toast-helpers";
 
 const resetStatisticsSchema = z.object({
   confirmationText: z.string(),
@@ -80,11 +81,7 @@ export function ResetStatisticsDialog({ isOpen, onOpenChange, currentUser: initi
     const freshCurrentUser = auth.currentUser; // Final check with the most current auth state
 
     if (!freshCurrentUser || freshCurrentUser.isAnonymous) {
-      toast({
-        title: t('toast.errorTitle'),
-        description: t('toast.statsResetErrorUserNotAuth'),
-        variant: "destructive"
-      });
+      showErrorToast(toast, t, t('toast.statsResetErrorUserNotAuth'));
       setIsResetting(false);
       return;
     }
@@ -108,19 +105,11 @@ export function ResetStatisticsDialog({ isOpen, onOpenChange, currentUser: initi
         });
         onOpenChange(false);
       } else {
-        toast({
-          title: t('toast.statsResetErrorTitle'),
-          description: t('toast.statsResetErrorDesc', { error: result.message || "Unknown error" }),
-          variant: "destructive",
-        });
+        showErrorToast(toast, t, t('toast.statsResetErrorDesc', { error: result.message || "Unknown error" }), t('toast.statsResetErrorTitle'));
       }
     } catch (error: any) {
       console.error("Error calling resetUserStatistics action:", error);
-      toast({
-        title: t('toast.statsResetErrorTitle'),
-        description: t('toast.statsResetErrorDesc', { error: error.message || "An unexpected error occurred." }),
-        variant: "destructive",
-      });
+      showErrorToast(toast, t, t('toast.statsResetErrorDesc', { error: error.message || "An unexpected error occurred." }), t('toast.statsResetErrorTitle'));
     } finally {
       setIsResetting(false);
     }

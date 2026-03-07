@@ -16,18 +16,11 @@ export async function GET(request: Request) {
     const status = {
         adminDbStatus: adminDb ? 'initialized' : 'NULL ❌',
         adminAuthStatus: adminAuth ? 'initialized' : 'NULL ❌',
-        envVarFound: !!(
+        envConfigured: !!(
             process.env.ADMIN_SERVICE_ACCOUNT ||
             process.env.FIREBASE_SERVICE_ACCOUNT ||
             process.env.firebase_service_account
         ),
-        envVarName: process.env.ADMIN_SERVICE_ACCOUNT
-            ? 'ADMIN_SERVICE_ACCOUNT'
-            : process.env.FIREBASE_SERVICE_ACCOUNT
-                ? 'FIREBASE_SERVICE_ACCOUNT'
-                : process.env.firebase_service_account
-                    ? 'firebase_service_account'
-                    : 'NONE ❌',
         uid: null as string | null,
         email: null as string | null,
         firestoreRole: null as string | null,

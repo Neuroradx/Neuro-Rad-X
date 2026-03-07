@@ -221,16 +221,20 @@ export async function syncUserProfile(userData: {
     const { uid, email, firstName, lastName, country, institution } = userData;
     const displayName = `${firstName} ${lastName}`.trim();
 
+    const emailNorm = email.trim().toLowerCase();
+    const adminEmailsNorm = (adminEmails as string[]).map((e) => String(e).trim().toLowerCase());
+    const testerEmailsNorm = (testerEmails as string[]).map((e) => String(e).trim().toLowerCase());
+
     let userRole = 'user';
     let userStatus = 'pending';
     let subscriptionLevel: UserProfile['subscriptionLevel'] = 'Trial';
     let subscriptionExpiresAt: admin.firestore.Timestamp | null = null;
 
-    if (adminEmails.includes(email)) {
+    if (adminEmailsNorm.includes(emailNorm)) {
       userRole = 'admin';
       userStatus = 'approved';
       subscriptionLevel = 'Owner';
-    } else if (testerEmails.includes(email)) {
+    } else if (testerEmailsNorm.includes(emailNorm)) {
       userRole = 'tester';
       userStatus = 'approved';
       subscriptionLevel = 'Evaluator';
@@ -615,15 +619,10 @@ export async function updateIssueStatus(
 }
 
 export async function fetchPendingUsers(page: number, pageSize: number, callerUid: string): Promise<{ success: boolean; users?: any[]; totalCount?: number; error?: string }> {
-  console.error('[fetchPendingUsers] START. Env Keys:', Object.keys(process.env).filter(k => !k.includes('KEY') && !k.includes('SECRET')));
-  console.error('[fetchPendingUsers] Request by UID:', callerUid);
   const isAdmin = await verifyAdminRole(callerUid);
-  console.error('[fetchPendingUsers] Is Admin result:', isAdmin);
 
   if (!isAdmin) {
-    const dbStatus = adminDb ? "initialized" : "NULL";
-    const authStatus = adminAuth ? "initialized" : "NULL";
-    return { success: false, error: `Unauthorized access (UID: ${callerUid}, DB: ${dbStatus}, Auth: ${authStatus}).` };
+    return { success: false, error: 'Unauthorized access.' };
   }
   if (!adminDb || !adminAuth) {
     console.error('[fetchPendingUsers] adminDb or adminAuth missing despite being admin?');

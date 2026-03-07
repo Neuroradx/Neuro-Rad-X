@@ -7,6 +7,7 @@ import { type User as FirebaseUser } from 'firebase/auth';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ErrorAlert } from '@/components/ui/error-alert';
 import { Loader2, ShieldAlert, CheckCircle, RefreshCw, Bell, ChevronLeft, ChevronRight, Archive, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -141,11 +142,7 @@ export default function SentNotificationsPage() {
         )}
 
         {!isLoading && fetchError && (
-          <Alert variant="destructive" className="rounded-xl border-destructive/50">
-            <ShieldAlert className="h-4 w-4" />
-            <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-            <AlertDescription>{fetchError}</AlertDescription>
-          </Alert>
+          <ErrorAlert description={fetchError} className="rounded-xl border-destructive/50" />
         )}
 
         {!isLoading && !fetchError && notifications.length === 0 && (

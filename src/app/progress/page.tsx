@@ -17,7 +17,7 @@ import { collection, getDocs, doc, getDoc, query, orderBy, Timestamp, type Query
 import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth";
 import type { QuizSession, UserQuestionState, CourseStats, CoursePerformanceData, ModuleStats } from "@/types";
 import { useTranslation } from "@/hooks/use-translation";
-import { subcategoryDisplayNames } from "@/lib/constants";
+import { getTopicDisplayName, getSubtopicDisplayName } from "@/lib/formatting";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { DatePickerWithRange } from "@/components/ui/date-picker-with-range";
@@ -600,7 +600,7 @@ export default function ProgressPage() {
                 .slice(0, 3)
                 .map(([topic, data]) => (
                   <div key={topic} className="p-4 rounded-lg bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/20">
-                    <p className="text-sm font-semibold mb-1">{topic === "General" ? t('studyMode.categoryOther') : t(`topics.${topic.toLowerCase()}` as any)}</p>
+                    <p className="text-sm font-semibold mb-1">{getTopicDisplayName(topic, t)}</p>
                     <div className="flex items-end justify-between">
                       <span className="text-2xl font-bold text-red-600 dark:text-red-400">{data.percentage}%</span>
                       <span className="text-xs text-muted-foreground">{data.correct}/{data.attempted}</span>
@@ -625,16 +625,14 @@ export default function ProgressPage() {
           {!isLoadingTopicDetails && !topicDetailsError ? (
             <Accordion type="multiple" className="w-full">
               {Object.entries(progressTopicStructure).map(([mainTopicKey, subtopicsArray]) => {
-                const mainTopicDisplay = mainTopicKey === "General"
-                  ? t('studyMode.categoryOther')
-                  : t(`topics.${mainTopicKey.toLowerCase()}` as any);
+                const mainTopicDisplay = getTopicDisplayName(mainTopicKey, t);
                 const performance = topicPerformanceData[mainTopicKey];
                 const mainTopicStyles = getPerformanceStyles(performance?.percentage ?? 0, performance?.attempted ?? 0);
 
                 const sortedSubtopics = subtopicsArray
                   .map(subtopicKey => ({
                     key: subtopicKey,
-                    displayName: t(subcategoryDisplayNames[subtopicKey] || `subtopics.${subtopicKey.toLowerCase()}`, { defaultValue: subtopicKey }),
+                    displayName: getSubtopicDisplayName(subtopicKey, t),
                   }))
                   .sort((a, b) => a.displayName.localeCompare(b.displayName));
 

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateQuestionBundle } from '@/actions/bundle-actions';
+import { isAllowedBundleCategory } from '@/lib/bundle-utils';
 import { adminAuth } from '@/lib/firebase-admin';
 
 /**
@@ -27,6 +28,10 @@ export async function GET(
 
     if (!category) {
       return NextResponse.json({ error: "Category parameter is missing" }, { status: 400 });
+    }
+
+    if (!isAllowedBundleCategory(category)) {
+      return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
     }
 
     // Call the server action to build the binary bundle

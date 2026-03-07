@@ -12,6 +12,7 @@ import { collection, getDocs, doc, getDoc, query, orderBy, serverTimestamp, setD
 import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/hooks/use-translation";
+import { getTopicDisplayName } from "@/lib/formatting";
 import Link from "next/link";
 import {
   AlertDialog,
@@ -136,11 +137,11 @@ export default function MyNotesPage() {
                 }
                 questionData = {
                     id: noteMeta.id,
-                    topic: data.main_localization === "General" ? t('studyMode.categoryOther') : t(`topics.${data.main_localization?.toLowerCase()}` as any, { defaultValue: data.main_localization }),
+                    topic: getTopicDisplayName(data.main_localization ?? undefined, t),
                     subtopic: data.sub_main_location || undefined,
                     difficulty: data.difficulty === 'Advanced' ? 'Advanced' : 'Easy',
                     type: (data.type === "Multiple Choice" || data.type === "multiple_choice") ? 'mcq' : data.type || 'mcq',
-                    localization: (data.main_localization === "General" ? t('studyMode.categoryOther') : t(`topics.${data.main_localization?.toLowerCase()}` as any, { defaultValue: data.main_localization })) as any,
+                    localization: getTopicDisplayName(data.main_localization ?? undefined, t) as any,
                     stem: langTranslations.questionText || 'No stem available.',
                     options: mappedOptions,
                     correctAnswerId: correctAnswerIdValue,

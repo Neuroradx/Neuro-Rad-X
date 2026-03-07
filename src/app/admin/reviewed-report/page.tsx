@@ -8,6 +8,7 @@ import { fetchReviewerStats } from '@/actions/user-data-actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ErrorAlert } from '@/components/ui/error-alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -101,11 +102,7 @@ export default function ReviewedReportPage() {
               <p className="mt-3 text-sm text-muted-foreground">{t('common.loading')}</p>
             </div>
           ) : error ? (
-            <Alert variant="destructive" className="rounded-xl">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <ErrorAlert description={error} className="rounded-xl" />
           ) : stats.length === 0 ? (
             <Alert>
               <ClipboardCheck className="h-4 w-4" />

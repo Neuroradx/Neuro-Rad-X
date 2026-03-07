@@ -6,6 +6,7 @@ import { auth } from '@/lib/firebase';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ErrorAlert } from '@/components/ui/error-alert';
 import { Loader2, UserCheck, AlertCircle, ShieldAlert, CheckCircle, RefreshCw, ChevronLeft, ChevronRight, CreditCard, ArrowLeft, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -216,11 +217,7 @@ export default function PendingUsersPage() {
         )}
 
         {!isLoadingUsers && fetchError && (
-          <Alert variant="destructive" className="rounded-xl">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-            <AlertDescription>{fetchError}</AlertDescription>
-          </Alert>
+          <ErrorAlert description={fetchError} className="rounded-xl" />
         )}
 
         {!isLoadingUsers && !fetchError && pendingUsers.length === 0 && (

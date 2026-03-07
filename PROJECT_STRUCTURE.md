@@ -14,7 +14,7 @@ Este documento describe la estructura de archivos y directorios de la aplicació
     -   **`ai/`**: Configuración de Genkit y flujos para funciones de IA Generativa (por ejemplo, calidad de preguntas y búsqueda de artículos científicos).
     -   **`app/`**: El App Router de Next.js, que contiene todas las páginas y layouts.
     -   **`components/`**: Componentes reutilizables de React utilizados en toda la aplicación.
-    -   **`hooks/`**: Hooks personalizados de React para lógica compartida del lado del cliente.
+    -   **`hooks/`**: Hooks personalizados de React para lógica compartida del lado del cliente (p. ej. `use-toast`, `use-translation`, `use-admin-check` para estado de admin y usuario actual).
     -   **`lib/`**: Bibliotecas principales, utilidades, constantes y archivos de datos.
     -   **`locales/`**: Archivos JSON para traducciones (en, de, es).
     -   **`providers/`**: Proveedores de Contexto de React, como el `LanguageProvider` para la internacionalización y el `ThemeProvider` para el tema.
@@ -89,13 +89,16 @@ Este directorio utiliza el paradigma del App Router de Next.js. La lógica para 
 -   **`questions/`**: Componentes para mostrar e interactuar con las preguntas.
 -   **`settings/`**: Componentes utilizados en la página de configuración.
 -   **`study/`**: Componentes para los diversos modos de estudio (MCQ, Tarjeta de memoria, Resultados del Examen).
--   **`ui/`**: Componentes de UI principales de la biblioteca `shadcn/ui` (Button, Card, Input, etc.).
+-   **`ui/`**: Componentes de UI principales de la biblioteca `shadcn/ui` (Button, Card, Input, etc.). Incluye el componente reutilizable `error-alert.tsx` para alertas de error con título por defecto traducido.
 
 ### `src/lib/` - Lógica Principal y Datos
 
 -   **`firebase.ts`**: Inicialización de Firebase del lado del cliente.
 -   **`firebase-admin.ts`**: Inicialización del SDK de administración de Firebase del lado del servidor.
--   **`constants.ts`**: Constantes de toda la aplicación, como los elementos de navegación.
+-   **`constants.ts`**: Constantes de toda la aplicación (navegación, `MAIN_CATEGORIES`, `DIFFICULTY_FILTER_OPTIONS`, `subcategoryDisplayNames`, etc.).
 -   **`utils.ts`**: Funciones de utilidad, principalmente para `clsx` y `tailwind-merge`.
+-   **`auth-error-messages.ts`**: Función `getAuthErrorMessage(error, t, context)` para mapear códigos de error de Firebase Auth a mensajes traducidos (login, registro, re-autenticación).
+-   **`formatting.ts`**: Helpers `getTopicDisplayName(mainLocalization, t)` y `getSubtopicDisplayName(subtopicKey, t)` para etiquetas de categoría/subcategoría.
+-   **`toast-helpers.ts`**: `showErrorToast(toast, t, description, title?)` y `showSuccessToast(...)` para toasts destructivos y de éxito.
 -   **`firestore-structures/`**: Archivos JSON que documentan el esquema de las colecciones de Firestore.
 -   **`*.json`**: Varios archivos de datos JSON, incluyendo IDs de preguntas, correos electrónicos de administradores y datos de cursos.

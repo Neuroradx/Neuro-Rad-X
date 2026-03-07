@@ -1,5 +1,7 @@
 import * as admin from 'firebase-admin';
 
+const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || process.env.GCLOUD_PROJECT || 'neuroradx-jovto';
+
 function initializeAdmin() {
   if (admin.apps.length > 0) return admin.apps[0]!;
 
@@ -11,18 +13,18 @@ function initializeAdmin() {
       const serviceAccount = JSON.parse(serviceAccountVar);
       return admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
-        projectId: 'neuroradx-jovto'
+        projectId: PROJECT_ID
       });
     } else {
       // Si no hay secreto, usamos la identidad del servidor (ADC)
       return admin.initializeApp({
         credential: admin.credential.applicationDefault(),
-        projectId: 'neuroradx-jovto'
+        projectId: PROJECT_ID
       });
     }
   } catch (error) {
     console.error('[firebase-admin] Error inicializando:', error);
-    return admin.initializeApp({ projectId: 'neuroradx-jovto' });
+    return admin.initializeApp({ projectId: PROJECT_ID });
   }
 }
 

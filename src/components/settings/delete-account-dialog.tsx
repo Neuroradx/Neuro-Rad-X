@@ -26,6 +26,7 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import { Alert, AlertTitle as UIAlertTitle , AlertDescription as UIAlertDescription } from "@/components/ui/alert"; 
 import { deleteUserAndTheirData } from "@/actions/user-data-actions";
+import { getAuthErrorMessage } from "@/lib/auth-error-messages";
 
 
 const deleteAccountSchema = z.object({
@@ -131,8 +132,9 @@ export function DeleteAccountDialog({ isOpen, onOpenChange }: DeleteAccountDialo
           duration: 7000,
         });
       } else if (error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
-         setReauthError("Incorrect password. Please try again.");
-         form.setError("password", { type: "manual", message: "Incorrect password." });
+         const message = getAuthErrorMessage(error, t, "reauth");
+         setReauthError(message);
+         form.setError("password", { type: "manual", message });
       } else {
         console.error("Error deleting account:", error);
         toast({

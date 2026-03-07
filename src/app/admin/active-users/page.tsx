@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ErrorAlert } from '@/components/ui/error-alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -167,11 +168,7 @@ export default function ActiveUsersPage() {
           </div>
         )}
         {!isLoading && fetchError && (
-          <Alert variant="destructive" className="rounded-xl">
-            <AlertCircleIcon className="h-4 w-4" />
-            <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-            <AlertDescription>{fetchError}</AlertDescription>
-          </Alert>
+          <ErrorAlert description={fetchError} className="rounded-xl" />
         )}
         {!isLoading && !fetchError && activeUsers.length === 0 && (
           <Alert className="rounded-xl border-border/60">

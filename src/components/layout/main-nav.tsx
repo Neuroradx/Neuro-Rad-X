@@ -85,7 +85,7 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
     
     const buttonContent = (
       <>
-        {IconComponent && <IconComponent className="h-4 w-4" />}
+        {IconComponent && <IconComponent className="h-[1.125rem] w-[1.125rem] shrink-0" />}
         <span className={cn(isSidebarCollapsed && !isSubItem ? "sr-only" : "")}>{translatedTitle}</span>
       </>
     );
@@ -134,18 +134,18 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
           <AccordionItem value={item.title} className="border-b-0">
             <AccordionTrigger
               className={cn(
-                "flex items-center justify-between rounded-md px-2 py-1.5 text-sm font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:no-underline",
+                "flex items-center justify-between rounded-lg px-3 py-2.5 text-[1.125rem] font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:no-underline transition-colors",
                 isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : "text-sidebar-foreground",
-                item.customClass, // Apply custom class to trigger as well if needed for consistent styling, though buttonContent span is primary target
+                item.customClass,
                 "focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:outline-none"
               )}
             >
-              <div className="flex items-center gap-2">
-                {IconComponent && <IconComponent className="h-4 w-4" />}
+              <div className="flex items-center gap-2.5">
+                {IconComponent && <IconComponent className="h-[1.125rem] w-[1.125rem] shrink-0" />}
                 {translatedTitle}
               </div>
             </AccordionTrigger>
-            <AccordionContent className="pb-0 pl-5 pt-1">
+            <AccordionContent className="pb-0 pl-6 pt-1.5">
               <SidebarMenuSub>
                 {item.subItems.map((subItem) => {
                   const SubIconComponent = subItem.icon ? iconMap[subItem.icon] : null;
@@ -157,7 +157,7 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
                           isActive={pathname === subItem.href}
                           className={cn("w-full justify-start", subItem.customClass)} // Apply custom class to sub-button
                         >
-                          {SubIconComponent && <SubIconComponent className="h-4 w-4 mr-2" />}
+                          {SubIconComponent && <SubIconComponent className="h-[1rem] w-[1rem] shrink-0 mr-2 opacity-70" />}
                           {translatedSubItemTitle}
                         </SidebarMenuSubButton>
                       </Link>
@@ -206,15 +206,15 @@ export function MainNav({ items, className, openShareDialog, userRole }: MainNav
   const navGroups = buildNavGroups();
 
   return (
-    <nav className={cn("flex flex-col gap-2 px-2", className)}>
+    <nav className={cn("flex flex-col gap-1 px-1 md:px-2", className)}>
       {navGroups.map((group, gIdx) => (
-        <SidebarGroup key={group.label ?? `g-${gIdx}`} className={gIdx > 0 ? "mt-1" : ""}>
+        <SidebarGroup key={group.label ?? `g-${gIdx}`} className={cn("px-2", gIdx > 0 ? "mt-3" : "")}>
           {group.label && (
             <>
-              <SidebarGroupLabel className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60 group-data-[collapsible=icon]:hidden">
+              <SidebarGroupLabel className="px-2 py-1.5 text-[1rem] font-semibold uppercase tracking-widest text-sidebar-foreground/55 group-data-[collapsible=icon]:hidden">
                 {t(group.label)}
               </SidebarGroupLabel>
-              <SidebarSeparator className="my-1.5 group-data-[collapsible=icon]:hidden" />
+              <SidebarSeparator className="my-1 group-data-[collapsible=icon]:hidden" />
             </>
           )}
           <SidebarGroupContent>

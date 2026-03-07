@@ -61,11 +61,7 @@ export async function POST(request: Request) {
 
         if (!isInAllowlist) {
             return NextResponse.json(
-                {
-                    error: 'Access denied: your email is not in the admin allowlist.',
-                    email: emailLower,
-                    allowlist: ADMIN_EMAILS,
-                },
+                { error: 'Access denied: your email is not in the admin allowlist.' },
                 { status: 403 }
             );
         }

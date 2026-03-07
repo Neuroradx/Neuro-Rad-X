@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, ShieldCheck, ArrowLeft, FileCheck } from 'lucide-react';
+import { Loader2, ShieldCheck, ArrowLeft, FileCheck, Bookmark } from 'lucide-react';
 import { MENU_DATA } from '@/lib/question-counts';
 import { useTranslation } from '@/hooks/use-translation';
 import {
@@ -55,9 +55,18 @@ export default function ReviewQuestionsPage() {
 
   return (
     <div className="container mx-auto py-8 max-w-2xl">
-      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
-        <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
-      </Button>
+      <div className="flex items-center justify-between mb-6">
+        <Button variant="outline" size="sm" className="border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
+          <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
+        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="h-9 w-9" asChild title={t('nav.bookmarks')}>
+            <Link href="/bookmarks">
+              <Bookmark className="h-5 w-5 text-muted-foreground hover:text-primary" />
+            </Link>
+          </Button>
+        </div>
+      </div>
       <div className="flex items-center gap-3 mb-8">
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <FileCheck className="h-6 w-6" />

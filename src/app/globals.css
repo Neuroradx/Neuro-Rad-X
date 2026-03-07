@@ -30,6 +30,15 @@
     --chart-4: 262 60% 55%;
     --chart-5: 210 90% 55%;
     --radius: 0.5rem;
+    /* Sidebar - light theme */
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 224 71.4% 4.1%;
+    --sidebar-primary: 173 58% 50%;
+    --sidebar-primary-foreground: 173 100% 10%;
+    --sidebar-accent: 173 58% 94%;
+    --sidebar-accent-foreground: 173 58% 25%;
+    --sidebar-border: 220 13% 88%;
+    --sidebar-ring: 173 58% 40%;
   }
   .dark {
     --background: 225 21% 9%;
@@ -57,6 +66,15 @@
     --chart-4: 265 75% 65%;
     --chart-5: 215 95% 65%;
     --radius: 0.5rem;
+    /* Sidebar - dark theme */
+    --sidebar-background: 225 21% 10%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 173 80% 45%;
+    --sidebar-primary-foreground: 173 100% 10%;
+    --sidebar-accent: 173 50% 18%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 173 80% 45%;
   }
 }
 
@@ -130,5 +148,36 @@
   }
   .infographic-chart {
     @apply min-h-[260px] w-full;
+  }
+
+  /* Sidebar - professional styling */
+  [data-sidebar="sidebar"] {
+    @apply border-r border-sidebar-border/80 rounded-r-xl;
+    box-shadow: 2px 0 20px -6px rgb(0 0 0 / 0.06), 0 0 0 1px rgb(0 0 0 / 0.02);
+    transition: box-shadow 0.2s ease;
+  }
+  .dark [data-sidebar="sidebar"] {
+    box-shadow: 2px 0 24px -6px rgb(0 0 0 / 0.35);
+  }
+  /* Mobile sidebar (Sheet) overlay */
+  [data-mobile="true"][data-sidebar="sidebar"] {
+    box-shadow: -8px 0 32px -8px rgb(0 0 0 / 0.15);
+  }
+  .dark [data-mobile="true"][data-sidebar="sidebar"] {
+    box-shadow: -8px 0 40px -8px rgb(0 0 0 / 0.5);
+  }
+  /* Sidebar scrollbar - subtle styling */
+  [data-sidebar="content"]::-webkit-scrollbar {
+    width: 6px;
+  }
+  [data-sidebar="content"]::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  [data-sidebar="content"]::-webkit-scrollbar-thumb {
+    background: hsl(var(--sidebar-border));
+    border-radius: 3px;
+  }
+  [data-sidebar="content"]::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--sidebar-foreground) / 0.2);
   }
 }

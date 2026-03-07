@@ -22,12 +22,14 @@ service cloud.firestore {
       allow create: if isOwner(userId) 
         && !("role" in request.resource.data) 
         && !("status" in request.resource.data)
-        && !("subscriptionLevel" in request.resource.data);
+        && !("subscriptionLevel" in request.resource.data)
+        && !("subscriptionExpiresAt" in request.resource.data);
         
       allow update: if isOwner(userId) 
         && !("role" in request.resource.data) 
         && !("status" in request.resource.data)
-        && !("subscriptionLevel" in request.resource.data);
+        && !("subscriptionLevel" in request.resource.data)
+        && !("subscriptionExpiresAt" in request.resource.data);
     }
 
     // Users can read and write to their own subcollections.

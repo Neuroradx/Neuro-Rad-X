@@ -1,6 +1,7 @@
 import UserNotificationsHistoryClientPage from './client-page';
 
 // This is a Server Component
-export default function UserNotificationsHistoryPage({ params }: { params: { userId: string } }) {
-  return <UserNotificationsHistoryClientPage userId={params.userId} />;
+export default async function UserNotificationsHistoryPage({ params }: { params: Promise<{ userId: string }> }) {
+  const { userId } = await params;
+  return <UserNotificationsHistoryClientPage userId={userId} />;
 }

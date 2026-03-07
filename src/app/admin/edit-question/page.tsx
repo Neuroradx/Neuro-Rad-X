@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { useTranslation } from '@/hooks/use-translation';
 import { useToast } from '@/hooks/use-toast';
 import { getQuestionById, updateQuestion, deleteQuestionById } from '@/actions/question-actions';
@@ -18,6 +20,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MENU_DATA } from '@/lib/question-counts';
+import { MAIN_CATEGORIES } from '@/lib/constants';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
@@ -32,7 +35,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, ArrowLeft, Save, Trash2, PlusCircle, Wand2, Search, Tag, CheckCircle2, ShieldCheck, FileEdit, FileText, Lightbulb, Sparkles, ExternalLink, ExternalLinkIcon, Eraser } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Trash2, PlusCircle, Wand2, Search, Tag, CheckCircle2, ShieldCheck, FileEdit, FileText, Lightbulb, Sparkles, ExternalLink, ExternalLinkIcon, Eraser, Bookmark } from 'lucide-react';
 import { ArticleReferenceDisplay } from '@/components/article-reference-display';
 import { stripCitationsFromText } from '@/lib/citations';
 import type { Question } from '@/types';
@@ -86,6 +89,9 @@ function EditQuestionPageContent() {
   const [aiLog, setAiLog] = useState<{ type: 'info' | 'success' | 'warning' | 'error'; text: string }[]>([]);
   const [qualityResult, setQualityResult] = useState<Awaited<ReturnType<typeof runQuestionQualityCheckAction>>['data'] | null>(null);
   const [isQualityChecking, setIsQualityChecking] = useState(false);
+
+  // Bookmark state for current question
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   // Dynamic subcategories fetched from Firestore
   const [dynamicSubcats, setDynamicSubcats] = useState<string[]>([]);
@@ -161,6 +167,44 @@ function EditQuestionPageContent() {
       loadQuestionData(questionId);
     }
   }, [questionId, currentUser]);
+
+  // Sync bookmark status when question or user changes
+  useEffect(() => {
+    if (!questionId || !currentUser?.uid || currentUser.isAnonymous) {
+      setIsBookmarked(false);
+      return;
+    }
+    let cancelled = false;
+    const bookmarkRef = doc(db, 'users', currentUser.uid, 'bookmarkedQuestions', questionId);
+    getDoc(bookmarkRef).then((snap) => {
+      if (!cancelled) setIsBookmarked(snap.exists());
+    }).catch(() => {
+      if (!cancelled) setIsBookmarked(false);
+    });
+    return () => { cancelled = true; };
+  }, [questionId, currentUser?.uid]);
+
+  const handleBookmarkToggle = useCallback(async () => {
+    if (!questionId || !currentUser?.uid || currentUser.isAnonymous) {
+      toast({ title: t('toast.loginRequiredTitle'), description: t('toast.loginRequiredBookmarks'), variant: 'destructive' });
+      return;
+    }
+    const bookmarkRef = doc(db, 'users', currentUser.uid, 'bookmarkedQuestions', questionId);
+    try {
+      if (isBookmarked) {
+        await deleteDoc(bookmarkRef);
+        setIsBookmarked(false);
+        toast({ title: t('toast.bookmarkRemovedTitle'), description: t('toast.bookmarkRemovedDescription') });
+      } else {
+        await setDoc(bookmarkRef, { addedAt: serverTimestamp() }, { merge: true });
+        setIsBookmarked(true);
+        toast({ title: t('toast.bookmarkAddedTitle', { defaultValue: 'Bookmark added' }), description: t('toast.bookmarkAddedDescription', { defaultValue: 'Question saved to your bookmarks.' }) });
+      }
+    } catch (e) {
+      console.error('Bookmark toggle error:', e);
+      toast({ title: t('toast.errorTitle'), description: t('toast.bookmarkError'), variant: 'destructive' });
+    }
+  }, [questionId, currentUser, isBookmarked, t, toast]);
 
   const loadedQuestionRef = useRef<Question | null>(null);
 
@@ -563,9 +607,31 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
 
   return (
     <div className="container mx-auto py-8 max-w-6xl">
-      <Button variant="outline" size="sm" className="mb-6 border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
-        <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
-      </Button>
+      <div className="flex items-center justify-between mb-6">
+        <Button variant="outline" size="sm" className="border-border/80 rounded-lg" onClick={() => router.push('/admin/dashboard')}>
+          <ArrowLeft className="mr-2 h-4 w-4" /> {t('admin.backToAdminDashboard')}
+        </Button>
+        <div className="flex items-center gap-2">
+          {questionId ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
+              onClick={handleBookmarkToggle}
+              title={isBookmarked ? t('studyMode.removeBookmarkTitle') : t('studyMode.addBookmarkTitle')}
+              aria-label={isBookmarked ? t('studyMode.removeBookmarkAria') : t('studyMode.addBookmarkAria')}
+            >
+              <Bookmark className={`h-5 w-5 transition-colors ${isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground hover:text-primary'}`} />
+            </Button>
+          ) : (
+            <Button variant="ghost" size="icon" className="h-9 w-9" asChild title={t('nav.bookmarks')}>
+              <Link href="/bookmarks">
+                <Bookmark className="h-5 w-5 text-muted-foreground hover:text-primary" />
+              </Link>
+            </Button>
+          )}
+        </div>
+      </div>
 
       {!questionId ? (
         <Card className="max-w-md mx-auto">
@@ -628,7 +694,7 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {(['Head', 'Neck', 'Spine', 'General'] as const).map(cat => (
+                          {MAIN_CATEGORIES.map(cat => (
                             <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                           ))}
                         </SelectContent>
@@ -926,7 +992,7 @@ ${refText ? `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #
                   <CardContent className="space-y-4">
                     <FormField control={form.control} name="scientificArticle.article_reference" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Article Reference (AMA Style)</FormLabel>
+                        <FormLabel>Article Reference (APA Style)</FormLabel>
                         <FormControl>
                           <Textarea {...field} value={field.value || ''} placeholder="Author et al. Title. Journal. Year..." />
                         </FormControl>

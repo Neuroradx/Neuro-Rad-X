@@ -6,7 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { useTranslation } from '@/hooks/use-translation';
-import { subcategoryDisplayNames } from '@/lib/constants';
+import { getTopicDisplayName, getSubtopicDisplayName } from '@/lib/formatting';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -79,10 +79,8 @@ export default function QuestionDetailPage() {
 
         setQuestion({
           id: docSnap.id,
-          topic: t(`topics.${(data.main_localization || '').toLowerCase()}` as any, { defaultValue: data.main_localization }),
-          subtopic: data.sub_main_location
-            ? t(subcategoryDisplayNames[data.sub_main_location] || `subtopics.${(data.sub_main_location || '').toLowerCase()}` as any, { defaultValue: data.sub_main_location })
-            : undefined,
+          topic: getTopicDisplayName(data.main_localization ?? undefined, t),
+          subtopic: data.sub_main_location ? getSubtopicDisplayName(data.sub_main_location, t) : undefined,
           difficulty: data.difficulty,
           stem: langTranslations.questionText || '',
           options,

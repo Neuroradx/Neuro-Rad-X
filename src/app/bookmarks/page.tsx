@@ -2,6 +2,7 @@
 
 import { AlertCircle, Bookmark as BookmarkIconLucide, Loader2, ChevronLeft, ChevronRight, LogIn } from "lucide-react"; 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ErrorAlert } from "@/components/ui/error-alert";
 import { QuestionCard } from "@/components/questions/question-card";
 import type { Question, QuestionOption, QuestionLocalization } from "@/types";
 import { useState, useEffect, useCallback } from "react";
@@ -12,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
-import { subcategoryDisplayNames } from "@/lib/constants";
+import { getTopicDisplayName, getSubtopicDisplayName } from "@/lib/formatting";
 
 const QUESTIONS_PER_PAGE = 9;
 
@@ -101,13 +102,8 @@ export default function BookmarksPage() {
             correctAnswerIdValue = mappedOptions[data.correctAnswerIndex].id;
           }
 
-          const topicDisplay = data.main_localization === "General" 
-            ? t('studyMode.categoryOther') 
-            : t(`topics.${data.main_localization?.toLowerCase()}` as any, {defaultValue: data.main_localization});
-
-          const subtopicKey = data.sub_main_location;
-          const subtopicTranslationKey = subtopicKey ? subcategoryDisplayNames[subtopicKey] || `subtopics.${subtopicKey.toLowerCase()}` : undefined;
-          const subtopicDisplay = subtopicKey && subtopicTranslationKey ? t(subtopicTranslationKey as any, {defaultValue: subtopicKey}) : undefined;
+          const topicDisplay = getTopicDisplayName(data.main_localization ?? undefined, t);
+          const subtopicDisplay = getSubtopicDisplayName(data.sub_main_location ?? undefined, t);
           
           fetchedQuestions.push({
             id: questionId,
@@ -220,11 +216,7 @@ export default function BookmarksPage() {
       <p className="text-muted-foreground mb-8">{t('bookmarksPage.description')}</p>
 
       {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <ErrorAlert description={error} className="mb-6" />
       )}
 
       {!firebaseUser || firebaseUser.isAnonymous ? (

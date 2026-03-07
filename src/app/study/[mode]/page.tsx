@@ -39,7 +39,8 @@ import MCQDisplay from '@/components/study/MCQDisplay';
 import FlashcardDisplay from '@/components/study/FlashcardDisplay';
 import ExamResultsDisplay from '@/components/study/ExamResultsDisplay';
 
-import { subcategoryDisplayNames } from '@/lib/constants';
+import { DIFFICULTY_FILTER_OPTIONS } from '@/lib/constants';
+import { getTopicDisplayName, getSubtopicDisplayName } from '@/lib/formatting';
 import { MENU_DATA } from '@/lib/question-counts';
 import { fetchIncorrectlyAnsweredQuestions, recordQuestionAttempt, saveQuizSessionAction } from '@/actions/user-data-actions';
 import { DateRange } from 'react-day-picker';
@@ -47,7 +48,6 @@ import courseModuleQuestions from '@/lib/course-module-questions.json';
 
 type Mode = 'tutor' | 'exam' | 'flashcards';
 
-const DIFFICULTIES_FOR_FILTER = ['all', 'Easy', 'Advanced'];
 const CATEGORIES_FOR_FILTER = Object.keys(MENU_DATA.main_localization);
 
 
@@ -106,7 +106,7 @@ export default function StudyPage() {
   // --- DERIVED DATA ---
   const availableCategories = useMemo(() => ([
     { value: 'all', label: t('studyMode.allCategories') },
-    ...CATEGORIES_FOR_FILTER.map(cat => ({ value: cat, label: t(`topics.${cat.toLowerCase()}` as any, { defaultValue: cat }) }))
+    ...CATEGORIES_FOR_FILTER.map(cat => ({ value: cat, label: getTopicDisplayName(cat, t) }))
   ]), [t]);
 
   const currentSubcategoryOptions = useMemo(() => {
@@ -175,9 +175,9 @@ export default function StudyPage() {
         let count = 0;
 
         if (selectedCategory !== 'all') {
-          path += t(`topics.${selectedCategory.toLowerCase()}` as any, { defaultValue: selectedCategory });
+          path += getTopicDisplayName(selectedCategory, t);
           if (selectedSubcategory !== 'all' && currentSubcategoryOptions.includes(selectedSubcategory)) {
-            const subCategoryLabel = t(subcategoryDisplayNames[selectedSubcategory] || `subtopics.${selectedSubcategory.toLowerCase()}` as any, { defaultValue: selectedSubcategory });
+            const subCategoryLabel = getSubtopicDisplayName(selectedSubcategory, t);
             path += ` > ${subCategoryLabel}`;
             count = MENU_DATA.sub_main_location[selectedCategory]?.[selectedSubcategory]?.[selectedDifficulty] || 
                     MENU_DATA.total_by_sub_cat[selectedCategory]?.[selectedSubcategory] || 0;
@@ -293,8 +293,8 @@ export default function StudyPage() {
 
           return {
             id: docSnap.id,
-            topic: t(`topics.${data.main_localization.toLowerCase()}` as any, { defaultValue: data.main_localization }),
-            subtopic: data.sub_main_location ? t(subcategoryDisplayNames[data.sub_main_location] || `subtopics.${data.sub_main_location.toLowerCase()}` as any, { defaultValue: data.sub_main_location }) : undefined,
+            topic: getTopicDisplayName(data.main_localization, t),
+            subtopic: data.sub_main_location ? getSubtopicDisplayName(data.sub_main_location, t) : undefined,
             difficulty: data.difficulty,
             type: data.type,
             stem: langTranslations.questionText,
@@ -548,7 +548,7 @@ export default function StudyPage() {
             firebaseLoading={firebaseLoading}
             firebaseError={firebaseError}
             availableCategories={availableCategories}
-            difficultiesForFilter={DIFFICULTIES_FOR_FILTER}
+            difficultiesForFilter={DIFFICULTY_FILTER_OPTIONS}
             getModeTitle={getModeTitle}
             getModeDescription={getModeDescription}
             getModeIcon={getModeIcon}

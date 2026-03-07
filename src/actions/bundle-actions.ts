@@ -1,17 +1,22 @@
 'use server';
 
 import { adminDb } from '@/lib/firebase-admin';
+import { ALLOWED_BUNDLE_CATEGORIES, isAllowedBundleCategory } from '@/lib/bundle-utils';
 
 /**
  * Generates a Firestore bundle for a specific question category.
  * This bundle is a binary representation of documents that can be cached by CDNs
  * and loaded directly into the client's local cache.
- * 
- * @param category The main_localization value (e.g., 'Head', 'Spine')
+ *
+ * @param category The main_localization value (e.g., 'Head', 'Spine') — must be in ALLOWED_BUNDLE_CATEGORIES.
  */
 export async function generateQuestionBundle(category: string): Promise<Buffer> {
   if (!adminDb) {
     throw new Error("Admin SDK is not initialized. Check server environment variables.");
+  }
+
+  if (!isAllowedBundleCategory(category)) {
+    throw new Error(`Invalid category. Allowed: ${ALLOWED_BUNDLE_CATEGORIES.join(', ')}`);
   }
 
   try {

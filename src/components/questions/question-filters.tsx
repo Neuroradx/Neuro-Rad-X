@@ -8,25 +8,22 @@ import { Filter, X } from "lucide-react";
 import React, { useState, useEffect, useMemo } from "react";
 import type { QuestionLocalization } from "@/types";
 import { useTranslation } from "@/hooks/use-translation";
+import { MAIN_CATEGORIES, DIFFICULTY_FILTER_OPTIONS } from "@/lib/constants";
+import { getTopicDisplayName } from "@/lib/formatting";
 
-// Main categories for filtering. These keys should match those in `topics.*` translation keys.
-const mainCategoriesForFilter = ["Head", "Spine", "Neck", "General", "Chest", "Abdomen", "Limbs"];
+// "Other" in UI maps to "General" in Firestore data typically.
+const localizationsListForDropdown: Array<'all' | QuestionLocalization> = ["all", ...MAIN_CATEGORIES, "Other"];
 
 
 interface QuestionFiltersProps {
   onFilterChange: (filters: { topic: string; difficulty: string; localization: string; }) => void;
 }
 
-const difficultyOptionsList: Array<'all' | 'Easy' | 'Advanced'> = ["all", "Easy", "Advanced"];
-// "Other" in UI maps to "General" in Firestore data typically.
-const localizationsListForDropdown: Array<'all' | QuestionLocalization> = ["all", ...mainCategoriesForFilter, "Other"];
-
-
 export function QuestionFilters({ onFilterChange }: QuestionFiltersProps) {
   const { t } = useTranslation();
-  const [topic, setTopic] = useState("all"); // Maps to main_localization, will use mainCategoriesForFilter
+  const [topic, setTopic] = useState("all"); // Maps to main_localization
   const [difficulty, setDifficulty] = useState("all");
-  const [localization, setLocalization] = useState("all"); // Also maps to main_localization, using mainCategoriesForFilter + "Other"
+  const [localization, setLocalization] = useState("all"); // main_localization + "Other"
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -37,10 +34,7 @@ export function QuestionFilters({ onFilterChange }: QuestionFiltersProps) {
     if (!isClient) return [{ value: "all", label: t('questionFilters.allTopics') }];
     return [
         { value: "all", label: t('questionFilters.allTopics') },
-        ...mainCategoriesForFilter.map(catKey => ({ 
-            value: catKey, 
-            label: catKey === "General" ? t('studyMode.categoryOther') : t(`topics.${catKey.toLowerCase()}` as any) 
-        }))
+        ...MAIN_CATEGORIES.map(catKey => ({ value: catKey, label: getTopicDisplayName(catKey, t) }))
     ];
   }, [isClient, t]);
 
@@ -48,11 +42,9 @@ export function QuestionFilters({ onFilterChange }: QuestionFiltersProps) {
     if (!isClient) return [{ value: "all", label: t('questionFilters.allLocalizations') }];
     return localizationsListForDropdown.map(locItem => ({
         value: locItem,
-        label: locItem === "all" 
-               ? t('questionFilters.allLocalizations') 
-               : (locItem === "General" || locItem === "Other" 
-                  ? t('studyMode.categoryOther') 
-                  : t(`topics.${locItem.toLowerCase()}` as any))
+        label: locItem === "all"
+               ? t('questionFilters.allLocalizations')
+               : getTopicDisplayName(locItem === "Other" ? "General" : locItem, t),
     }));
   }, [isClient, t]);
 
@@ -107,7 +99,7 @@ export function QuestionFilters({ onFilterChange }: QuestionFiltersProps) {
               <SelectValue placeholder={t('difficulty.all')} />
             </SelectTrigger>
             <SelectContent>
-              {difficultyOptionsList.map(dItem => 
+              {DIFFICULTY_FILTER_OPTIONS.map(dItem => 
                 <SelectItem key={dItem} value={dItem} className="capitalize">
                   {dItem === "all" ? t('difficulty.all') : t(`difficulty.${dItem.toLowerCase()}` as any)}
                 </SelectItem>

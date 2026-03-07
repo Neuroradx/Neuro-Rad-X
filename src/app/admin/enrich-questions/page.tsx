@@ -8,6 +8,7 @@ import { getQuestionEnrichmentStats, enrichQuestionsWithSources } from '@/action
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ErrorAlert } from '@/components/ui/error-alert';
 import { Loader2, ArrowLeft, Wand2, AlertCircle, CheckCircle, Play, Square } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
@@ -146,11 +147,7 @@ export default function EnrichQuestionsPage() {
               <p className="mt-3 text-sm text-muted-foreground">{t('common.loading')}</p>
             </div>
           ) : error ? (
-            <Alert variant="destructive" className="rounded-xl">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <ErrorAlert description={error} className="rounded-xl" />
           ) : stats && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm font-medium">

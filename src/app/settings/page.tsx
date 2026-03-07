@@ -4,7 +4,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged, type User as FirebaseUser, updateProfile } from "firebase/auth";
+import { type User as FirebaseUser, updateProfile } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import type { UserProfile } from "@/types";
@@ -16,6 +16,7 @@ import { useTheme } from "next-themes";
 
 import { useTranslation } from "@/hooks/use-translation";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminCheck } from "@/hooks/use-admin-check";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -60,42 +61,45 @@ const roleKeys = ["user", "admin", "tester"];
 export default function SettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { user: firebaseUser, isAdmin, isLoading: isAuthLoading } = useAdminCheck();
 
   // State Management
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  // Authentication and Profile Loading Effect
+  // Sync currentUser from hook and load profile when user is available
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setCurrentUser(user);
-        try {
-          // Check custom claims for admin status
-          const tokenResult = await user.getIdTokenResult();
-          setIsAdmin(!!tokenResult.claims.admin);
-
-          const userDocRef = doc(db, 'users', user.uid);
-          const docSnap = await getDoc(userDocRef);
-          if (docSnap.exists()) {
-            setUserProfile(docSnap.data() as UserProfile);
-          } else {
-            setError(t('auth.profileFetchErrorDescription'));
-          }
-        } catch (e: any) {
-          setError(e.message || t('auth.profileFetchErrorDescription'));
-        } finally {
-          setIsLoading(false);
+    setCurrentUser(firebaseUser);
+    if (!firebaseUser) {
+      setIsProfileLoading(false);
+      return;
+    }
+    setIsProfileLoading(true);
+    setError(null);
+    const userDocRef = doc(db, 'users', firebaseUser.uid);
+    getDoc(userDocRef)
+      .then((docSnap) => {
+        if (docSnap.exists()) {
+          setUserProfile(docSnap.data() as UserProfile);
+        } else {
+          setError(t('auth.profileFetchErrorDescription'));
         }
-      } else {
-        router.push('/auth/login');
-      }
-    });
-    return () => unsubscribe();
-  }, [router, t]);
+      })
+      .catch((e: any) => {
+        setError(e.message || t('auth.profileFetchErrorDescription'));
+      })
+      .finally(() => setIsProfileLoading(false));
+  }, [firebaseUser, isAuthLoading, router, t]);
+
+  useEffect(() => {
+    if (!isAuthLoading && !firebaseUser) {
+      router.push('/auth/login');
+    }
+  }, [isAuthLoading, firebaseUser, router]);
+
+  const isLoading = isAuthLoading || isProfileLoading;
 
   // Loading and Error States
   if (isLoading) {

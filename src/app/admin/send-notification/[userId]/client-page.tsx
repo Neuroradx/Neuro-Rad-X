@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { useTranslation } from "@/hooks/use-translation";
 import { fetchUserWithNotifications } from "@/actions/notification-actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ErrorAlert } from "@/components/ui/error-alert";
 import { Loader2, ArrowLeft, Bell, Mail } from "lucide-react";
 import type { Notification, UserProfile } from "@/types";
 import { Badge } from "@/components/ui/badge";
@@ -26,10 +28,20 @@ export default function UserNotificationsHistoryClientPage({ userId }: { userId:
   const { t } = useTranslation();
   const router = useRouter();
 
+  const [currentUserUid, setCurrentUserUid] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setAuthChecked(true);
+      setCurrentUserUid(firebaseUser?.uid ?? null);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const fetchHistory = useCallback(async () => {
     if (!userId) {
@@ -37,10 +49,15 @@ export default function UserNotificationsHistoryClientPage({ userId }: { userId:
       setIsLoading(false);
       return;
     }
+    if (!currentUserUid) {
+      setError(t('admin.accessDenied.description') ?? "You must be logged in to view this page.");
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {
-      const result = await fetchUserWithNotifications(userId);
+      const result = await fetchUserWithNotifications(userId, currentUserUid);
       if (result.success) {
         setUser(result.user);
         setNotifications(result.notifications || []);
@@ -52,11 +69,11 @@ export default function UserNotificationsHistoryClientPage({ userId }: { userId:
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [userId, currentUserUid, t]);
 
   useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
+    if (authChecked) fetchHistory();
+  }, [authChecked, fetchHistory]);
 
   if (isLoading) {
     return (
@@ -73,10 +90,7 @@ export default function UserNotificationsHistoryClientPage({ userId }: { userId:
       </Button>
 
       {error && (
-        <Alert variant="destructive">
-          <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <ErrorAlert description={error} />
       )}
 
       {user && (

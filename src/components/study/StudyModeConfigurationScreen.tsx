@@ -10,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, Loader2, Sparkles, ArrowLeft, Info, X, ShieldAlert } from "lucide-react";
 import { useTranslation } from '@/hooks/use-translation';
-import { subcategoryDisplayNames } from '@/lib/constants';
+import { getSubtopicDisplayName } from '@/lib/formatting';
 import type { UserProfile } from '@/types';
 import { Separator } from '../ui/separator';
 import { DatePickerWithRange } from '../ui/date-picker-with-range';
@@ -80,7 +80,7 @@ const StudyModeConfigurationScreen: React.FC<StudyModeConfigurationScreenProps> 
     return currentSubcategoryOptions
       .map(subcatKey => ({
         value: subcatKey,
-        label: t(subcategoryDisplayNames[subcatKey] || `subtopics.${subcatKey.toLowerCase()}` as any, { defaultValue: subcatKey }),
+        label: getSubtopicDisplayName(subcatKey, t),
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [currentSubcategoryOptions, t]);

@@ -1,5 +1,12 @@
 import type { UserProfile, StudyMode, UserNote } from "@/types";
 
+// --- Main categories (main_localization). Single source of truth for filters, bundles, and admin. ---
+export const MAIN_CATEGORIES = ['Head', 'Spine', 'Neck', 'General', 'Chest', 'Abdomen', 'Limbs'] as const;
+export type MainCategory = (typeof MAIN_CATEGORIES)[number];
+
+// --- Difficulty filter options (study mode, question filters). ---
+export const DIFFICULTY_FILTER_OPTIONS = ['all', 'Easy', 'Advanced'] as const;
+
 export interface NavItem {
   title?: string; // Translation key e.g. "nav.dashboard" (optional for separator/groupLabel)
   href?: string;

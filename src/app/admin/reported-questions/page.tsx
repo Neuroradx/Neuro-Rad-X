@@ -7,6 +7,7 @@ import { auth } from '@/lib/firebase';
 import { useTranslation } from '@/hooks/use-translation';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ErrorAlert } from '@/components/ui/error-alert';
 import { Loader2, FileWarning, AlertCircle, ShieldAlert, CheckCircle, RefreshCw, Eye, Archive, ChevronLeft, ChevronRight, FileEdit, Mail, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -207,11 +208,7 @@ export default function ReportedQuestionsPage() {
         )}
 
         {!isLoadingIssues && fetchError && (
-          <Alert variant="destructive" className="rounded-xl">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>{t('toast.errorTitle')}</AlertTitle>
-            <AlertDescription>{fetchError}</AlertDescription>
-          </Alert>
+          <ErrorAlert description={fetchError} className="rounded-xl" />
         )}
 
         {!isLoadingIssues && !fetchError && reportedIssues.length === 0 && (
